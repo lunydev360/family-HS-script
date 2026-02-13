@@ -571,12 +571,12 @@ end
 
 -- Create WindUI Window
 local Window = WindUI:CreateWindow({
-    Title = "Universal Script Hub",
-    Author = "by WindUI",
-    Folder = "UniversalHub",
+    Title = "Family HS HUB Vpreview.01",
+    Author = "by dep0700",
+    Folder = "HudFamilyHS",
     Icon = "solar:folder-2-bold-duotone",
     OpenButton = {
-        Title = "Open Script Hub",
+        Title = "desplegue el menu",
         CornerRadius = UDim.new(1, 0),
         StrokeThickness = 2,
         Enabled = true,
