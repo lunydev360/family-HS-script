@@ -1161,14 +1161,14 @@ UtilityTab:Button({
 
 
 local CreditTab = Window:Tab({
-    Title = "Utility",
+    Title = "seccion beta",
     Icon = "solar:settings-bold",
     IconColor = Color3.fromRGB(131, 136, 158),
     IconShape = "Square",
     Border = true,
 })
 
-Tab:Button({
+CreditTab:Button({
     Title = "Advanced Button",
     Color = Color3.fromHex("#750075"), -- paint the button
     Justify = "Center", -- align items in the center (Center or Between or Left or Right)
