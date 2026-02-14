@@ -14,20 +14,27 @@ local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footag
 
 -- Settings
 local Settings = {
+    Aimbot = {
+        Enabled = false,
+        FOV = 100,
+        Smoothness = 0.1,
+        VisibleCheck = true,
+        TeamCheck = true,
+        TargetPart = "Head",
+        Keybind = "E"
+    },
     KillAura = {
         Enabled = false,
         Range = 15,
         HitboxSize = 30,
         ShowHitbox = false,
-        Keybind = "E",
-        Speed_KA = 0.1
-        agr_mune = {""}
+        Keybind = "Q"
     },
     AntiRagdoll = {
         Enabled = false
     },
     UI = {
-        Keybind = "Tab"
+        Keybind = "RightShift"
     },
     Speed = {
         Enabled = false,
@@ -36,6 +43,9 @@ local Settings = {
     Fly = {
         Enabled = false,
         Speed = 50
+    },
+    InfiniteJump = {
+        Enabled = false
     },
     ESP = {
         Name = false,
@@ -57,12 +67,9 @@ local originalHitboxSizes = {}
 local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
-local prohibidos ={
-    [7593008940]= true,
+local onder = {
     [1888426792] = true,
-}
-local unmune = {
-    []=true
+    [7593008940] = true,
 }
 -- Try to find Hit remote
 pcall(function()
@@ -74,6 +81,67 @@ pcall(function()
         :WaitForChild("RF")
         :WaitForChild("Hit")
 end)
+
+-- Aimbot Functions
+local function GetClosestPlayer()
+    local ClosestDistance = Settings.Aimbot.FOV
+    local ClosestPlayer = nil
+    
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            local character = player.Character
+            local humanoid = character:FindFirstChild("Humanoid")
+            local targetPart = character:FindFirstChild(Settings.Aimbot.TargetPart)
+            
+            if humanoid and humanoid.Health > 0 and targetPart then
+                if Settings.Aimbot.TeamCheck and player.Team == LocalPlayer.Team then
+                    continue
+                end
+                
+                local screenPos, onScreen = Camera:WorldToViewportPoint(targetPart.Position)
+                
+                if onScreen then
+                    local mousePos = UserInputService:GetMouseLocation()
+                    local distance = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
+                    
+                    if distance < ClosestDistance then
+                        if Settings.Aimbot.VisibleCheck then
+                            local ray = Ray.new(Camera.CFrame.Position, (targetPart.Position - Camera.CFrame.Position).Unit * 1000)
+                            local part = Workspace:FindPartOnRayWithIgnoreList(ray, {LocalPlayer.Character})
+                            
+                            if part and part:IsDescendantOf(character) then
+                                ClosestDistance = distance
+                                ClosestPlayer = player
+                            end
+                        else
+                            ClosestDistance = distance
+                            ClosestPlayer = player
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    return ClosestPlayer
+end
+
+local function AimbotLoop()
+    if not Settings.Aimbot.Enabled then return end
+    
+    local target = GetClosestPlayer()
+    if target and target.Character then
+        local targetPart = target.Character:FindFirstChild(Settings.Aimbot.TargetPart)
+        if targetPart then
+            local targetPos = targetPart.Position
+            local cameraPos = Camera.CFrame.Position
+            local direction = (targetPos - cameraPos).Unit
+            
+            local newCFrame = CFrame.new(cameraPos, cameraPos + direction)
+            Camera.CFrame = Camera.CFrame:Lerp(newCFrame, Settings.Aimbot.Smoothness)
+        end
+    end
+end
 
 -- Kill Aura Functions
 local function StartKillAura()
@@ -107,7 +175,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not prohibidos[p.UserId] then
+                if not onder[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -509,7 +577,7 @@ if IsMobile then
     -- Kill Aura Button
     local KillAuraButton = CreateMobileButton(
         "Kill Aura\nOFF",
-        UDim2.new(0.965, 0.055, 0.12, 0.12),
+        UDim2.new(0, 10, 0.5, 0),
         Color3.fromRGB(239, 79, 29),
         function()
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled
@@ -550,20 +618,20 @@ end
 
 -- Create WindUI Window
 local Window = WindUI:CreateWindow({
-    Title = "Family HS HUB Vpreview.01",
-    Author = "by dep0700",
-    Folder = "HudFamilyHS",
+    Title = "Family HS HUB",
+    Author = "by yami_DEV",
+    Folder = "HsHub",
     Icon = "solar:folder-2-bold-duotone",
     OpenButton = {
-        Title = "desplegue el menu",
+        Title = "Open Script Hub",
         CornerRadius = UDim.new(1, 0),
         StrokeThickness = 2,
         Enabled = true,
         Draggable = true,
         Scale = 0.5,
         Color = ColorSequence.new(
-            Color3.fromHex("#ff7300"),
-            Color3.fromHex("#000000")
+            Color3.fromHex("#ff7b00"),
+            Color3.fromHex("#ffc0ec")
         )
     },
 })
@@ -655,7 +723,7 @@ CombatTab:Space()
 CombatTab:Keybind({
     Title = "Kill Aura Keybind",
     Desc = "Toggle kill aura on/off",
-    Value = "Q",
+    Value = "E",
     Callback = function(key)
         Settings.KillAura.Keybind = key
     end
@@ -810,42 +878,6 @@ VisualsTab:Toggle({
         UpdateAllESP()
     end
 })
-
-VisualsTab:Slider({
-    Title = "Max ESP Distance",
-    Step = 50,
-    Value = {
-        Min = 100,
-        Max = 5000,
-        Default = 1000,
-    },
-    Callback = function(value)
-        Settings.ESP.Distance = value
-    end
-})
-
-VisualsTab:Colorpicker({
-    Title = "Name Color",
-    Default = Color3.fromRGB(255, 255, 255),
-    Callback = function(color)
-        Settings.ESP.NameColor = color
-        for _, esp in pairs(ESPObjects) do
-            esp.NameLabel.TextColor3 = color
-        end
-    end
-})
-
-VisualsTab:Colorpicker({
-    Title = "Health Color",
-    Default = Color3.fromRGB(0, 255, 0),
-    Callback = function(color)
-        Settings.ESP.HealthColor = color
-        for _, esp in pairs(ESPObjects) do
-            esp.HealthLabel.TextColor3 = color
-        end
-    end
-})
-
 VisualsTab:Space()
 
 VisualsTab:Section({
@@ -897,7 +929,7 @@ UtilityTab:Section({
 UtilityTab:Keybind({
     Title = "UI Toggle Keybind",
     Desc = "Press to hide/show the UI",
-    Value = "RightShift",
+    Value = "Tab",
     Callback = function(key)
         Settings.UI.Keybind = key
         Window:SetToggleKey(Enum.KeyCode[key])
@@ -1140,6 +1172,12 @@ end
 -- Character Respawn Handler
 LocalPlayer.CharacterAdded:Connect(function()
     wait(0.5)
+    UpdateSpeed()
+    if Settings.Fly.Enabled then
+        StopFly()
+        wait(0.1)
+        StartFly()
+    end
     if Settings.KillAura.Enabled then
         StopKillAura()
         wait(0.1)
@@ -1166,8 +1204,8 @@ Players.PlayerAdded:Connect(function(newPlayer)
 end)
 
 WindUI:Notify({
-    Title = "Script cargado con exito",
-    Content = IsMobile and "script ejecutado en mobile" or "Family HS Hud script con exicto",
+    Title = "Script Loaded",
+    Content = IsMobile and "Mobile buttons enabled on left/right side!" or "Universal Script Hub loaded successfully!",
     Icon = "solar:check-circle-bold",
     Duration = 5,
 })
