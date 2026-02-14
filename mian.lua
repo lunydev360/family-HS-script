@@ -183,7 +183,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not onder[p.UserId] or not Settings.KillAura.inmune[p.UserId] then
+                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -203,6 +203,7 @@ local function StartKillAura()
                 vector.create(myHRP.Position.X, myHRP.Position.Y, myHRP.Position.Z)
             }
             pcall(function()
+                HitRemote:InvokeServer(unpack(args))
                 HitRemote:InvokeServer(unpack(args))
             end)
         end
