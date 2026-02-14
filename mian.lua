@@ -19,7 +19,9 @@ local Settings = {
         Range = 15,
         HitboxSize = 30,
         ShowHitbox = false,
-        Keybind = "E"
+        Keybind = "E",
+        Speed_KA = 0.1
+        agr_mune = {""}
     },
     AntiRagdoll = {
         Enabled = false
@@ -55,7 +57,13 @@ local originalHitboxSizes = {}
 local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
-
+local prohibidos ={
+    [7593008940]= true,
+    [1888426792] = true,
+}
+local unmune = {
+    []=true
+}
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -99,13 +107,15 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                local hum = p.Character.Humanoid
-                local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                if hum.Health > 0 and hrp then
-                    local dist = (hrp.Position - myHRP.Position).Magnitude
-                    if dist <= closestDist then
-                        closestDist = dist
-                        closest = p
+                if not prohibidos[p.UserId] then
+                    local hum = p.Character.Humanoid
+                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                    if hum.Health > 0 and hrp then
+                        local dist = (hrp.Position - myHRP.Position).Magnitude
+                        if dist <= closestDist then
+                            closestDist = dist
+                            closest = p
+                        end
                     end
                 end
             end
@@ -499,7 +509,7 @@ if IsMobile then
     -- Kill Aura Button
     local KillAuraButton = CreateMobileButton(
         "Kill Aura\nOFF",
-        UDim2.new(0, 10, 0.5, 0),
+        UDim2.new(0.965, 0.055, 0.12, 0.12),
         Color3.fromRGB(239, 79, 29),
         function()
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled
@@ -512,37 +522,6 @@ if IsMobile then
             KillAuraButton.BackgroundColor3 = Settings.KillAura.Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(239, 79, 29)
         end
     )
-    
-    -- Speed Button
-    local SpeedButton = CreateMobileButton(
-        "Speed\nOFF",
-        UDim2.new(0, 100, 0.5, -90),
-        Color3.fromRGB(16, 197, 80),
-        function()
-            Settings.Speed.Enabled = not Settings.Speed.Enabled
-            UpdateSpeed()
-            SpeedButton.Text = Settings.Speed.Enabled and "Speed\nON" or "Speed\nOFF"
-            SpeedButton.BackgroundColor3 = Settings.Speed.Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(16, 197, 80)
-        end
-    )
-    
-    -- Fly Button
-    local FlyButton = CreateMobileButton(
-        "Fly\nOFF",
-        UDim2.new(0, 100, 0.5, 0),
-        Color3.fromRGB(16, 197, 80),
-        function()
-            Settings.Fly.Enabled = not Settings.Fly.Enabled
-            if Settings.Fly.Enabled then
-                StartFly()
-            else
-                StopFly()
-            end
-            FlyButton.Text = Settings.Fly.Enabled and "Fly\nON" or "Fly\nOFF"
-            FlyButton.BackgroundColor3 = Settings.Fly.Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(16, 197, 80)
-        end
-    )
-    
     -- ESP Button
     local ESPButton = CreateMobileButton(
         "ESP\nOFF",
@@ -1140,18 +1119,6 @@ end)
 if not IsMobile then
     UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if gameProcessed then return end
-        
-        -- Aimbot Keybind
-        if input.KeyCode.Name == Settings.Aimbot.Keybind then
-            Settings.Aimbot.Enabled = not Settings.Aimbot.Enabled
-            WindUI:Notify({
-                Title = "Aimbot " .. (Settings.Aimbot.Enabled and "Enabled" or "Disabled"),
-                Content = "Press " .. Settings.Aimbot.Keybind .. " to toggle",
-                Icon = "solar:target-bold",
-                Duration = 2,
-            })
-        end
-        
         -- Kill Aura Keybind
         if input.KeyCode.Name == Settings.KillAura.Keybind then
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled
@@ -1173,12 +1140,6 @@ end
 -- Character Respawn Handler
 LocalPlayer.CharacterAdded:Connect(function()
     wait(0.5)
-    UpdateSpeed()
-    if Settings.Fly.Enabled then
-        StopFly()
-        wait(0.1)
-        StartFly()
-    end
     if Settings.KillAura.Enabled then
         StopKillAura()
         wait(0.1)
@@ -1205,8 +1166,8 @@ Players.PlayerAdded:Connect(function(newPlayer)
 end)
 
 WindUI:Notify({
-    Title = "Script Loaded",
-    Content = IsMobile and "Mobile buttons enabled on left/right side!" or "Universal Script Hub loaded successfully!",
+    Title = "Script cargado con exito",
+    Content = IsMobile and "script ejecutado en mobile" or "Family HS Hud script con exicto",
     Icon = "solar:check-circle-bold",
     Duration = 5,
 })
