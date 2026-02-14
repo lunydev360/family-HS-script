@@ -28,7 +28,15 @@ local Settings = {
         Range = 15,
         HitboxSize = 30,
         ShowHitbox = false,
-        Keybind = "Q"
+        Keybind = "E",
+        inmune = {
+            [803842059] = true, -- Hector
+            [10407800846] = true, -- Jake
+            [8417046395] = true, -- Myla,
+            [8235856925] = true, --Sote
+            [5809969270] = true, --suki
+        }
+
     },
     AntiRagdoll = {
         Enabled = false
@@ -175,7 +183,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not onder[p.UserId] then
+                if not onder[p.UserId] or not Settings.KillAura.inmune[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -929,7 +937,7 @@ UtilityTab:Section({
 UtilityTab:Keybind({
     Title = "UI Toggle Keybind",
     Desc = "Press to hide/show the UI",
-    Value = "Tab",
+    Value = "RightShift",
     Callback = function(key)
         Settings.UI.Keybind = key
         Window:SetToggleKey(Enum.KeyCode[key])
@@ -1141,6 +1149,51 @@ UtilityTab:Button({
         })
     end
 })
+
+--Creaditos y version
+
+
+
+
+
+
+
+
+local CreditTab = Window:Tab({
+    Title = "Utility",
+    Icon = "solar:settings-bold",
+    IconColor = Color3.fromRGB(131, 136, 158),
+    IconShape = "Square",
+    Border = true,
+})
+
+Tab:Button({
+    Title = "Advanced Button",
+    Color = Color3.fromHex("#750075"), -- paint the button
+    Justify = "Center", -- align items in the center (Center or Between or Left or Right)
+    Callback = function()
+        WindUI:Popup({
+            Title = "Popup Title",
+            Icon = "info",
+            Content = "Popup content",
+            Buttons = {
+                {
+                    Title = "Continue",
+                    Icon = "arrow-right",
+                    Callback = function() end,
+                    Variant = "Primary",
+                }
+            }
+        })
+    end
+})
+
+
+
+
+
+
+
 
 -- Main Loop
 RunService.Heartbeat:Connect(function()
