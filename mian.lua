@@ -743,13 +743,13 @@ end
 CombatTab:Dropdown({
     Title = "User Inmune",
     Values = GetPlayersList(),
-        Value = Getinmune(),
-        AllowNone = true,
-        Multi = true,
-        Callback = function(selectedValue)
-            print("Selected: " .. selectedValue)
-        end
-    })
+    Value = Getinmune(),
+    AllowNone = true,
+    Multi = true,
+    Callback = function(selectedValue)
+        print("Selected: " .. selectedValue)
+    end
+})
 
 
 CombatTab:Space()
