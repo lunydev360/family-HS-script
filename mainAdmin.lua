@@ -742,7 +742,7 @@ CombatTab:Toggle({
 local Dropdown = CombatTab:Dropdown({
     Title = "Dropdown (Multi)",
     Desc = "Dropdown Description",
-    Values = { "Category A", "Category B", "Category C" },
+    Values = { "soto", "myla","hector","suki","jake" },
     Value = { "Category A" },
     Multi = true,
     AllowNone = true,
