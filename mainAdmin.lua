@@ -739,10 +739,19 @@ CombatTab:Toggle({
     end
 })
 
+local function dictToArray(dict)
+    local array = []
+    for key in pairs(dict) do
+        table.insert(array, key)
+    end
+    return array
+end
+
+
 local Dropdown = CombatTab:Dropdown({
     Title = "Dropdown (Multi)",
     Desc = "Dropdown Description",
-    Values = { "soto", "myla","hector","suki","jake" },
+    Values = dictToArray(Settings.KillAura.inmune),
     Value = nil,
     Multi = true,
     AllowNone = true,
