@@ -81,6 +81,10 @@ local onder = {
 }
 local AdminPermiso = false
 local arrayPlayers = { "cyburgultraJake64cat", "Kendraaa1023",}
+local ObjetiveKillAura = {
+    Enabled = false
+    TargetPlayer = ""
+}
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -185,7 +189,19 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] then
+                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] and not ObjetiveKillAura.Enabled then
+                    local hum = p.Character.Humanoid
+                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                    if hum.Health > 0 and hrp then
+                        local dist = (hrp.Position - myHRP.Position).Magnitude
+                        if dist <= closestDist then
+                            closestDist = dist
+                            closest = p
+                        end
+                    end
+                end
+
+                if ObjetiveKillAura.enabled and not onder[p.UserId] and ObjetiveKillAura.TargetPlayer == p.Name then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -755,8 +771,21 @@ local Input = CombatTab:Input({
     Value = nil,
     Type = "Input", -- or "Textarea"
     Placeholder = "Enter text...",
-    Callback = function(input) 
-        print("text entered: " .. input)
+    Callback = function(text) 
+        local search = string.lower(text)
+
+        if not search == "" then
+            ObjetiveKillAura.Enabled = true
+
+            for _,player in pairs(players:GetPlayers()) do
+                local playername = string.lower(player.Name)
+                if string.sub(playername,1 ,#search) == search then
+                    ObjetiveKillAura.TargetPlayer = player.Name
+                end
+            end
+        else
+            ObjetiveKillAura.Enabled = false
+        end
     end
 })
 
