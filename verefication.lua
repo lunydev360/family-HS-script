@@ -156,19 +156,3 @@ local response = requestFunc({
     },
     Body = encoded
 })
-
-if response then
-    print("Status:", response.StatusCode)
-    if response.StatusCode == 200 or response.StatusCode == 204 then
-        print("✅ Webhook sent successfully!")
-    else
-        print("Error: J1920-RH - (SHARE THIS TO SERVICE OWNER) : " .. response.StatusCode)
-        if response.Body then
-            print("Response: " .. response.Body)
-        end
-    end
-else
-    print("ERROR: No response from server")
-end
-
-print("✅ Script initialized successfully!")

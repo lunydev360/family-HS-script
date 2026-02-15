@@ -64,6 +64,9 @@ local Settings = {
         HealthColor = Color3.fromRGB(0, 255, 0),
         Chams = false,
         ChamsColor = Color3.fromRGB(255, 0, 255)
+    },
+    Configuracion = {
+        Version_HS = BETA 3
     }
 }
 
@@ -645,6 +648,16 @@ local Window = WindUI:CreateWindow({
     },
 })
 
+do
+    Window:Tag({
+        Title = "v"+ Settings.Configuracion.Version_HS,
+        Icon = "",
+        Color = Color3.fromHex("#ff7b00"),
+        Border = true,
+    })
+end
+
+
 -- Set initial UI toggle key
 Window:SetToggleKey(Enum.KeyCode[Settings.UI.Keybind])
 
@@ -1175,7 +1188,7 @@ do
     AboutSection:Space({ Columns = 3 })
     
     AboutSection:Section({
-        Title = "What is WindUI?",
+        Title = "Creditos",
         TextSize = 24,
         FontWeight = Enum.FontWeight.SemiBold,
     })
@@ -1183,44 +1196,14 @@ do
     AboutSection:Space()
     
     AboutSection:Section({
-        Title = "WindUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.\nDeveloped by Footagesus (.ftgs, Footages).\nIt aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.\nThe project is primarily written in Lua (Luau), the scripting language used in Roblox.",
+        Title = "Hector. (Fundador)\nyami. (programadora)\nFamily HS. (dueños)",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,
     })
     
     AboutTab:Space({ Columns = 4 }) 
-    
-    
-    -- Default buttons
-    
-    AboutTab:Button({
-        Title = "Export WindUI JSON (copy)",
-        Color = Color3.fromHex("#a2ff30"),
-        Justify = "Center",
-        IconAlign = "Left",
-        Icon = "", -- removing icon
-        Callback = function()
-            tableToClipboard(WindUI)
-            WindUI:Notify({
-                Title = "WindUI JSON",
-                Content = "Copied to Clipboard!"
-            })
-        end
-    })
-    AboutTab:Space({ Columns = 1 }) 
-    
-    
-    AboutTab:Button({
-        Title = "Destroy Window",
-        Color = Color3.fromHex("#ff4830"),
-        Justify = "Center",
-        Icon = "shredder",
-        IconAlign = "Left",
-        Callback = function()
-            Window:Destroy()
-        end
-    })
+
 end
 
 
