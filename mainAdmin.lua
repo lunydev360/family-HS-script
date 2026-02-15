@@ -30,11 +30,12 @@ local Settings = {
         ShowHitbox = false,
         Keybind = "E",
         inmune = {
-            [803842059] = true, -- Hector
-            [10407800846] = true, -- Jake
-            [8417046395] = true, -- Myla,
-            [8235856925] = true, --Sote
-            [5809969270] = true, --suki
+            "jairoproaso1" = true, -- Hector
+            "ef" = true, -- Jake
+            "as" = true, -- Myla,
+            "enrique1746708" = true, --Soto
+            "tomatocookie13" = true, --suki
+            "Isabelloca_sando2023" = true
         }
 
     },
@@ -185,7 +186,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] then
+                if not onder[p.UserId] and not Settings.KillAura.inmune[p.Name] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
