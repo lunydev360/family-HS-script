@@ -1157,7 +1157,7 @@ do
         Title = "About WindUI",
         Desc = "Description Example", 
         Icon = "solar:info-square-bold",
-        IconColor = Grey,
+        IconColor = Color3.fromHex("#10C550"),
         IconShape = "Square",
         Border = true,
     })
@@ -1254,6 +1254,16 @@ Players.PlayerAdded:Connect(function(newPlayer)
         end
     end)
 end)
+
+do
+    Window:Tag({
+        Title = "v Beta 3.4",
+        Icon = "github",
+        Color = Color3.fromHex("#ff9100"),
+        Border = true,
+    })
+end
+
 
 WindUI:Notify({
     Title = "Script Loaded",
