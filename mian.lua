@@ -635,7 +635,7 @@ local Window = WindUI:CreateWindow({
     Folder = "HsHub",
     Icon = "solar:folder-2-bold-duotone",
     OpenButton = {
-        Title = "Open Script Hub",
+        Title = "abrir hub",
         CornerRadius = UDim.new(1, 0),
         StrokeThickness = 2,
         Enabled = true,
@@ -647,16 +647,6 @@ local Window = WindUI:CreateWindow({
         )
     },
 })
-
-do
-    Window:Tag({
-        Title = "v"+ Settings.Configuracion.Version_HS,
-        Icon = "",
-        Color = Color3.fromHex("#ff7b00"),
-        Border = true,
-    })
-end
-
 
 -- Set initial UI toggle key
 Window:SetToggleKey(Enum.KeyCode[Settings.UI.Keybind])
