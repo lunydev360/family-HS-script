@@ -748,7 +748,7 @@ local Dropdown = CombatTab:Dropdown({
     AllowNone = true,
     Callback = function(option) 
         -- option is a table: { "Category A", "Category B" }
-        print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
+        print(option)
     end
 })
 
