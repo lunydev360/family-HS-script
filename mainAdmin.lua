@@ -80,6 +80,7 @@ local onder = {
     [7593008940] = true,
 }
 local AdminPermiso = false
+local arrayPlayers = { "cyburgultraJake64cat", "Kendraaa1023",}
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -739,8 +740,6 @@ CombatTab:Toggle({
     end
 })
 
-local arrayPlayers = { "cyburgultraJake64cat", "Kendraaa1023",}
-
 local Dropdown =CombatTab:Dropdown({
     Title = "quitar inmunidad",
     Desc = "elimina la inmunidad del kill aurora aun mienbro",
@@ -748,7 +747,6 @@ local Dropdown =CombatTab:Dropdown({
     Value = nil,
     Multi = true,
     AllowNone = true,
-
     Callback = function(option)
         for _, p in pairs(Players:GetPlayers()) do
             if table.find(option,p.Name) then
@@ -763,23 +761,16 @@ local Dropdown =CombatTab:Dropdown({
     end
 })
 
-local function GetMenbersList()
-    local playersList = {}
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            table.insert(playersList, player.Name)
-        end
+local Input = CombatTab:Input({
+    Title = "Input",
+    Desc = "Input Description",
+    Value = "Default value",
+    InputIcon = "bird",
+    Type = "Input", -- or "Textarea"
+    Placeholder = "Enter text...",
+    Callback = function(input) 
+        print("text entered: " .. input)
     end
-    return playersList
-end
-
-local cjDropdown = CombatTab:Dropdown({
-    Title = "Select Player",
-    Desc = "Choose a player to teleport to",
-    Values = GetMenbertsList(),
-    Value = nil,
-    AllowNone = true,
-    Callback = function(selectedName) end
 })
 
 
