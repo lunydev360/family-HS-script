@@ -64,6 +64,9 @@ local Settings = {
         HealthColor = Color3.fromRGB(0, 255, 0),
         Chams = false,
         ChamsColor = Color3.fromRGB(255, 0, 255)
+    },
+    Cofig = {
+        Version = "Beta 2"
     }
 }
 
@@ -647,547 +650,591 @@ local Window = WindUI:CreateWindow({
 
 -- Set initial UI toggle key
 Window:SetToggleKey(Enum.KeyCode[Settings.UI.Keybind])
-
+do
+    Window:Tag({
+        Title = "v" .. Settings.Config.Version,
+        Icon = "github",
+        Color = Color3.fromHex("#1c1c1c"),
+        Border = true,
+    })
+end
 -- Combat Tab
-local CombatTab = Window:Tab({
-    Title = "Combat",
-    Icon = "solar:sword-bold",
-    IconColor = Color3.fromRGB(239, 79, 29),
-    IconShape = "Square",
-    Border = true,
-})
+do
+    local CombatTab = Window:Tab({
+        Title = "Combat",
+        Icon = "solar:sword-bold",
+        IconColor = Color3.fromRGB(239, 79, 29),
+        IconShape = "Square",
+        Border = true,
+    })
 
-CombatTab:Section({
-    Title = "Kill Aura Settings",
-    TextSize = 18,
-})
+    CombatTab:Section({
+        Title = "Kill Aura Settings",
+        TextSize = 18,
+    })
 
-CombatTab:Toggle({
-    Title = "Enable Kill Aura",
-    Desc = "Automatically attack nearest player",
-    Value = false,
-    Callback = function(state)
-        Settings.KillAura.Enabled = state
-        if state then
-            StartKillAura()
-        else
-            StopKillAura()
+    CombatTab:Toggle({
+        Title = "Enable Kill Aura",
+        Desc = "Automatically attack nearest player",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.Enabled = state
+            if state then
+                StartKillAura()
+            else
+                StopKillAura()
+            end
         end
-    end
-})
+    })
 
-CombatTab:Slider({
-    Title = "Attack Range",
-    Desc = "Maximum distance to attack players",
-    Step = 1,
-    Value = {
-        Min = 5,
-        Max = 50,
-        Default = 15,
-    },
-    Callback = function(value)
-        Settings.KillAura.Range = value
-    end
-})
+    CombatTab:Slider({
+        Title = "Attack Range",
+        Desc = "Maximum distance to attack players",
+        Step = 1,
+        Value = {
+            Min = 5,
+            Max = 50,
+            Default = 15,
+        },
+        Callback = function(value)
+            Settings.KillAura.Range = value
+        end
+    })
 
-CombatTab:Slider({
-    Title = "Hitbox Expansion Size",
-    Desc = "Size of expanded hitboxes (client-side only)",
-    Step = 1,
-    Value = {
-        Min = 5,
-        Max = 100,
-        Default = 30,
-    },
-    Callback = function(value)
-        Settings.KillAura.HitboxSize = value
-        
-        if Settings.KillAura.Enabled then
-            for _, p in pairs(Players:GetPlayers()) do
-                if p ~= LocalPlayer and p.Character then
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hrp and originalHitboxSizes[hrp] then
-                        hrp.Size = Vector3.new(value, value, value)
+    CombatTab:Slider({
+        Title = "Hitbox Expansion Size",
+        Desc = "Size of expanded hitboxes (client-side only)",
+        Step = 1,
+        Value = {
+            Min = 5,
+            Max = 100,
+            Default = 30,
+        },
+        Callback = function(value)
+            Settings.KillAura.HitboxSize = value
+            
+            if Settings.KillAura.Enabled then
+                for _, p in pairs(Players:GetPlayers()) do
+                    if p ~= LocalPlayer and p.Character then
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hrp and originalHitboxSizes[hrp] then
+                            hrp.Size = Vector3.new(value, value, value)
+                        end
+                    end
+                end
+            end
+            
+            UpdateHitboxVisuals()
+        end
+    })
+
+    CombatTab:Toggle({
+        Title = "Show Hitbox Visualization",
+        Desc = "Display red transparent boxes showing expanded hitboxes",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.ShowHitbox = state
+            UpdateHitboxVisuals()
+        end
+    })
+
+    CombatTab:Space()
+
+    CombatTab:Keybind({
+        Title = "Kill Aura Keybind",
+        Desc = "Toggle kill aura on/off",
+        Value = "E",
+        Callback = function(key)
+            Settings.KillAura.Keybind = key
+        end
+    })
+
+    CombatTab:Space()
+
+    CombatTab:Section({
+        Title = "Anti-Ragdoll",
+        TextSize = 18,
+    })
+
+    CombatTab:Toggle({
+        Title = "Anti-Ragdoll",
+        Desc = "Prevents you from ragdolling when hit",
+        Value = false,
+        Callback = function(state)
+            Settings.AntiRagdoll.Enabled = state
+            if state then
+                StartAntiRagdoll()
+                WindUI:Notify({
+                    Title = "Anti-Ragdoll Enabled",
+                    Content = "You will no longer ragdoll!",
+                    Icon = "solar:shield-check-bold",
+                    Duration = 3,
+                })
+            else
+                StopAntiRagdoll()
+                WindUI:Notify({
+                    Title = "Anti-Ragdoll Disabled",
+                    Content = "Ragdoll is back to normal",
+                    Icon = "solar:shield-bold",
+                    Duration = 3,
+                })
+            end
+        end
+    })
+end
+-- Movement Tab
+do
+    local MovementTab = Window:Tab({
+        Title = "Movement",
+        Icon = "solar:running-round-bold",
+        IconColor = Color3.fromRGB(16, 197, 80),
+        IconShape = "Square",
+        Border = true,
+    })
+
+    MovementTab:Section({
+        Title = "Speed Settings",
+        TextSize = 18,
+    })
+
+    MovementTab:Toggle({
+        Title = "Enable Speed",
+        Value = false,
+        Callback = function(state)
+            Settings.Speed.Enabled = state
+            UpdateSpeed()
+        end
+    })
+
+    MovementTab:Slider({
+        Title = "Speed Value",
+        Step = 1,
+        Value = {
+            Min = 16,
+            Max = 200,
+            Default = 16,
+        },
+        Callback = function(value)
+            Settings.Speed.Value = value
+            UpdateSpeed()
+        end
+    })
+
+    MovementTab:Space()
+
+    MovementTab:Section({
+        Title = "Fly Settings",
+        TextSize = 18,
+    })
+
+    MovementTab:Toggle({
+        Title = "Enable Fly",
+        Desc = "Use WASD + Space/Shift to fly",
+        Value = false,
+        Callback = function(state)
+            Settings.Fly.Enabled = state
+            if state then
+                StartFly()
+            else
+                StopFly()
+            end
+        end
+    })
+
+    MovementTab:Slider({
+        Title = "Fly Speed",
+        Step = 1,
+        Value = {
+            Min = 10,
+            Max = 200,
+            Default = 50,
+        },
+        Callback = function(value)
+            Settings.Fly.Speed = value
+        end
+    })
+
+    MovementTab:Space()
+
+    MovementTab:Section({
+        Title = "Jump Settings",
+        TextSize = 18,
+    })
+
+    MovementTab:Toggle({
+        Title = "Infinite Jump",
+        Value = false,
+        Callback = function(state)
+            Settings.InfiniteJump.Enabled = state
+        end
+    })
+end
+-- Visuals Tab
+do
+    local VisualsTab = Window:Tab({
+        Title = "Visuals",
+        Icon = "solar:eye-bold",
+        IconColor = Color3.fromRGB(37, 122, 247),
+        IconShape = "Square",
+        Border = true,
+    })
+
+    VisualsTab:Section({
+        Title = "ESP Settings",
+        TextSize = 18,
+    })
+
+    VisualsTab:Toggle({
+        Title = "Name ESP",
+        Value = false,
+        Callback = function(state)
+            Settings.ESP.Name = state
+            
+            if state then
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character then
+                        CreateESP(player)
+                    end
+                end
+            end
+            UpdateAllESP()
+        end
+    })
+    VisualsTab:Space()
+
+    VisualsTab:Section({
+        Title = "Chams Settings",
+        TextSize = 18,
+    })
+
+    VisualsTab:Toggle({
+        Title = "Enable Chams",
+        Desc = "Highlight players through walls",
+        Value = false,
+        Callback = function(state)
+            Settings.ESP.Chams = state
+            UpdateAllChams()
+        end
+    })
+
+    VisualsTab:Colorpicker({
+        Title = "Chams Color",
+        Default = Color3.fromRGB(255, 0, 255),
+        Callback = function(color)
+            Settings.ESP.ChamsColor = color
+            
+            for player, chams in pairs(ChamsObjects) do
+                for _, cham in pairs(chams) do
+                    if cham and cham.Parent then
+                        cham.FillColor = color
+                        cham.OutlineColor = color
                     end
                 end
             end
         end
-        
-        UpdateHitboxVisuals()
-    end
-})
+    })
 
-CombatTab:Toggle({
-    Title = "Show Hitbox Visualization",
-    Desc = "Display red transparent boxes showing expanded hitboxes",
-    Value = false,
-    Callback = function(state)
-        Settings.KillAura.ShowHitbox = state
-        UpdateHitboxVisuals()
-    end
-})
+    -- Utility Tab
+    local UtilityTab = Window:Tab({
+        Title = "Utility",
+        Icon = "solar:settings-bold",
+        IconColor = Color3.fromRGB(131, 136, 158),
+        IconShape = "Square",
+        Border = true,
+    })
 
-CombatTab:Space()
+    UtilityTab:Section({
+        Title = "UI Settings",
+        TextSize = 18,
+    })
 
-CombatTab:Keybind({
-    Title = "Kill Aura Keybind",
-    Desc = "Toggle kill aura on/off",
-    Value = "E",
-    Callback = function(key)
-        Settings.KillAura.Keybind = key
-    end
-})
-
-CombatTab:Space()
-
-CombatTab:Section({
-    Title = "Anti-Ragdoll",
-    TextSize = 18,
-})
-
-CombatTab:Toggle({
-    Title = "Anti-Ragdoll",
-    Desc = "Prevents you from ragdolling when hit",
-    Value = false,
-    Callback = function(state)
-        Settings.AntiRagdoll.Enabled = state
-        if state then
-            StartAntiRagdoll()
+    UtilityTab:Keybind({
+        Title = "UI Toggle Keybind",
+        Desc = "Press to hide/show the UI",
+        Value = "RightShift",
+        Callback = function(key)
+            Settings.UI.Keybind = key
+            Window:SetToggleKey(Enum.KeyCode[key])
             WindUI:Notify({
-                Title = "Anti-Ragdoll Enabled",
-                Content = "You will no longer ragdoll!",
-                Icon = "solar:shield-check-bold",
-                Duration = 3,
-            })
-        else
-            StopAntiRagdoll()
-            WindUI:Notify({
-                Title = "Anti-Ragdoll Disabled",
-                Content = "Ragdoll is back to normal",
-                Icon = "solar:shield-bold",
+                Title = "UI Keybind Changed",
+                Content = "Press " .. key .. " to toggle UI",
+                Icon = "solar:keyboard-bold",
                 Duration = 3,
             })
         end
-    end
-})
+    })
 
--- Movement Tab
-local MovementTab = Window:Tab({
-    Title = "Movement",
-    Icon = "solar:running-round-bold",
-    IconColor = Color3.fromRGB(16, 197, 80),
-    IconShape = "Square",
-    Border = true,
-})
+    UtilityTab:Space()
 
-MovementTab:Section({
-    Title = "Speed Settings",
-    TextSize = 18,
-})
+    UtilityTab:Section({
+        Title = "Server Functions",
+        TextSize = 18,
+    })
 
-MovementTab:Toggle({
-    Title = "Enable Speed",
-    Value = false,
-    Callback = function(state)
-        Settings.Speed.Enabled = state
-        UpdateSpeed()
-    end
-})
-
-MovementTab:Slider({
-    Title = "Speed Value",
-    Step = 1,
-    Value = {
-        Min = 16,
-        Max = 200,
-        Default = 16,
-    },
-    Callback = function(value)
-        Settings.Speed.Value = value
-        UpdateSpeed()
-    end
-})
-
-MovementTab:Space()
-
-MovementTab:Section({
-    Title = "Fly Settings",
-    TextSize = 18,
-})
-
-MovementTab:Toggle({
-    Title = "Enable Fly",
-    Desc = "Use WASD + Space/Shift to fly",
-    Value = false,
-    Callback = function(state)
-        Settings.Fly.Enabled = state
-        if state then
-            StartFly()
-        else
-            StopFly()
+    UtilityTab:Button({
+        Title = "Rejoin Server",
+        Desc = "Rejoin the current server",
+        Icon = "refresh-cw",
+        Justify = "Center",
+        Callback = function()
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
         end
-    end
-})
+    })
 
-MovementTab:Slider({
-    Title = "Fly Speed",
-    Step = 1,
-    Value = {
-        Min = 10,
-        Max = 200,
-        Default = 50,
-    },
-    Callback = function(value)
-        Settings.Fly.Speed = value
-    end
-})
+    UtilityTab:Space()
 
-MovementTab:Space()
-
-MovementTab:Section({
-    Title = "Jump Settings",
-    TextSize = 18,
-})
-
-MovementTab:Toggle({
-    Title = "Infinite Jump",
-    Value = false,
-    Callback = function(state)
-        Settings.InfiniteJump.Enabled = state
-    end
-})
-
--- Visuals Tab
-local VisualsTab = Window:Tab({
-    Title = "Visuals",
-    Icon = "solar:eye-bold",
-    IconColor = Color3.fromRGB(37, 122, 247),
-    IconShape = "Square",
-    Border = true,
-})
-
-VisualsTab:Section({
-    Title = "ESP Settings",
-    TextSize = 18,
-})
-
-VisualsTab:Toggle({
-    Title = "Name ESP",
-    Value = false,
-    Callback = function(state)
-        Settings.ESP.Name = state
-        
-        if state then
-            for _, player in pairs(Players:GetPlayers()) do
-                if player ~= LocalPlayer and player.Character then
-                    CreateESP(player)
-                end
-            end
-        end
-        UpdateAllESP()
-    end
-})
-VisualsTab:Space()
-
-VisualsTab:Section({
-    Title = "Chams Settings",
-    TextSize = 18,
-})
-
-VisualsTab:Toggle({
-    Title = "Enable Chams",
-    Desc = "Highlight players through walls",
-    Value = false,
-    Callback = function(state)
-        Settings.ESP.Chams = state
-        UpdateAllChams()
-    end
-})
-
-VisualsTab:Colorpicker({
-    Title = "Chams Color",
-    Default = Color3.fromRGB(255, 0, 255),
-    Callback = function(color)
-        Settings.ESP.ChamsColor = color
-        
-        for player, chams in pairs(ChamsObjects) do
-            for _, cham in pairs(chams) do
-                if cham and cham.Parent then
-                    cham.FillColor = color
-                    cham.OutlineColor = color
-                end
-            end
-        end
-    end
-})
-
--- Utility Tab
-local UtilityTab = Window:Tab({
-    Title = "Utility",
-    Icon = "solar:settings-bold",
-    IconColor = Color3.fromRGB(131, 136, 158),
-    IconShape = "Square",
-    Border = true,
-})
-
-UtilityTab:Section({
-    Title = "UI Settings",
-    TextSize = 18,
-})
-
-UtilityTab:Keybind({
-    Title = "UI Toggle Keybind",
-    Desc = "Press to hide/show the UI",
-    Value = "RightShift",
-    Callback = function(key)
-        Settings.UI.Keybind = key
-        Window:SetToggleKey(Enum.KeyCode[key])
-        WindUI:Notify({
-            Title = "UI Keybind Changed",
-            Content = "Press " .. key .. " to toggle UI",
-            Icon = "solar:keyboard-bold",
-            Duration = 3,
-        })
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Server Functions",
-    TextSize = 18,
-})
-
-UtilityTab:Button({
-    Title = "Rejoin Server",
-    Desc = "Rejoin the current server",
-    Icon = "refresh-cw",
-    Justify = "Center",
-    Callback = function()
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Server Hop",
-    Desc = "Join a random different server",
-    Icon = "shuffle",
-    Justify = "Center",
-    Callback = function()
-        local servers = {}
-        local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-        local body = HttpService:JSONDecode(req)
-        
-        if body and body.data then
-            for _, server in pairs(body.data) do
-                if server.id ~= game.JobId and server.playing < server.maxPlayers then
-                    table.insert(servers, server.id)
-                end
-            end
+    UtilityTab:Button({
+        Title = "Server Hop",
+        Desc = "Join a random different server",
+        Icon = "shuffle",
+        Justify = "Center",
+        Callback = function()
+            local servers = {}
+            local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+            local body = HttpService:JSONDecode(req)
             
-            if #servers > 0 then
-                local randomServer = servers[math.random(1, #servers)]
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, randomServer, LocalPlayer)
-            else
-                WindUI:Notify({
-                    Title = "Server Hop Failed",
-                    Content = "No available servers found!",
-                    Icon = "solar:danger-bold",
-                    Duration = 3,
-                })
-            end
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Server Hop (Lowest Players)",
-    Desc = "Join the server with the least players",
-    Icon = "users",
-    Justify = "Center",
-    Callback = function()
-        local servers = {}
-        local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-        local body = HttpService:JSONDecode(req)
-        
-        if body and body.data then
-            for _, server in pairs(body.data) do
-                if server.id ~= game.JobId then
-                    table.insert(servers, server)
+            if body and body.data then
+                for _, server in pairs(body.data) do
+                    if server.id ~= game.JobId and server.playing < server.maxPlayers then
+                        table.insert(servers, server.id)
+                    end
                 end
-            end
-            
-            table.sort(servers, function(a, b)
-                return a.playing < b.playing
-            end)
-            
-            if #servers > 0 then
-                local lowestServer = servers[1].id
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, lowestServer, LocalPlayer)
-            else
-                WindUI:Notify({
-                    Title = "Server Hop Failed",
-                    Content = "No available servers found!",
-                    Icon = "solar:danger-bold",
-                    Duration = 3,
-                })
-            end
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Character Functions",
-    TextSize = 18,
-})
-
-UtilityTab:Button({
-    Title = "Reset Character",
-    Desc = "Respawn your character",
-    Icon = "rotate-ccw",
-    Color = Color3.fromRGB(239, 79, 29),
-    Justify = "Center",
-    Callback = function()
-        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            LocalPlayer.Character.Humanoid.Health = 0
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Teleport to Player",
-    TextSize = 18,
-})
-
-local function GetPlayersList()
-    local playersList = {}
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            table.insert(playersList, player.Name)
-        end
-    end
-    return playersList
-end
-
-local TeleportDropdown = UtilityTab:Dropdown({
-    Title = "Select Player",
-    Desc = "Choose a player to teleport to",
-    Values = GetPlayersList(),
-    Value = nil,
-    AllowNone = true,
-    Callback = function(selectedName) end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Teleport to Selected Player",
-    Desc = "Instantly teleport to the selected player",
-    Icon = "zap",
-    Color = Color3.fromRGB(37, 122, 247),
-    Justify = "Center",
-    Callback = function()
-        local selectedPlayer = nil
-        
-        for _, player in pairs(Players:GetPlayers()) do
-            if player.Name == TeleportDropdown.Value then
-                selectedPlayer = player
-                break
-            end
-        end
-        
-        if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                LocalPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
                 
-                WindUI:Notify({
-                    Title = "Teleported",
-                    Content = "Teleported to " .. selectedPlayer.Name,
-                    Icon = "solar:bolt-bold",
-                    Duration = 3,
-                })
+                if #servers > 0 then
+                    local randomServer = servers[math.random(1, #servers)]
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, randomServer, LocalPlayer)
+                else
+                    WindUI:Notify({
+                        Title = "Server Hop Failed",
+                        Content = "No available servers found!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Server Hop (Lowest Players)",
+        Desc = "Join the server with the least players",
+        Icon = "users",
+        Justify = "Center",
+        Callback = function()
+            local servers = {}
+            local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+            local body = HttpService:JSONDecode(req)
+            
+            if body and body.data then
+                for _, server in pairs(body.data) do
+                    if server.id ~= game.JobId then
+                        table.insert(servers, server)
+                    end
+                end
+                
+                table.sort(servers, function(a, b)
+                    return a.playing < b.playing
+                end)
+                
+                if #servers > 0 then
+                    local lowestServer = servers[1].id
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, lowestServer, LocalPlayer)
+                else
+                    WindUI:Notify({
+                        Title = "Server Hop Failed",
+                        Content = "No available servers found!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Character Functions",
+        TextSize = 18,
+    })
+
+    UtilityTab:Button({
+        Title = "Reset Character",
+        Desc = "Respawn your character",
+        Icon = "rotate-ccw",
+        Color = Color3.fromRGB(239, 79, 29),
+        Justify = "Center",
+        Callback = function()
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.Health = 0
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Teleport to Player",
+        TextSize = 18,
+    })
+
+    local function GetPlayersList()
+        local playersList = {}
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                table.insert(playersList, player.Name)
+            end
+        end
+        return playersList
+    end
+
+    local TeleportDropdown = UtilityTab:Dropdown({
+        Title = "Select Player",
+        Desc = "Choose a player to teleport to",
+        Values = GetPlayersList(),
+        Value = nil,
+        AllowNone = true,
+        Callback = function(selectedName) end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Teleport to Selected Player",
+        Desc = "Instantly teleport to the selected player",
+        Icon = "zap",
+        Color = Color3.fromRGB(37, 122, 247),
+        Justify = "Center",
+        Callback = function()
+            local selectedPlayer = nil
+            
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Name == TeleportDropdown.Value then
+                    selectedPlayer = player
+                    break
+                end
+            end
+            
+            if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+                    
+                    WindUI:Notify({
+                        Title = "Teleported",
+                        Content = "Teleported to " .. selectedPlayer.Name,
+                        Icon = "solar:bolt-bold",
+                        Duration = 3,
+                    })
+                else
+                    WindUI:Notify({
+                        Title = "Teleport Failed",
+                        Content = "Your character is not loaded!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
             else
                 WindUI:Notify({
                     Title = "Teleport Failed",
-                    Content = "Your character is not loaded!",
+                    Content = "Player not found or character not loaded!",
                     Icon = "solar:danger-bold",
                     Duration = 3,
                 })
             end
-        else
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Refresh Player List",
+        Desc = "Update the player dropdown list",
+        Icon = "refresh-cw",
+        Justify = "Center",
+        Callback = function()
+            TeleportDropdown:Refresh(GetPlayersList())
             WindUI:Notify({
-                Title = "Teleport Failed",
-                Content = "Player not found or character not loaded!",
-                Icon = "solar:danger-bold",
-                Duration = 3,
+                Title = "Player List Refreshed",
+                Content = "Updated player dropdown",
+                Icon = "solar:check-circle-bold",
+                Duration = 2,
             })
         end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Refresh Player List",
-    Desc = "Update the player dropdown list",
-    Icon = "refresh-cw",
-    Justify = "Center",
-    Callback = function()
-        TeleportDropdown:Refresh(GetPlayersList())
-        WindUI:Notify({
-            Title = "Player List Refreshed",
-            Content = "Updated player dropdown",
-            Icon = "solar:check-circle-bold",
-            Duration = 2,
-        })
-    end
-})
-
+    })
+end
 --Creaditos y version
+do
+    local AboutTab = Window:Tab({
+        Title = "About WindUI",
+        Desc = "Description Example", 
+        Icon = "solar:info-square-bold",
+        IconColor = Grey,
+        IconShape = "Square",
+        Border = true,
+    })
+    
+    local AboutSection = AboutTab:Section({
+        Title = "About WindUI",
+    })
+    
+    AboutSection:Image({
+        Image = "https://repository-images.githubusercontent.com/880118829/22c020eb-d1b1-4b34-ac4d-e33fd88db38d",
+        AspectRatio = "16:9",
+        Radius = 9,
+    })
+    
+    AboutSection:Space({ Columns = 3 })
+    
+    AboutSection:Section({
+        Title = "What is WindUI?",
+        TextSize = 24,
+        FontWeight = Enum.FontWeight.SemiBold,
+    })
 
-
-
-
-
-
-
-
-local CreditTab = Window:Tab({
-    Title = "seccion beta",
-    Icon = "solar:settings-bold",
-    IconColor = Color3.fromRGB(131, 136, 158),
-    IconShape = "Square",
-    Border = true,
-})
-
-CreditTab:Button({
-    Title = "Advanced Button",
-    Color = Color3.fromHex("#750075"), -- paint the button
-    Justify = "Center", -- align items in the center (Center or Between or Left or Right)
-    Callback = function()
-        WindUI:Popup({
-            Title = "Popup Title",
-            Icon = "info",
-            Content = "Popup content",
-            Buttons = {
-                {
-                    Title = "Continue",
-                    Icon = "arrow-right",
-                    Callback = function() end,
-                    Variant = "Primary",
-                }
-            }
-        })
-    end
-})
+    AboutSection:Space()
+    
+    AboutSection:Section({
+        Title = "WindUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.\nDeveloped by Footagesus (.ftgs, Footages).\nIt aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.\nThe project is primarily written in Lua (Luau), the scripting language used in Roblox.",
+        TextSize = 18,
+        TextTransparency = .35,
+        FontWeight = Enum.FontWeight.Medium,
+    })
+    
+    AboutTab:Space({ Columns = 4 }) 
+    
+    
+    -- Default buttons
+    
+    AboutTab:Button({
+        Title = "Export WindUI JSON (copy)",
+        Color = Color3.fromHex("#a2ff30"),
+        Justify = "Center",
+        IconAlign = "Left",
+        Icon = "", -- removing icon
+        Callback = function()
+            tableToClipboard(WindUI)
+            WindUI:Notify({
+                Title = "WindUI JSON",
+                Content = "Copied to Clipboard!"
+            })
+        end
+    })
+    AboutTab:Space({ Columns = 1 }) 
+    
+    
+    AboutTab:Button({
+        Title = "Destroy Window",
+        Color = Color3.fromHex("#ff4830"),
+        Justify = "Center",
+        Icon = "shredder",
+        IconAlign = "Left",
+        Callback = function()
+            Window:Destroy()
+        end
+    })
+end
 
 
 
