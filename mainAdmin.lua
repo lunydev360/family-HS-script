@@ -739,17 +739,27 @@ CombatTab:Toggle({
     end
 })
 
+local arrayPlayers = { "cyburgultraJake64cat", "Kendraaa1023",}
+
 local Dropdown =CombatTab:Dropdown({
     Title = "quitar inmunidad",
     Desc = "elimina la inmunidad del kill aurora aun mienbro",
-    Values = { "cyburgultraJake64cat", "Kendraaa1023",},
+    Values = arrayPlayers,
     Value = nil,
     Multi = true,
     AllowNone = true,
 
-    Callback = function(option) 
-        -- option is a table: { "Category A", "Category B" }
-        print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
+    Callback = function(option)
+        for _, p in pairs(Players:GetPlayers()) do
+            if table.find(option,p.Name) then
+                Settings.KillAura.inmune[p.UserId] = false
+            else
+                if table.find(arrayPlayers,p.Name) then
+                    Settings.KillAura.inmune[p.UserId] = true
+                end
+            end
+            
+        end
     end
 })
     
