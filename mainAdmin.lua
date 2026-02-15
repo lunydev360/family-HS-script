@@ -392,21 +392,9 @@ local function CreateESP(player)
     nameLabel.TextStrokeTransparency = 0.5
     nameLabel.Parent = billboardGui
     
-    local healthLabel = Instance.new("TextLabel")
-    healthLabel.Name = "HealthLabel"
-    healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
-    healthLabel.BackgroundTransparency = 1
-    healthLabel.TextColor3 = Settings.ESP.HealthColor
-    healthLabel.TextSize = Settings.ESP.TextSize
-    healthLabel.Font = Enum.Font.GothamBold
-    healthLabel.TextStrokeTransparency = 0.5
-    healthLabel.Parent = billboardGui
-    
     ESPObjects[player] = {
         BillboardGui = billboardGui,
         NameLabel = nameLabel,
-        HealthLabel = healthLabel
     }
     
     local function UpdateESP()
@@ -762,10 +750,9 @@ local Dropdown =CombatTab:Dropdown({
 })
 
 local Input = CombatTab:Input({
-    Title = "Input",
-    Desc = "Input Description",
-    Value = "Default value",
-    InputIcon = "bird",
+    Title = "objetivo fijo",
+    Desc = "escriba el nombre",
+    Value = nil,
     Type = "Input", -- or "Textarea"
     Placeholder = "Enter text...",
     Callback = function(input) 
