@@ -727,31 +727,6 @@ CombatTab:Toggle({
     end
 })
 
-
-local function Getinmune()
-    local playersList = {}
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            if Settings.KillAura.inmune[player.UserId] ~= nill then
-                table.insert(playersList, player.Name)
-            end
-        end
-    end
-    return playersList
-end
-
-CombatTab:Dropdown({
-    Title = "User Inmune",
-    Values = GetPlayersList(),
-    Value = Getinmune(),
-    AllowNone = true,
-    Multi = true,
-    Callback = function(selectedValue)
-        print("Selected: " .. selectedValue)
-    end
-})
-
-
 CombatTab:Space()
 
 CombatTab:Keybind({
@@ -1282,7 +1257,7 @@ end)
 
 do
     Window:Tag({
-        Title = "v Beta 3.5",
+        Title = "v Beta 3.4",
         Icon = "github",
         Color = Color3.fromHex("#ff9100"),
         Border = true,
