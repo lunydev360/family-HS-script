@@ -590,7 +590,7 @@ if IsMobile then
     -- ESP Button
     local ESPButton = CreateMobileButton(
         "ESP\nOFF",
-        UDim2.fromScale(0.6,0.04),
+        UDim2.fromScale(0.7,0.04),
         Color3.fromRGB(37, 122, 247),
         function()
             Settings.ESP.Name = not Settings.ESP.Name
