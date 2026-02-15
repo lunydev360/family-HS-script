@@ -740,12 +740,13 @@ CombatTab:Toggle({
 })
 
 local Dropdown =CombatTab:Dropdown({
-    Title = "Dropdown (Multi)",
-    Desc = "Dropdown Description",
+    Title = "quitar inmunidad",
+    Desc = "elimina la inmunidad del kill aurora aun mienbro",
     Values = { "cyburgultraJake64cat", "Kendraaa1023",},
     Value = nil,
     Multi = true,
     AllowNone = true,
+
     Callback = function(option) 
         -- option is a table: { "Category A", "Category B" }
         print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
