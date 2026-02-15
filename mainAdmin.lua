@@ -739,18 +739,18 @@ CombatTab:Toggle({
     end
 })
 
-local function Getinmune()
-    local MenberList = {}
-    for playera, player in pairs(Settings.KillAura.inmune) do
-        table.insert(MenberListList, playera)
+local function dictToArray(dict)
+    local array = {}
+    for key in pairs(dict) do
+        table.insert(array, key)
     end
-    return MenberList
+    return array
 end
 
 local Dropdown = CombatTab:Dropdown({
     Title = "Dropdown (Multi)",
     Desc = "Dropdown Description",
-    Values = Getinmune(),
+    Values = Getinmune(Settings.KillAura.inmune),
     Value = nil,
     Multi = true,
     AllowNone = true,
