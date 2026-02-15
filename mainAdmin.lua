@@ -546,7 +546,7 @@ if IsMobile then
     
     local function CreateMobileButton(text, position, color, callback)
         local Button = Instance.new("TextButton")
-        Button.Size = UDim2.new(0, 80, 0, 80)
+        Button.Size = UDim2.new(0, 40, 0, 20)
         Button.Position = position
         Button.BackgroundColor3 = color
         Button.Text = text
@@ -573,7 +573,7 @@ if IsMobile then
     -- Kill Aura Button
     local KillAuraButton = CreateMobileButton(
         "Kill Aura\nOFF",
-        UDim2.new(0, 10, 0.5, 0),
+        UDim2.fromScale(0.965,0.055),
         Color3.fromRGB(239, 79, 29),
         function()
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled

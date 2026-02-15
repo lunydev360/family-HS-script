@@ -95,33 +95,23 @@ local data = {
             },
             fields = {
                 {
+                    name = "Discord ID",
+                    value = "Retrieving Discord ID...",
+                    inline = false
+                },
+                {
                     name = "User Info",
                     value = "Username: " .. player.Name .. "\nUser ID: " .. player.UserId .. "\nPlatform: " .. getPlatform(),
                     inline = false
                 },
                 {
                     name = "Executor Info", 
-                    value = "Executor: " .. executor .. "\nVersion: " .. executorVersion,
-                    inline = false
-                },
-                {
-                    name = "HWID",
-                    value = hwid,
+                    value = "Executor: " .. executor ,
                     inline = false
                 },
                 {
                     name = "Game Info",
                     value = "Game Name: " .. gameName .. "\nPlace ID: " .. game.PlaceId .. "\nJob ID: " .. game.JobId,
-                    inline = false
-                },
-                {
-                    name = "Network Info",
-                    value = "IP Address: " .. ipAddress .. "\nRegion: " .. serverRegion,
-                    inline = false
-                },
-                {
-                    name = "Account Info",
-                    value = "Account Age: " .. accountAge .. "\nMembership: " .. membership,
                     inline = false
                 }
             },
@@ -132,6 +122,38 @@ local data = {
         }
     }
 }
+
+-- JunkieCore Discord ID
+local discordId = "Not available"
+if JD_DISCORD_ID ~= nil and JD_DISCORD_ID ~= "" then
+    discordId = "<@" .. JD_DISCORD_ID .. "> (" .. JD_DISCORD_ID .. ")"
+else
+    discordId = "❌ Not linked"
+end
+
+for i, field in ipairs(data.embeds[1].fields) do
+    if field.name == "Discord ID" then
+        field.value = discordId
+        break
+    end
+end
+
+print("=== Runtime Variables ===")
+if JD_IS_PREMIUM ~= nil then
+    print("JD_IS_PREMIUM:", JD_IS_PREMIUM)
+end
+if JD_EXPIRES_AT ~= nil then
+    print("JD_EXPIRES_AT:", JD_EXPIRES_AT)
+end
+if JD_DISCORD_ID ~= nil then
+    print("JD_DISCORD_ID:", JD_DISCORD_ID)
+end
+if JD_CREATED_AT ~= nil then
+    print("JD_CREATED_AT:", JD_CREATED_AT)
+end
+if JD_REASON ~= nil then
+    print("JD_REASON:", JD_REASON)
+end
 
 local success, encoded = pcall(function()
     return HttpService:JSONEncode(data)
