@@ -30,12 +30,12 @@ local Settings = {
         ShowHitbox = false,
         Keybind = "E",
         inmune = {
-            "jairoproaso1" = true, -- Hector
-            "ef" = true, -- Jake
-            "as" = true, -- Myla,
-            "enrique1746708" = true, --Soto
-            "tomatocookie13" = true, --suki
-            "Isabelloca_sando2023" = true
+            [jairoproaso1] = true, -- Hector
+            [ef] = true, -- Jake
+            [as] = true, -- Myla,
+            [enrique1746708] = true, --Soto
+            [tomatocookie13] = true, --suki
+            [Isabelloca_sando2023] = true
         }
 
     },
