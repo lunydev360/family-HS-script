@@ -1188,7 +1188,7 @@ do
     AboutSection:Space({ Columns = 3 })
     
     AboutSection:Section({
-        Title = "What is WindUI?",
+        Title = "CREADITOS y fundadores",
         TextSize = 24,
         FontWeight = Enum.FontWeight.SemiBold,
     })
@@ -1196,7 +1196,7 @@ do
     AboutSection:Space()
     
     AboutSection:Section({
-        Title = "WindUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.\nDeveloped by Footagesus (.ftgs, Footages).\nIt aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.\nThe project is primarily written in Lua (Luau), the scripting language used in Roblox.",
+        Title = "Hector. (El fundador del script)\n\nYami. (La programadora principal detras de todo esto)\nFamily HS. (Dueños del script) ",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,
@@ -1305,8 +1305,10 @@ Players.PlayerAdded:Connect(function(newPlayer)
 end)
 
 WindUI:Notify({
-    Title = "Script Loaded",
-    Content = IsMobile and "Mobile buttons enabled on left/right side!" or "Universal Script Hub loaded successfully!",
+    Title = "Script cargado",
+    Content = IsMobile and "Mobile buttons enabled on left/right side!" or "Family HS Hud loaded successfully!",
     Icon = "solar:check-circle-bold",
     Duration = 5,
 })
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verefication.lua"))()
