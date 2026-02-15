@@ -739,46 +739,13 @@ CombatTab:Toggle({
     end
 })
 
-local Dropdown = CombatTab:Dropdown({
-    Title = "Advanced Dropdown 2 (example)",
-    Values = {
-        {
-            Title = "New file",
-            Desc = "Create a new file",
-            Icon = "file-plus",
-            Callback = function() 
-                print("Clicked 'New File'")
-            end
-        },
-        {
-            Title = "Copy link",
-            Desc = "Copy the file link",
-            Icon = "copy",
-            Callback = function() 
-                print("Clicked 'Copy link'")
-            end
-        },
-        {
-            Title = "Edit file",
-            Desc = "Allows you to edit the file",
-            Icon = "file-pen",
-            Callback = function() 
-                print("Clicked 'Edit file'")
-            end
-        },
-        { Type = "Divider", },
-        {
-            Title = "Delete file",
-            Desc = "Permanently delete the file",
-            Icon = "trash",
-            Callback = function() 
-                print("Clicked 'Delete file'")
-            end
-        },
-    },
-        Value = { "Category A" },
-    Multi = true,
+local Tedowd = CombatTab:Dropdown({
+    Title = "Select Player",
+    Desc = "Choose a player to teleport to",
+    Values = GetPlayersList(),
+    Value = nil,
     AllowNone = true,
+    Callback = function(selectedName) end
 })
     
 
