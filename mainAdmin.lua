@@ -574,7 +574,7 @@ if IsMobile then
     -- Kill Aura Button
     local KillAuraButton = CreateMobileButton(
         "Kill Aura\nOFF",
-        UDim2.fromScale(0.950,0.4),
+        UDim2.fromScale(0.950,0.04),
         Color3.fromRGB(239, 79, 29),
         function()
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled
@@ -590,7 +590,7 @@ if IsMobile then
     -- ESP Button
     local ESPButton = CreateMobileButton(
         "ESP\nOFF",
-        UDim2.fromScale(0.930,0.04),
+        UDim2.fromScale(0.920,0.04),
         Color3.fromRGB(37, 122, 247),
         function()
             Settings.ESP.Name = not Settings.ESP.Name
@@ -1226,7 +1226,7 @@ do
         Title = "actualizacion",
     })
 
-    ActualizSeccion:Space({ Columns = 2})
+    ActualizSeccion:Space()
 
     ActualizSeccion:Section({
         Title = "- se añadio nuevo boton de inabilitar mienbros.\n- nuevo diseño de botones para dispositivos moviles",
