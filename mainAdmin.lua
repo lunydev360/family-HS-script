@@ -750,7 +750,7 @@ end
 local Dropdown = CombatTab:Dropdown({
     Title = "Dropdown (Multi)",
     Desc = "Dropdown Description",
-    Values = Getinmune(Settings.KillAura.inmune),
+    Values = dictToArray(Settings.KillAura.inmune),
     Value = nil,
     Multi = true,
     AllowNone = true,
