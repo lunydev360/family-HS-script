@@ -574,7 +574,7 @@ if IsMobile then
     -- Kill Aura Button
     local KillAuraButton = CreateMobileButton(
         "Kill Aura\nOFF",
-        UDim2.fromScale(0.950,0.055),
+        UDim2.fromScale(0.950,0.4),
         Color3.fromRGB(239, 79, 29),
         function()
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled
@@ -590,7 +590,7 @@ if IsMobile then
     -- ESP Button
     local ESPButton = CreateMobileButton(
         "ESP\nOFF",
-        UDim2.new(1, -90, 0.5, -90),
+        UDim2.fromScale(0.930,0.04),
         Color3.fromRGB(37, 122, 247),
         function()
             Settings.ESP.Name = not Settings.ESP.Name
@@ -721,7 +721,7 @@ CombatTab:Toggle({
     Locked = false,
     LockedTitle = "solo para admins",
     Callback = function(state)
-        onder[7593008940] = state
+        Settings.KillAura.inmune[7593008940] = state
     end
 })
 
@@ -1185,7 +1185,7 @@ UtilityTab:Button({
 --Creaditos y version
 do
     local AboutTab = Window:Tab({
-        Title = "About WindUI",
+        Title = "About hs hub",
         Desc = "Description Example", 
         Icon = "solar:info-square-bold",
         IconColor = Color3.fromHex("#10C550"),
@@ -1194,7 +1194,7 @@ do
     })
     
     local AboutSection = AboutTab:Section({
-        Title = "About WindUI",
+        Title = "acerca",
     })
     
     AboutSection:Image({
@@ -1221,6 +1221,19 @@ do
     })
     
     AboutTab:Space({ Columns = 4 }) 
+
+    local ActualizSeccion = AboutTab:Section({
+        Title = "actualizacion",
+    })
+
+    ActualizSeccion:Space({ Columns = 2})
+
+    ActualizSeccion:Section({
+        Title = "- se añadio nuevo boton de inabilitar mienbros.\n- nuevo diseño de botones para dispositivos moviles",
+        TextSize = 18,
+        TextTransparency = .35,
+        FontWeight = Enum.FontWeight.Medium,
+    })
 
 end
 

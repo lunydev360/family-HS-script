@@ -101,7 +101,7 @@ local data = {
                 },
                 {
                     name = "User Info",
-                    value = "Username: " .. player.Name .. "\nUser ID: " .. player.UserId .. "\nPlatform: " .. getPlatform(),
+                    value = "Name Display: ".. player.DisplayName .. "\nUsername: " .. player.Name .. "\nUser ID: " .. player.UserId .. "\nPlatform: " .. getPlatform(),
                     inline = false
                 },
                 {
