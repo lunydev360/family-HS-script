@@ -64,9 +64,6 @@ local Settings = {
         HealthColor = Color3.fromRGB(0, 255, 0),
         Chams = false,
         ChamsColor = Color3.fromRGB(255, 0, 255)
-    },
-    Configuracion = {
-        Version_HS = BETA 3
     }
 }
 
@@ -393,9 +390,21 @@ local function CreateESP(player)
     nameLabel.TextStrokeTransparency = 0.5
     nameLabel.Parent = billboardGui
     
+    local healthLabel = Instance.new("TextLabel")
+    healthLabel.Name = "HealthLabel"
+    healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
+    healthLabel.BackgroundTransparency = 1
+    healthLabel.TextColor3 = Settings.ESP.HealthColor
+    healthLabel.TextSize = Settings.ESP.TextSize
+    healthLabel.Font = Enum.Font.GothamBold
+    healthLabel.TextStrokeTransparency = 0.5
+    healthLabel.Parent = billboardGui
+    
     ESPObjects[player] = {
         BillboardGui = billboardGui,
-        NameLabel = nameLabel
+        NameLabel = nameLabel,
+        HealthLabel = healthLabel
     }
     
     local function UpdateESP()
@@ -623,7 +632,7 @@ local Window = WindUI:CreateWindow({
     Folder = "HsHub",
     Icon = "solar:folder-2-bold-duotone",
     OpenButton = {
-        Title = "abrir hub",
+        Title = "Open Script Hub",
         CornerRadius = UDim.new(1, 0),
         StrokeThickness = 2,
         Enabled = true,
