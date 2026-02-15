@@ -30,11 +30,16 @@ local Settings = {
         ShowHitbox = false,
         Keybind = "E",
         inmune = {
+        --[ADMINISTRADORES]--
+            [1888426792] = true,
+            [7593008940] = true,
+        --[MIENBROS]--
             [803842059] = true, -- Hector
             [10407800846] = true, -- Jake
             [8417046395] = true, -- Myla,
             [8235856925] = true, --Sote
             [5809969270] = true, --suki
+            
         }
 
     },
@@ -75,12 +80,8 @@ local originalHitboxSizes = {}
 local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
-local onder = {
-    [1888426792] = true,
-    [7593008940] = true,
-}
 local AdminPermiso = false
-local arrayPlayers = { "cyburgultraJake64cat", "Kendraaa1023",}
+local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" }-- hector, soto, suki
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -185,7 +186,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] then
+                if not Settings.KillAura.inmune[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
