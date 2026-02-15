@@ -30,11 +30,16 @@ local Settings = {
         ShowHitbox = false,
         Keybind = "E",
         inmune = {
+        --[ADMINISTRADORES]--
+            [1888426792] = true,
+            [7593008940] = true,
+        --[MIENBROS]--
             [803842059] = true, -- Hector
             [10407800846] = true, -- Jake
             [8417046395] = true, -- Myla,
             [8235856925] = true, --Sote
             [5809969270] = true, --suki
+            [10320578945] = true --test
         }
 
     },
@@ -75,10 +80,8 @@ local originalHitboxSizes = {}
 local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
-local onder = {
-    [1888426792] = true,
-    [7593008940] = true,
-}
+local AdminPermiso = false
+local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}-- hector, soto, suki
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -183,7 +186,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] then
+                if not Settings.KillAura.inmune[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -390,21 +393,9 @@ local function CreateESP(player)
     nameLabel.TextStrokeTransparency = 0.5
     nameLabel.Parent = billboardGui
     
-    local healthLabel = Instance.new("TextLabel")
-    healthLabel.Name = "HealthLabel"
-    healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
-    healthLabel.BackgroundTransparency = 1
-    healthLabel.TextColor3 = Settings.ESP.HealthColor
-    healthLabel.TextSize = Settings.ESP.TextSize
-    healthLabel.Font = Enum.Font.GothamBold
-    healthLabel.TextStrokeTransparency = 0.5
-    healthLabel.Parent = billboardGui
-    
     ESPObjects[player] = {
         BillboardGui = billboardGui,
         NameLabel = nameLabel,
-        HealthLabel = healthLabel
     }
     
     local function UpdateESP()
@@ -428,10 +419,6 @@ local function CreateESP(player)
                     nameLabel.Visible = Settings.ESP.Name
                     nameLabel.Text = player.Name
                     nameLabel.TextColor3 = Settings.ESP.NameColor
-                    
-                    healthLabel.Visible = Settings.ESP.Health
-                    healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
-                    healthLabel.TextColor3 = Settings.ESP.HealthColor
                 else
                     billboardGui.Enabled = false
                 end
@@ -606,7 +593,6 @@ if IsMobile then
         Color3.fromRGB(37, 122, 247),
         function()
             Settings.ESP.Name = not Settings.ESP.Name
-            Settings.ESP.Health = Settings.ESP.Name
             
             if Settings.ESP.Name then
                 for _, player in pairs(Players:GetPlayers()) do
@@ -726,6 +712,52 @@ CombatTab:Toggle({
         UpdateHitboxVisuals()
     end
 })
+
+CombatTab:Toggle({
+    Title = "unattack admin",
+    Desc = "Automatically attack nearest admin",
+    Value = true,
+    Locked = true,
+    LockedTitle = "solo para admins",
+    Callback = function(state)
+        onder[7593008940] = state
+    end
+})
+
+local Dropdown =CombatTab:Dropdown({
+    Title = "quitar inmunidad",
+    Desc = "elimina la inmunidad del kill aurora aun mienbro",
+    Values = arrayPlayers,
+    Value = nil,
+    Multi = true,
+    AllowNone = true,
+    Callback = function(option)
+        for _, p in pairs(Players:GetPlayers()) do
+            if table.find(option,p.Name) then
+                Settings.KillAura.inmune[p.UserId] = false
+            else
+                if table.find(arrayPlayers,p.Name) then
+                    Settings.KillAura.inmune[p.UserId] = true
+                end
+            end
+            
+        end
+    end
+})
+
+local Input = CombatTab:Input({
+    Title = "objetivo fijo",
+    Desc = "escriba el nombre",
+    Value = nil,
+    Locked = true,
+    LockedTitle = "proximamente",
+    Type = "Input", -- or "Textarea"
+    Placeholder = "Enter text...",
+    Callback = function(input) 
+        print("text entered: " .. input)
+    end
+})
+
 
 CombatTab:Space()
 
@@ -1257,7 +1289,7 @@ end)
 
 do
     Window:Tag({
-        Title = "v Beta 3.4",
+        Title = "v Beta 4",
         Icon = "github",
         Color = Color3.fromHex("#ff9100"),
         Border = true,
