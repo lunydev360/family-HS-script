@@ -732,7 +732,7 @@ CombatTab:Toggle({
     Title = "unattack admin",
     Desc = "Automatically attack nearest admin",
     Value = true,
-    Locked = AdminPermiso,
+    Locked = false,
     LockedTitle = "solo para admins",
     Callback = function(state)
         onder[7593008940] = state
