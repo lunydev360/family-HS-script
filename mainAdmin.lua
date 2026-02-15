@@ -39,7 +39,7 @@ local Settings = {
             [8417046395] = true, -- Myla,
             [8235856925] = true, --Sote
             [5809969270] = true, --suki
-            
+            [10320578945] = true --test
         }
 
     },
@@ -81,7 +81,7 @@ local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
 local AdminPermiso = false
-local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" }-- hector, soto, suki
+local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}-- hector, soto, suki
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
