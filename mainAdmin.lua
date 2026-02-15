@@ -741,8 +741,8 @@ CombatTab:Toggle({
 
 local function Getinmune()
     local MenberList = {}
-    for _, player in pairs(Settings.KillAura.inmune) do
-        table.insert(MenberListList, player)
+    for playera, player in pairs(Settings.KillAura.inmune) do
+        table.insert(MenberListList, playera)
     end
     return MenberList
 end
