@@ -740,20 +740,24 @@ CombatTab:Toggle({
 })
 
 local function Getinmune()
-    local playersList = {}
+    local MenberList = {}
     for playera, player in pairs(Settings.KillAura.inmune) do
         table.insert(playersList, playera)
     end
-    return playersList
+    return MenberList
 end
 
-CombatTab:Dropdown({
-    Title = "Select Player",
-    Desc = "Choose a player to teleport to",
+local Dropdown = CombatTab:Dropdown({
+    Title = "Dropdown (Multi)",
+    Desc = "Dropdown Description",
     Values = Getinmune(),
     Value = nil,
+    Multi = true,
     AllowNone = true,
-    Callback = function(selectedName) end
+    Callback = function(option) 
+        -- option is a table: { "Category A", "Category B" }
+        print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
+    end
 })
 
 
