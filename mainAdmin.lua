@@ -81,10 +81,6 @@ local onder = {
 }
 local AdminPermiso = false
 local arrayPlayers = { "cyburgultraJake64cat", "Kendraaa1023",}
-local ObjetiveKillAura = {
-    Enabled = false
-    TargetPlayer = ""
-}
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -189,19 +185,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] and not ObjetiveKillAura.Enabled then
-                    local hum = p.Character.Humanoid
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hum.Health > 0 and hrp then
-                        local dist = (hrp.Position - myHRP.Position).Magnitude
-                        if dist <= closestDist then
-                            closestDist = dist
-                            closest = p
-                        end
-                    end
-                end
-
-                if ObjetiveKillAura.enabled and not onder[p.UserId] and ObjetiveKillAura.TargetPlayer == p.Name then
+                if not onder[p.UserId] and not Settings.KillAura.inmune[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -434,10 +418,6 @@ local function CreateESP(player)
                     nameLabel.Visible = Settings.ESP.Name
                     nameLabel.Text = player.Name
                     nameLabel.TextColor3 = Settings.ESP.NameColor
-                    
-                    healthLabel.Visible = Settings.ESP.Health
-                    healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
-                    healthLabel.TextColor3 = Settings.ESP.HealthColor
                 else
                     billboardGui.Enabled = false
                 end
@@ -612,7 +592,6 @@ if IsMobile then
         Color3.fromRGB(37, 122, 247),
         function()
             Settings.ESP.Name = not Settings.ESP.Name
-            Settings.ESP.Health = Settings.ESP.Name
             
             if Settings.ESP.Name then
                 for _, player in pairs(Players:GetPlayers()) do
@@ -766,10 +745,9 @@ local Dropdown =CombatTab:Dropdown({
 })
 
 local Input = CombatTab:Input({
-    Title = "Input",
-    Desc = "Input Description",
-    Value = "Default value",
-    InputIcon = "bird",
+    Title = "objetivo fijo",
+    Desc = "escriba el nombre",
+    Value = nil,
     Type = "Input", -- or "Textarea"
     Placeholder = "Enter text...",
     Callback = function(input) 
