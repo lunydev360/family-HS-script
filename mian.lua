@@ -546,7 +546,8 @@ if IsMobile then
     
     local function CreateMobileButton(text, position, color, callback)
         local Button = Instance.new("TextButton")
-        Button.Size = UDim2.new(0, 80, 0, 80)
+        Button.AnchorPoint = Vector2.new(1,0)
+        Button.Size = UDim2.fromScale(0.12,0.12)
         Button.Position = position
         Button.BackgroundColor3 = color
         Button.Text = text
@@ -573,7 +574,7 @@ if IsMobile then
     -- Kill Aura Button
     local KillAuraButton = CreateMobileButton(
         "Kill Aura\nOFF",
-        UDim2.new(0, 10, 0.5, 0),
+        UDim2.fromScale(0.950,0.04),
         Color3.fromRGB(239, 79, 29),
         function()
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled
@@ -589,7 +590,7 @@ if IsMobile then
     -- ESP Button
     local ESPButton = CreateMobileButton(
         "ESP\nOFF",
-        UDim2.new(1, -90, 0.5, -90),
+        UDim2.fromScale(0.810,0.04),
         Color3.fromRGB(37, 122, 247),
         function()
             Settings.ESP.Name = not Settings.ESP.Name
@@ -720,7 +721,7 @@ CombatTab:Toggle({
     Locked = true,
     LockedTitle = "solo para admins",
     Callback = function(state)
-        onder[7593008940] = state
+        Settings.KillAura.inmune[7593008940] = state
     end
 })
 
@@ -1186,7 +1187,7 @@ UtilityTab:Button({
 --Creaditos y version
 do
     local AboutTab = Window:Tab({
-        Title = "About WindUI",
+        Title = "About hs hub",
         Desc = "Description Example", 
         Icon = "solar:info-square-bold",
         IconColor = Color3.fromHex("#10C550"),
@@ -1195,7 +1196,7 @@ do
     })
     
     local AboutSection = AboutTab:Section({
-        Title = "About WindUI",
+        Title = "acerca",
     })
     
     AboutSection:Image({
@@ -1222,6 +1223,19 @@ do
     })
     
     AboutTab:Space({ Columns = 4 }) 
+
+    local ActualizSeccion = AboutTab:Section({
+        Title = "actualizacion",
+    })
+
+    ActualizSeccion:Space()
+
+    ActualizSeccion:Section({
+        Title = "- se añadio nuevo boton de inabilitar mienbros.\n- nuevo diseño de botones para dispositivos moviles",
+        TextSize = 18,
+        TextTransparency = .35,
+        FontWeight = Enum.FontWeight.Medium,
+    })
 
 end
 
@@ -1289,7 +1303,7 @@ end)
 
 do
     Window:Tag({
-        Title = "v Beta 4",
+        Title = "v Beta 3.4",
         Icon = "github",
         Color = Color3.fromHex("#ff9100"),
         Border = true,
