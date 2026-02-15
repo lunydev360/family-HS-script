@@ -739,27 +739,48 @@ CombatTab:Toggle({
     end
 })
 
-local function dictToArray(dict)
-    local array = []
-    for key in pairs(dict) do
-        table.insert(array, key)
-    end
-    return array
-end
-
-
 local Dropdown = CombatTab:Dropdown({
-    Title = "Dropdown (Multi)",
-    Desc = "Dropdown Description",
-    Values = dictToArray(Settings.KillAura.inmune),
-    Value = nil,
+    Title = "Advanced Dropdown 2 (example)",
+    Values = {
+        {
+            Title = "New file",
+            Desc = "Create a new file",
+            Icon = "file-plus",
+            Callback = function() 
+                print("Clicked 'New File'")
+            end
+        },
+        {
+            Title = "Copy link",
+            Desc = "Copy the file link",
+            Icon = "copy",
+            Callback = function() 
+                print("Clicked 'Copy link'")
+            end
+        },
+        {
+            Title = "Edit file",
+            Desc = "Allows you to edit the file",
+            Icon = "file-pen",
+            Callback = function() 
+                print("Clicked 'Edit file'")
+            end
+        },
+        { Type = "Divider", },
+        {
+            Title = "Delete file",
+            Desc = "Permanently delete the file",
+            Icon = "trash",
+            Callback = function() 
+                print("Clicked 'Delete file'")
+            end
+        },
+    },
+        Value = { "Category A" },
     Multi = true,
     AllowNone = true,
-    Callback = function(option) 
-        -- option is a table: { "Category A", "Category B" }
-        print(option)
-    end
 })
+    
 
 CombatTab:Space()
 
