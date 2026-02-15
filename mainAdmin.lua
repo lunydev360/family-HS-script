@@ -770,21 +770,8 @@ local Input = CombatTab:Input({
     Value = "",
     Type = "Input", -- or "Textarea"
     Placeholder = "Enter text...",
-    Callback = function(text) 
-        local search = string.lower(text)
-
-        if not search == "" then
-            ObjetiveKillAura.Enabled = true
-
-            for _,player in pairs(players:GetPlayers()) do
-                local playername = string.lower(player.Name)
-                if string.sub(playername,1 ,#search) == search then
-                    ObjetiveKillAura.TargetPlayer = player.Name
-                end
-            end
-        else
-            ObjetiveKillAura.Enabled = false
-        end
+    Callback = function(text)
+        print(text)
     end
 })
 
