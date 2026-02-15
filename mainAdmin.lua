@@ -739,13 +739,17 @@ CombatTab:Toggle({
     end
 })
 
-local Tedowd = CombatTab:Dropdown({
-    Title = "Select Player",
-    Desc = "Choose a player to teleport to",
-    Values = GetPlayersList(),
-    Value = nil,
+local Dropdown = Tab:Dropdown({
+    Title = "Dropdown (Multi)",
+    Desc = "Dropdown Description",
+    Values = { "cyburgultraJake64cat", "Kendraaa1023",},
+    Value = Values,
+    Multi = true,
     AllowNone = true,
-    Callback = function(selectedName) end
+    Callback = function(option) 
+        -- option is a table: { "Category A", "Category B" }
+        print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
+    end
 })
     
 
