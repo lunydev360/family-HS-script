@@ -789,7 +789,7 @@ do
         Values = {
             "Привет", "Hello", "Сәлем", "Bonjour"
         },
-        Value = nil,
+        Value = {"Hello"},
         AllowNone = true,
         Multi = true,
         Callback = function(selectedValue)
