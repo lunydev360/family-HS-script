@@ -732,7 +732,7 @@ local function Getinmune()
     local playersList = {}
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer then
-            if Settings.KillAura.inmune[player] ~= nill then
+            if Settings.KillAura.inmune[player.UserId] ~= nill then
                 table.insert(playersList, player.Name)
             end
         end
