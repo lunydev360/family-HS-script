@@ -762,7 +762,26 @@ local Dropdown =CombatTab:Dropdown({
         end
     end
 })
-    
+
+local function GetMenbersList()
+    local playersList = {}
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            table.insert(playersList, player.Name)
+        end
+    end
+    return playersList
+end
+
+local cjDropdown = CombatTab:Dropdown({
+    Title = "Select Player",
+    Desc = "Choose a player to teleport to",
+    Values = GetMenbertsList(),
+    Value = nil,
+    AllowNone = true,
+    Callback = function(selectedName) end
+})
+
 
 CombatTab:Space()
 
