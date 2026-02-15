@@ -739,7 +739,7 @@ CombatTab:Toggle({
     end
 })
 
-local Dropdown = Tab:Dropdown({
+local Dropdown =CombatTab:Dropdown({
     Title = "Dropdown (Multi)",
     Desc = "Dropdown Description",
     Values = { "cyburgultraJake64cat", "Kendraaa1023",},
