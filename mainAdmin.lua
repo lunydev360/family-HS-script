@@ -79,7 +79,7 @@ local onder = {
     [1888426792] = true,
     [7593008940] = true,
 }
-local AdminPermiso = true
+local AdminPermiso = false
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
