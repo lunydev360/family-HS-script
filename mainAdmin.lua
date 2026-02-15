@@ -742,8 +742,8 @@ CombatTab:Toggle({
 local Dropdown = CombatTab:Dropdown({
     Title = "Dropdown (Multi)",
     Desc = "Dropdown Description",
-    Values = {"soto","myla","hector","suki"},
-    Value = nil,
+    Values = { "Category A", "Category B", "Category C" },
+    Value = { "Category A" },
     Multi = true,
     AllowNone = true,
     Callback = function(option) 
@@ -751,7 +751,6 @@ local Dropdown = CombatTab:Dropdown({
         print("Categories selected: " .. game:GetService("HttpService"):JSONEncode(option)) 
     end
 })
-
 
 CombatTab:Space()
 
