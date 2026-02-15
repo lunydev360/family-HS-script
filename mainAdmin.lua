@@ -739,6 +739,24 @@ CombatTab:Toggle({
     end
 })
 
+local function Getinmune()
+    local playersList = {}
+    for player1, player in pairs(Settings,KillAura.inmune) do
+        table.insert(playersList, player1)
+    end
+    return playersList
+end
+
+CombatTab:Dropdown({
+    Title = "Select Player",
+    Desc = "Choose a player to teleport to",
+    Values = Getinmune(),
+    Value = Getinmune(),
+    AllowNone = true,
+    Callback = function(selectedName) end
+})
+
+
 CombatTab:Space()
 
 CombatTab:Keybind({
