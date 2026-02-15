@@ -751,7 +751,7 @@ CombatTab:Dropdown({
     Title = "Select Player",
     Desc = "Choose a player to teleport to",
     Values = Getinmune(),
-    Value = Getinmune(),
+    Value = nil,
     AllowNone = true,
     Callback = function(selectedName) end
 })
