@@ -612,6 +612,7 @@ if IsMobile then
         Color3.fromRGB(37, 122, 247),
         function()
             Settings.ESP.Name = not Settings.ESP.Name
+            Settings.ESP.Health = Settings.ESP.Name
             
             if Settings.ESP.Name then
                 for _, player in pairs(Players:GetPlayers()) do
@@ -765,13 +766,14 @@ local Dropdown =CombatTab:Dropdown({
 })
 
 local Input = CombatTab:Input({
-    Title = "objetivo fijo",
-    Desc = "escriba el nombre",
-    Value = "",
+    Title = "Input",
+    Desc = "Input Description",
+    Value = "Default value",
+    InputIcon = "bird",
     Type = "Input", -- or "Textarea"
     Placeholder = "Enter text...",
-    Callback = function(text)
-        print(text)
+    Callback = function(input) 
+        print("text entered: " .. input)
     end
 })
 
