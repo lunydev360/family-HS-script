@@ -219,16 +219,6 @@ local function UpdateHitboxVisuals()
     end
 end
 
--- Speed Function
-local function UpdateSpeed()
-    local character = LocalPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChild("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = Settings.Speed.Enabled and Settings.Speed.Value or 16
-        end
-    end
-end
 
 -- Fly Functions
 local function StartFly()
@@ -483,6 +473,20 @@ for _, player in pairs(Players:GetPlayers()) do
     end
 end
 
+-- quitar ui de roblox
+local function ViewScreen(switch)
+
+    local player = game.Players.LocalPlayer
+    local gui = player.PlayerGui:FindFirstChild("ScreenGui")
+
+    if gui then
+        gui.Enabled = switch
+    end
+
+end
+
+
+
 -- Mobile Button UI
 local MobileUI = nil
 if IsMobile then
@@ -670,6 +674,7 @@ CombatTab:Toggle({
     LockedTitle = "solo para admins",
     Callback = function(state)
         Settings.KillAura.inmune[7593008940] = state
+        onder[7593008940] = state
     end
 })
 
@@ -858,6 +863,17 @@ VisualsTab:Toggle({
             end
         end
         UpdateAllESP()
+    end
+})
+
+VisualsTab:Toggle({
+    Title = "interfaz",
+    Desc = "oculta o activa la interfaz",
+    Value = true,
+    Locked = false,
+    LockedTitle = "solo para admins",
+    Callback = function(state)
+        ViewScreen(state)
     end
 })
 VisualsTab:Space()
