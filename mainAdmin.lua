@@ -189,16 +189,13 @@ local function StartKillAura()
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
                 if EnabledObjetive and p.userId == objetiveplayer.UserId then
-                    if not objetiveplayer.Name == "dep0700" and not objetiveplayer.Name == "Foxcito_xd" then
-                        print("okey")
-                        local hum = p.Character.Humanoid
-                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                        if hum.Health > 0 and hrp then
-                            local dist = (hrp.Position - myHRP.Position).Magnitude
-                            if dist <= closestDist then
-                                closestDist = dist
-                                closest = p
-                            end
+                    local hum = p.Character.Humanoid
+                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                    if hum.Health > 0 and hrp then
+                        local dist = (hrp.Position - myHRP.Position).Magnitude
+                        if dist <= closestDist then
+                            closestDist = dist
+                            closest = p
                         end
                     end
                 end
