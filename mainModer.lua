@@ -693,8 +693,6 @@ local Dropdown =CombatTab:Dropdown({
     Values = arrayPlayers,
     Value = nil,
     Multi = true,
-    Locked = true,
-    LockedTitle = "solo moder",
     AllowNone = true,
     Callback = function(option)
         for _, p in pairs(Players:GetPlayers()) do
