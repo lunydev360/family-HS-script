@@ -754,8 +754,14 @@ local Input = CombatTab:Input({
     LockedTitle = "proximamente",
     Type = "Input", -- or "Textarea"
     Placeholder = "Enter text...",
-    Callback = function(input) 
-        print("text entered: " .. input)
+    Callback = function(input)
+
+        local text = input:lower()
+
+        if text == "" then
+            return
+        end
+        print(text)
     end
 })
 
