@@ -37,7 +37,7 @@ local Settings = {
             [8363844008] = true, --miu
             [7358542303] = true, --kyu
             [7182786234] = true, --angel
-            [9126487539] = true --goddes pe
+            [9126487539] = true, --goddes pe
         --[BOTS Y TESTER]--
             [10521014710] = true, --BOT Hector
             [10320578945] = true, --test
