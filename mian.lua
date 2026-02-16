@@ -36,7 +36,7 @@ local Settings = {
         --[MIENBROS]--
             [803842059] = true, -- Hector
             [10407800846] = true, -- Jake
-            [8417046395] = true, -- Myla,
+            [8417046395] = true, -- Myla
             [8235856925] = true, --Sote
             [5809969270] = true, --suki
             [10320578945] = true --test
@@ -81,7 +81,13 @@ local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
 local AdminPermiso = false
-local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}-- hector, soto, suki
+local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}
+local onder = {
+    [1888426792] = true,
+    [7593008940] = true,
+}
+local objetiveplayer
+local EnabledObjetive = false
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -186,7 +192,19 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if not Settings.KillAura.inmune[p.UserId] then
+                if EnabledObjetive and p.userId == objetiveplayer.UserId and not onder[p.UserId] then
+                    local hum = p.Character.Humanoid
+                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                    if hum.Health > 0 and hrp then
+                        local dist = (hrp.Position - myHRP.Position).Magnitude
+                        if dist <= closestDist then
+                            closestDist = dist
+                            closest = p
+                        end
+                    end
+                end
+
+                if not Settings.KillAura.inmune[p.UserId] and not EnabledObjetive then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -750,12 +768,34 @@ local Input = CombatTab:Input({
     Title = "objetivo fijo",
     Desc = "escriba el nombre",
     Value = nil,
-    Locked = true,
-    LockedTitle = "proximamente",
     Type = "Input", -- or "Textarea"
-    Placeholder = "Enter text...",
-    Callback = function(input) 
-        print("text entered: " .. input)
+    Placeholder = "nombra un usuario",
+    Callback = function(input)
+
+        local text = input:lower()
+
+        if text == "" then
+            EnabledObjetive = false
+            return
+        end
+        for _,p in pairs(Players:GetPlayers()) do
+            if p.Name:lower():find(text) then
+                EnabledObjetive = true
+                objetiveplayer = p
+                WindUI:Notify({
+                    Title = "selection player",
+                    Content = "as seleccionado a: " .. objetiveplayer.Name .. " con exito",
+                    Icon = "solar:check-circle-bold",
+                    Duration = 5,})
+                if onder[p.UserId] then
+                    WindUI:Notify({
+                        Title = "selection player",
+                        Content = "el jugador que deseastes seleccionar no sera afectado",
+                        Icon = "solar:check-circle-bold",
+                        Duration = 5,})
+                end
+            end
+        end
     end
 })
 
@@ -1231,7 +1271,7 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se añadio nuevo boton de inabilitar mienbros.\n- nuevo diseño de botones para dispositivos moviles",
+        Title = "- se agrego el objetivo fijado (esto aplica con los mienbros a exepcion de los adminss)",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,
@@ -1303,7 +1343,7 @@ end)
 
 do
     Window:Tag({
-        Title = "v Beta 3.4",
+        Title = "v 1.0",
         Icon = "github",
         Color = Color3.fromHex("#ff9100"),
         Border = true,

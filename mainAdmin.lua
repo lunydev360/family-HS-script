@@ -1271,7 +1271,7 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se añadio nuevo boton de inabilitar mienbros.\n- nuevo diseño de botones para dispositivos moviles",
+        Title = "- se agrego el objetivo fijado (esto aplica con los mienbros a exepcion de los adminss)",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,
