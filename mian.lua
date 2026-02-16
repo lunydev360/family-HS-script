@@ -14,15 +14,6 @@ local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footag
 
 -- Settings
 local Settings = {
-    Aimbot = {
-        Enabled = false,
-        FOV = 100,
-        Smoothness = 0.1,
-        VisibleCheck = true,
-        TeamCheck = true,
-        TargetPart = "Head",
-        Keybind = "E"
-    },
     KillAura = {
         Enabled = false,
         Range = 15,
@@ -98,67 +89,6 @@ pcall(function()
         :WaitForChild("RF")
         :WaitForChild("Hit")
 end)
-
--- Aimbot Functions
-local function GetClosestPlayer()
-    local ClosestDistance = Settings.Aimbot.FOV
-    local ClosestPlayer = nil
-    
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character then
-            local character = player.Character
-            local humanoid = character:FindFirstChild("Humanoid")
-            local targetPart = character:FindFirstChild(Settings.Aimbot.TargetPart)
-            
-            if humanoid and humanoid.Health > 0 and targetPart then
-                if Settings.Aimbot.TeamCheck and player.Team == LocalPlayer.Team then
-                    continue
-                end
-                
-                local screenPos, onScreen = Camera:WorldToViewportPoint(targetPart.Position)
-                
-                if onScreen then
-                    local mousePos = UserInputService:GetMouseLocation()
-                    local distance = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
-                    
-                    if distance < ClosestDistance then
-                        if Settings.Aimbot.VisibleCheck then
-                            local ray = Ray.new(Camera.CFrame.Position, (targetPart.Position - Camera.CFrame.Position).Unit * 1000)
-                            local part = Workspace:FindPartOnRayWithIgnoreList(ray, {LocalPlayer.Character})
-                            
-                            if part and part:IsDescendantOf(character) then
-                                ClosestDistance = distance
-                                ClosestPlayer = player
-                            end
-                        else
-                            ClosestDistance = distance
-                            ClosestPlayer = player
-                        end
-                    end
-                end
-            end
-        end
-    end
-    
-    return ClosestPlayer
-end
-
-local function AimbotLoop()
-    if not Settings.Aimbot.Enabled then return end
-    
-    local target = GetClosestPlayer()
-    if target and target.Character then
-        local targetPart = target.Character:FindFirstChild(Settings.Aimbot.TargetPart)
-        if targetPart then
-            local targetPos = targetPart.Position
-            local cameraPos = Camera.CFrame.Position
-            local direction = (targetPos - cameraPos).Unit
-            
-            local newCFrame = CFrame.new(cameraPos, cameraPos + direction)
-            Camera.CFrame = Camera.CFrame:Lerp(newCFrame, Settings.Aimbot.Smoothness)
-        end
-    end
-end
 
 -- Kill Aura Functions
 local function StartKillAura()
@@ -289,16 +219,6 @@ local function UpdateHitboxVisuals()
     end
 end
 
--- Speed Function
-local function UpdateSpeed()
-    local character = LocalPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChild("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = Settings.Speed.Enabled and Settings.Speed.Value or 16
-        end
-    end
-end
 
 -- Fly Functions
 local function StartFly()
@@ -553,6 +473,20 @@ for _, player in pairs(Players:GetPlayers()) do
     end
 end
 
+-- quitar ui de roblox
+local function ViewScreen(switch)
+
+    local player = game.Players.LocalPlayer
+    local gui = player.PlayerGui:FindFirstChild("ScreenGui")
+
+    if gui then
+        gui.Enabled = switch
+    end
+
+end
+
+
+
 -- Mobile Button UI
 local MobileUI = nil
 if IsMobile then
@@ -740,6 +674,7 @@ CombatTab:Toggle({
     LockedTitle = "solo para admins",
     Callback = function(state)
         Settings.KillAura.inmune[7593008940] = state
+        onder[7593008940] = state
     end
 })
 
@@ -844,6 +779,17 @@ CombatTab:Toggle({
     end
 })
 
+CombatTab:Space()
+
+CombatTab:Keybind({
+    Title = "cambiar de modo",
+    Desc = "Toggle modo ataque/no",
+    Value = "E",
+    Callback = function(key)
+        print(key)
+    end
+})
+
 -- Movement Tab
 local MovementTab = Window:Tab({
     Title = "Movement",
@@ -852,36 +798,6 @@ local MovementTab = Window:Tab({
     IconShape = "Square",
     Border = true,
 })
-
-MovementTab:Section({
-    Title = "Speed Settings",
-    TextSize = 18,
-})
-
-MovementTab:Toggle({
-    Title = "Enable Speed",
-    Value = false,
-    Callback = function(state)
-        Settings.Speed.Enabled = state
-        UpdateSpeed()
-    end
-})
-
-MovementTab:Slider({
-    Title = "Speed Value",
-    Step = 1,
-    Value = {
-        Min = 16,
-        Max = 200,
-        Default = 16,
-    },
-    Callback = function(value)
-        Settings.Speed.Value = value
-        UpdateSpeed()
-    end
-})
-
-MovementTab:Space()
 
 MovementTab:Section({
     Title = "Fly Settings",
@@ -958,6 +874,21 @@ VisualsTab:Toggle({
             end
         end
         UpdateAllESP()
+    end
+})
+
+VisualsTab:Toggle({
+    Title = "interfaz",
+    Desc = "oculta o activa la interfaz",
+    Value = true,
+    Locked = false,
+    LockedTitle = "solo para admins",
+    Callback = function(state)
+        local player = game.Players.LocalPlayer
+        local gui = player.PlayerGui:FindFirstChild("ScreenGui")
+        if gui then
+            gui.Enabled = switch
+        end
     end
 })
 VisualsTab:Space()
@@ -1280,11 +1211,6 @@ do
 end
 
 
--- Main Loop
-RunService.Heartbeat:Connect(function()
-    AimbotLoop()
-end)
-
 -- Keybind Handler (PC Only)
 if not IsMobile then
     UserInputService.InputBegan:Connect(function(input, gameProcessed)
@@ -1343,7 +1269,7 @@ end)
 
 do
     Window:Tag({
-        Title = "v 1.0",
+        Title = "V 1.5",
         Icon = "github",
         Color = Color3.fromHex("#ff9100"),
         Border = true,
