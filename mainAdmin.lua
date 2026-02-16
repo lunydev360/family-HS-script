@@ -82,6 +82,10 @@ local FlyConnection, FlyBV, FlyBG
 local HitRemote
 local AdminPermiso = false
 local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}
+local onder = {
+    [1888426792] = true,
+    [7593008940] = true,
+}
 local objetiveplayer
 local EnabledObjetive = false
 -- Try to find Hit remote
@@ -188,7 +192,7 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if EnabledObjetive and p.userId == objetiveplayer.UserId then
+                if EnabledObjetive and p.userId == objetiveplayer.UserId and not onder[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
@@ -764,10 +768,8 @@ local Input = CombatTab:Input({
     Title = "objetivo fijo",
     Desc = "escriba el nombre",
     Value = nil,
-    Locked = false,
-    LockedTitle = "proximamente",
     Type = "Input", -- or "Textarea"
-    Placeholder = "Enter text...",
+    Placeholder = "nombra un usuario",
     Callback = function(input)
 
         local text = input:lower()
@@ -780,7 +782,18 @@ local Input = CombatTab:Input({
             if p.Name:lower():find(text) then
                 EnabledObjetive = true
                 objetiveplayer = p
-                print(objetiveplayer.Name)
+                WindUI:Notify({
+                    Title = "selection player",
+                    Content = "as seleccionado a: " .. objetiveplayer.Name .. " con exito",
+                    Icon = "solar:check-circle-bold",
+                    Duration = 5,})
+                if onder[p.UserId] then
+                    WindUI:Notify({
+                        Title = "selection player",
+                        Content = "el jugador que deseastes seleccionar no sera afectado",
+                        Icon = "solar:check-circle-bold",
+                        Duration = 5,})
+                end
             end
         end
     end
