@@ -30,7 +30,16 @@ local Settings = {
             [8417046395] = true, -- Myla
             [8235856925] = true, --Sote
             [5809969270] = true, --suki
-            [10320578945] = true --test
+            [5084953532] = true, --artories
+            [8630263721] = true, --Hector 2
+            [4198767342] = true, -- ale
+            [8507262086] = true, -- kaiser
+            [8363844008] = true, --miu
+            [7358542303] = true, --kyu
+            [7182786234] = true, --angel
+        --[BOTS Y TESTER]--
+            [10521014710] = true, --BOT Hector
+            [10320578945] = true, --test
         }
 
     },
@@ -72,7 +81,7 @@ local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
 local AdminPermiso = false
-local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}
+local arrayPlayers = { "nsndkskd18","Sylunh44","Kendraaa1023","pynkskullz","tzwgkee","Isabelloca_sando2023","jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev", "enrique1746708","KingMiata20","YDARKCRAKY"}
 local onder = {
     [1888426792] = true,
     [7593008940] = true,
@@ -670,7 +679,7 @@ CombatTab:Toggle({
     Title = "unattack admin",
     Desc = "Automatically attack nearest admin",
     Value = true,
-    Locked = false,
+    Locked = true,
     LockedTitle = "solo para admins",
     Callback = function(state)
         Settings.KillAura.inmune[7593008940] = state
