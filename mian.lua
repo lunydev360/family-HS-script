@@ -679,7 +679,7 @@ CombatTab:Toggle({
     Title = "unattack admin",
     Desc = "Automatically attack nearest admin",
     Value = true,
-    Locked = true,
+    Locked = false,
     LockedTitle = "solo para admins",
     Callback = function(state)
         Settings.KillAura.inmune[7593008940] = state
@@ -693,8 +693,8 @@ local Dropdown =CombatTab:Dropdown({
     Values = arrayPlayers,
     Value = nil,
     Multi = true,
-    Locked = true,
-    LockedTitle = "solo moder",
+    Locked = false,
+    LockedTitle = "solo moderadores",
     AllowNone = true,
     Callback = function(option)
         for _, p in pairs(Players:GetPlayers()) do
@@ -892,8 +892,6 @@ VisualsTab:Toggle({
     Title = "interfaz",
     Desc = "oculta o activa la interfaz",
     Value = true,
-    Locked = false,
-    LockedTitle = "solo para admins",
     Callback = function(state)
         local player = game.Players.LocalPlayer
         local gui = player.PlayerGui:FindFirstChild("ScreenGui")
