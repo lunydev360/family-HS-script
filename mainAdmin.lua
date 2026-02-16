@@ -766,7 +766,7 @@ local Input = CombatTab:Input({
         for _,p in pairs(Players:GetPlayers()) do
             if p.Name:lower():find(text) then
                 objetiveplayer = p
-                print(p.DisplayName)
+                print(objetiveplayer.DisplayName)
             end
         end
     end
