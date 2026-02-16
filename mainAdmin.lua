@@ -779,6 +779,17 @@ CombatTab:Toggle({
     end
 })
 
+CombatTab:Space()
+
+CombatTab:Keybind({
+    Title = "cambiar de modo",
+    Desc = "Toggle modo ataque/no",
+    Value = "E",
+    Callback = function(key)
+        print(key)
+    end
+})
+
 -- Movement Tab
 local MovementTab = Window:Tab({
     Title = "Movement",
@@ -873,7 +884,11 @@ VisualsTab:Toggle({
     Locked = false,
     LockedTitle = "solo para admins",
     Callback = function(state)
-        ViewScreen(state)
+        local player = game.Players.LocalPlayer
+        local gui = player.PlayerGui:FindFirstChild("ScreenGui")
+        if gui then
+            gui.Enabled = switch
+        end
     end
 })
 VisualsTab:Space()
