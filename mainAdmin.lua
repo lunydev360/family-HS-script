@@ -202,7 +202,7 @@ local function StartKillAura()
                     end
                 end
 
-                if not Settings.KillAura.inmune[p.UserId] then
+                if not Settings.KillAura.inmune[p.UserId] and not EnabledObjetive then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                     if hum.Health > 0 and hrp then
