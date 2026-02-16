@@ -188,6 +188,20 @@ local function StartKillAura()
         
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
+                if EnabledObjetive and p.userId == objetiveplayer.UserId then
+                    if not objetiveplayer.UserId == 1888426792 and objetiveplayer.UserId == 7593008940 then
+                        local hum = p.Character.Humanoid
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hum.Health > 0 and hrp then
+                            local dist = (hrp.Position - myHRP.Position).Magnitude
+                            if dist <= closestDist then
+                                closestDist = dist
+                                closest = p
+                            end
+                        end
+                    end
+                end
+
                 if not Settings.KillAura.inmune[p.UserId] then
                     local hum = p.Character.Humanoid
                     local hrp = p.Character:FindFirstChild("HumanoidRootPart")
@@ -761,12 +775,13 @@ local Input = CombatTab:Input({
         local text = input:lower()
 
         if text == "" then
+            EnabledObjetive = false
             return
         end
         for _,p in pairs(Players:GetPlayers()) do
             if p.Name:lower():find(text) then
+                EnabledObjetive = true
                 objetiveplayer = p
-                print(objetiveplayer.DisplayName)
             end
         end
     end
