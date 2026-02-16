@@ -854,36 +854,6 @@ local MovementTab = Window:Tab({
 })
 
 MovementTab:Section({
-    Title = "Speed Settings",
-    TextSize = 18,
-})
-
-MovementTab:Toggle({
-    Title = "Enable Speed",
-    Value = false,
-    Callback = function(state)
-        Settings.Speed.Enabled = state
-        UpdateSpeed()
-    end
-})
-
-MovementTab:Slider({
-    Title = "Speed Value",
-    Step = 1,
-    Value = {
-        Min = 16,
-        Max = 200,
-        Default = 16,
-    },
-    Callback = function(value)
-        Settings.Speed.Value = value
-        UpdateSpeed()
-    end
-})
-
-MovementTab:Space()
-
-MovementTab:Section({
     Title = "Fly Settings",
     TextSize = 18,
 })
