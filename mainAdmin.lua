@@ -189,7 +189,7 @@ local function StartKillAura()
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
                 if EnabledObjetive and p.userId == objetiveplayer.UserId then
-                    if not objetiveplayer.UserId == 1888426792 and objetiveplayer.UserId == 7593008940 then
+                    if not objetiveplayer.UserId == 1888426792 and not objetiveplayer.UserId == 7593008940 then
                         local hum = p.Character.Humanoid
                         local hrp = p.Character:FindFirstChild("HumanoidRootPart")
                         if hum.Health > 0 and hrp then
