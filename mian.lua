@@ -37,6 +37,7 @@ local Settings = {
             [8363844008] = true, --miu
             [7358542303] = true, --kyu
             [7182786234] = true, --angel
+            [9126487539] = true --goddes pe
         --[BOTS Y TESTER]--
             [10521014710] = true, --BOT Hector
             [10320578945] = true, --test
@@ -81,7 +82,7 @@ local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
 local AdminPermiso = false
-local arrayPlayers = { "nsndkskd18","Sylunh44","Kendraaa1023","pynkskullz","tzwgkee","Isabelloca_sando2023","jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev", "enrique1746708","KingMiata20","YDARKCRAKY"}
+local arrayPlayers = { "lov3lybirdy","nsndkskd18","Sylunh44","Kendraaa1023","pynkskullz","tzwgkee","Isabelloca_sando2023","jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev", "enrique1746708","KingMiata20","YDARKCRAKY"}
 local onder = {
     [1888426792] = true,
     [7593008940] = true,
