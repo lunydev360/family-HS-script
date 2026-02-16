@@ -189,8 +189,7 @@ local function StartKillAura()
         for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
                 if EnabledObjetive and p.userId == objetiveplayer.UserId then
-                    print("si esta")
-                    if not objetiveplayer.UserId == 1888426792 and not objetiveplayer.UserId == 7593008940 then
+                    if not objetiveplayer.Name == "dep0700" and not objetiveplayer.Name == "Foxcito_xd" then
                         print("okey")
                         local hum = p.Character.Humanoid
                         local hrp = p.Character:FindFirstChild("HumanoidRootPart")
