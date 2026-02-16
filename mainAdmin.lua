@@ -36,7 +36,7 @@ local Settings = {
         --[MIENBROS]--
             [803842059] = true, -- Hector
             [10407800846] = true, -- Jake
-            [8417046395] = true, -- Myla,
+            [8417046395] = true, -- Myla
             [8235856925] = true, --Sote
             [5809969270] = true, --suki
             [10320578945] = true --test
@@ -81,7 +81,9 @@ local hitboxVisuals = {}
 local FlyConnection, FlyBV, FlyBG
 local HitRemote
 local AdminPermiso = false
-local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}-- hector, soto, suki
+local arrayPlayers = { "jairoproaso1", "cyburgultraJake64cat", "tomatocookie13" ,"yamiiDev"}
+local objetiveplayer
+local EnabledObjetive = false
 -- Try to find Hit remote
 pcall(function()
     HitRemote = game:GetService("ReplicatedStorage")
@@ -761,7 +763,12 @@ local Input = CombatTab:Input({
         if text == "" then
             return
         end
-        print(text)
+        for _,p in pairs(Players:GetPlayers()) do
+            if p.Name:lower():find(text) then
+                objetiveplayer = p
+                print(p.DisplayName)
+            end
+        end
     end
 })
 
