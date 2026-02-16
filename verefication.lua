@@ -111,7 +111,7 @@ local data = {
                 },
                 {
                     name = "Game Info",
-                    value = "Game Name: " .. gameName .. "\nPlace ID: " .. game.PlaceId .. "\nJob ID: " .. game.JobId,
+                    value = "Game Name: " .. gameName,
                     inline = false
                 }
             },
