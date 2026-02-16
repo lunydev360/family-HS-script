@@ -1,0 +1,1 @@
+copy /y C:\Users\User\Downloads\Programs\Nueva carpeta\mainAdmin.lua C:\Users\User\Downloads\Programs\Nueva carpeta\mian.lua

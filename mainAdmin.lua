@@ -887,7 +887,7 @@ VisualsTab:Toggle({
         local player = game.Players.LocalPlayer
         local gui = player.PlayerGui:FindFirstChild("ScreenGui")
         if gui then
-            gui.Enabled = switch
+            gui.Enabled = state
         end
     end
 })
