@@ -679,7 +679,7 @@ CombatTab:Toggle({
     Title = "unattack admin",
     Desc = "Automatically attack nearest admin",
     Value = true,
-    Locked = false,
+    Locked = true,
     LockedTitle = "solo para admins",
     Callback = function(state)
         Settings.KillAura.inmune[7593008940] = state

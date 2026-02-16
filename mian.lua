@@ -679,7 +679,7 @@ CombatTab:Toggle({
     Title = "unattack admin",
     Desc = "Automatically attack nearest admin",
     Value = true,
-    Locked = false,
+    Locked = true,
     LockedTitle = "solo para admins",
     Callback = function(state)
         Settings.KillAura.inmune[7593008940] = state
@@ -693,7 +693,7 @@ local Dropdown =CombatTab:Dropdown({
     Values = arrayPlayers,
     Value = nil,
     Multi = true,
-    Locked = false,
+    Locked = true,
     LockedTitle = "solo moderadores",
     AllowNone = true,
     Callback = function(option)
