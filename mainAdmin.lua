@@ -1386,7 +1386,7 @@ end)
 Players.PlayerAdded:Connect(function(newPlayer)
     newPlayer.CharacterAdded:Connect(function(character)
         if Settings.KillAura.Enabled then
-            wait(0.1)
+            wait(0.5)
             local hrp = character:FindFirstChild("HumanoidRootPart")
             if hrp then
                 originalHitboxSizes[hrp] = hrp.Size
@@ -1412,6 +1412,31 @@ do
         Border = false,
     })
 end
+
+
+local Dialog = Window:Dialog({
+    Icon = "bird",
+    Title = "Dialog Title",
+    Content = "Content Text",
+    Buttons = {
+        {
+            Title = "Confirm",
+            Callback = function()
+                print("Confirmed!")
+            end,
+        },
+        {
+            Title = "Cancel",
+            Callback = function()
+                print("Cancelled!")
+            end,
+        },
+    },
+})
+
+
+
+
 
 
 WindUI:Notify({
