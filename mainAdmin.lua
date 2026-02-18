@@ -1415,22 +1415,16 @@ end
 
 
 local Dialog = Window:Dialog({
-    Icon = "bird",
-    Title = "Dialog Title",
-    Content = "Content Text",
+    Icon = "lucide:shield-alert",
+    Title = "acepta terminos y con diciones",
+    Content = "al momento de utilizar nuestro script debes entender que este script esta echo por mi(dep0700)\ny no permito que un extraño o desconosido tenga acceso a este script\npor lo tanto no comparta el script con nadien y si\ntienes intenciones de comp'artir favor de avisarme en nuestro discord, md o en roblox \nNota: nesesito interrogar al invitado",
     Buttons = {
         {
-            Title = "Confirm",
+            Title = "acepto",
             Callback = function()
                 print("Confirmed!")
             end,
-        },
-        {
-            Title = "Cancel",
-            Callback = function()
-                print("Cancelled!")
-            end,
-        },
+        }
     },
 })
 
