@@ -101,134 +101,132 @@ pcall(function()
 end)
 
 -- Kill Aura Functions
-local function StartKillAura()
-    if not HitRemote then
-        WindUI:Notify({
-            Title = "Kill Aura Error",
-            Content = "Could not find Hit Remote. This feature may not work on this game.",
-            Icon = "solar:danger-bold",
-            Duration = 5,
-        })
-        Settings.KillAura.Enabled = false
-        return
-    end
-    
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character then
-            local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                originalHitboxSizes[hrp] = hrp.Size
-                hrp.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
-            end
+    local function StartKillAura()
+        if not HitRemote then
+            WindUI:Notify({
+                Title = "Kill Aura Error",
+                Content = "Could not find Hit Remote. This feature may not work on this game.",
+                Icon = "solar:danger-bold",
+                Duration = 5,
+            })
+            Settings.KillAura.Enabled = false
+            return
         end
-    end
-    
-    KillAuraConnection = RunService.Heartbeat:Connect(function()
-        if not Settings.KillAura.Enabled then return end
-        if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
-        
-        local myHRP = LocalPlayer.Character.HumanoidRootPart
-        local closest, closestDist = nil, Settings.KillAura.Range
         
         for _, p in pairs(Players:GetPlayers()) do
-            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if EnabledObjetive and p.userId == objetiveplayer.UserId and not onder[p.UserId] then
-                    local hum = p.Character.Humanoid
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hum.Health > 0 and hrp then
-                        local dist = (hrp.Position - myHRP.Position).Magnitude
-                        if dist <= closestDist then
-                            closestDist = dist
-                            closest = p
-                        end
-                    end
-                end
-
-                if not Settings.KillAura.inmune[p.UserId] and not EnabledObjetive then
-                    local hum = p.Character.Humanoid
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hum.Health > 0 and hrp then
-                        local dist = (hrp.Position - myHRP.Position).Magnitude
-                        if dist <= closestDist then
-                            closestDist = dist
-                            closest = p
-                        end
-                    end
+            if p ~= LocalPlayer and p.Character then
+                local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    originalHitboxSizes[hrp] = hrp.Size
+                    hrp.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
                 end
             end
         end
         
-        if closest and closest.Character and closest.Character:FindFirstChild("Humanoid") then
-            local args = {
-                closest.Character.Humanoid,
-                vector.create(myHRP.Position.X, myHRP.Position.Y, myHRP.Position.Z)
-            }
-            pcall(function()
-                HitRemote:InvokeServer(unpack(args))
-            end)
-        end
-    end)
-end
-
-local function StopKillAura()
-    if KillAuraConnection then
-        KillAuraConnection:Disconnect()
-        KillAuraConnection = nil
-    end
-    
-    for hrp, oldSize in pairs(originalHitboxSizes) do
-        if hrp and hrp.Parent then
-            hrp.Size = oldSize
-        end
-    end
-    originalHitboxSizes = {}
-    
-    for _, visual in pairs(hitboxVisuals) do
-        if visual and visual.Parent then
-            visual:Destroy()
-        end
-    end
-    hitboxVisuals = {}
-end
-
-local function UpdateHitboxVisuals()
-    for _, visual in pairs(hitboxVisuals) do
-        if visual and visual.Parent then
-            visual:Destroy()
-        end
-    end
-    hitboxVisuals = {}
-    
-    if not Settings.KillAura.ShowHitbox then return end
-    
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character then
-            local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local visual = Instance.new("Part")
-                visual.Name = "HitboxVisual"
-                visual.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
-                visual.CFrame = hrp.CFrame
-                visual.Anchored = true
-                visual.CanCollide = false
-                visual.Material = Enum.Material.ForceField
-                visual.Color = Color3.fromRGB(255, 0, 0)
-                visual.Transparency = 0.7
-                visual.Parent = workspace
-                
-                hitboxVisuals[hrp] = visual
-                
-                RunService.Heartbeat:Connect(function()
-                    if visual and visual.Parent and hrp and hrp.Parent then
-                        visual.CFrame = hrp.CFrame
+        KillAuraConnection = RunService.Heartbeat:Connect(function()
+            if not Settings.KillAura.Enabled then return end
+            if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+            
+            local myHRP = LocalPlayer.Character.HumanoidRootPart
+            local closest, closestDist = nil, Settings.KillAura.Range
+            
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
+                    if EnabledObjetive and p.userId == objetiveplayer.UserId and not onder[p.UserId] then
+                        local hum = p.Character.Humanoid
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hum.Health > 0 and hrp then
+                            local dist = (hrp.Position - myHRP.Position).Magnitude
+                            if dist <= closestDist then
+                                closestDist = dist
+                                closest = p
+                            end
+                        end
                     end
+
+                    if not Settings.KillAura.inmune[p.UserId] and not EnabledObjetive then
+                        local hum = p.Character.Humanoid
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hum.Health > 0 and hrp then
+                            local dist = (hrp.Position - myHRP.Position).Magnitude
+                            if dist <= closestDist then
+                                closestDist = dist
+                                closest = p
+                            end
+                        end
+                    end
+                end
+            end
+            
+            if closest and closest.Character and closest.Character:FindFirstChild("Humanoid") then
+                local args = {
+                    closest.Character.Humanoid,
+                    vector.create(myHRP.Position.X, myHRP.Position.Y, myHRP.Position.Z)
+                }
+                pcall(function()
+                    HitRemote:InvokeServer(unpack(args))
                 end)
+            end
+        end)
+    end
+
+    local function StopKillAura()
+        if KillAuraConnection then
+            KillAuraConnection:Disconnect()
+            KillAuraConnection = nil
+        end
+        
+        for hrp, oldSize in pairs(originalHitboxSizes) do
+            if hrp and hrp.Parent then
+                hrp.Size = oldSize
+            end
+        end
+        originalHitboxSizes = {}
+        
+        for _, visual in pairs(hitboxVisuals) do
+            if visual and visual.Parent then
+                visual:Destroy()
+            end
+        end
+        hitboxVisuals = {}
+    end
+
+    local function UpdateHitboxVisuals()
+        for _, visual in pairs(hitboxVisuals) do
+            if visual and visual.Parent then
+                visual:Destroy()
+            end
+        end
+        hitboxVisuals = {}
+        
+        if not Settings.KillAura.ShowHitbox then return end
+        
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character then
+                local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    local visual = Instance.new("Part")
+                    visual.Name = "HitboxVisual"
+                    visual.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
+                    visual.CFrame = hrp.CFrame
+                    visual.Anchored = true
+                    visual.CanCollide = false
+                    visual.Material = Enum.Material.ForceField
+                    visual.Color = Color3.fromRGB(255, 0, 0)
+                    visual.Transparency = 0.7
+                    visual.Parent = workspace
+                    
+                    hitboxVisuals[hrp] = visual
+                    
+                    RunService.Heartbeat:Connect(function()
+                        if visual and visual.Parent and hrp and hrp.Parent then
+                            visual.CFrame = hrp.CFrame
+                        end
+                    end)
+                end
             end
         end
     end
-end
-
-
 -- Fly Functions
 local function StartFly()
     local character = LocalPlayer.Character
@@ -395,65 +393,6 @@ local function UpdateAllESP()
     end
 end
 
--- Chams Functions
-local function CreateChams(player)
-    if ChamsObjects[player] then return end
-    
-    ChamsObjects[player] = {}
-    
-    local function UpdateChams()
-        if not player.Character then return end
-        
-        for _, cham in pairs(ChamsObjects[player]) do
-            if cham and cham.Parent then
-                cham:Destroy()
-            end
-        end
-        ChamsObjects[player] = {}
-        
-        if not Settings.ESP.Chams then return end
-        
-        for _, part in pairs(player.Character:GetDescendants()) do
-            if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-                local highlight = Instance.new("Highlight")
-                highlight.FillColor = Settings.ESP.ChamsColor
-                highlight.OutlineColor = Settings.ESP.ChamsColor
-                highlight.FillTransparency = 0.5
-                highlight.OutlineTransparency = 0
-                highlight.Adornee = part
-                highlight.Parent = part
-                
-                table.insert(ChamsObjects[player], highlight)
-            end
-        end
-    end
-    
-    player.CharacterAdded:Connect(UpdateChams)
-    UpdateChams()
-end
-
-local function RemoveChams(player)
-    if ChamsObjects[player] then
-        for _, cham in pairs(ChamsObjects[player]) do
-            if cham and cham.Parent then
-                cham:Destroy()
-            end
-        end
-        ChamsObjects[player] = nil
-    end
-end
-
-local function UpdateAllChams()
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            if Settings.ESP.Chams then
-                CreateChams(player)
-            else
-                RemoveChams(player)
-            end
-        end
-    end
-end
 
 -- Player Events
 Players.PlayerAdded:Connect(function(player)
@@ -462,23 +401,16 @@ Players.PlayerAdded:Connect(function(player)
         if Settings.ESP.Name or Settings.ESP.Health then
             CreateESP(player)
         end
-        if Settings.ESP.Chams then
-            CreateChams(player)
-        end
     end)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
     RemoveESP(player)
-    RemoveChams(player)
 end)
 
 for _, player in pairs(Players:GetPlayers()) do
     if player ~= LocalPlayer and player.Character then
         CreateESP(player)
-        if Settings.ESP.Chams then
-            CreateChams(player)
-        end
     end
 end
 
@@ -902,39 +834,6 @@ do
             local gui = player.PlayerGui:FindFirstChild("ScreenGui")
             if gui then
                 gui.Enabled = state
-            end
-        end
-    })
-    VisualsTab:Space()
-
-    VisualsTab:Section({
-        Title = "Chams Settings",
-        TextSize = 18,
-    })
-
-    VisualsTab:Toggle({
-        Title = "Enable Chams",
-        Desc = "Highlight players through walls",
-        Value = false,
-        Callback = function(state)
-            Settings.ESP.Chams = state
-            UpdateAllChams()
-        end
-    })
-
-    VisualsTab:Colorpicker({
-        Title = "Chams Color",
-        Default = Color3.fromRGB(255, 0, 255),
-        Callback = function(color)
-            Settings.ESP.ChamsColor = color
-            
-            for player, chams in pairs(ChamsObjects) do
-                for _, cham in pairs(chams) do
-                    if cham and cham.Parent then
-                        cham.FillColor = color
-                        cham.OutlineColor = color
-                    end
-                end
             end
         end
     })
@@ -1436,11 +1335,6 @@ local Dialog = Window:Dialog({
         }
     },
 })
-
-
-
-
-
 
 WindUI:Notify({
     Title = "Bienbenido",
