@@ -1171,11 +1171,11 @@ do
     local ColorSuki = Color3.fromHex("#fd9d4f")
 
     local ScriptsTab = Window:Tab({
-    Title = "Scripts",
-    Icon = "solar:cursor-square-bold",
-    IconColor = Color3.fromRGB(131, 136, 158),
-    IconShape = "Square",
-    Border = true,})
+        Title = "Scripts",
+        Icon = "solar:cursor-square-bold",
+        IconColor = Color3.fromHex("#7700ff"),
+        IconShape = "Square",
+        Border = true,})
 
     ScriptsTab:Button({
         Title = "7yd7-Emote-Animation-Script",
@@ -1196,6 +1196,7 @@ do
             loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-ANTI-VC-BAN-75240"))()
         end
     })
+
     ScriptsTab:Button({
         Title = "Animation Therean",
         Desc = "un paquete de animaciones tipo therean",
@@ -1236,12 +1237,6 @@ do
         Title = "acerca",
     })
     
-    AboutSection:Image({
-        Image = "https://repository-images.githubusercontent.com/880118829/22c020eb-d1b1-4b34-ac4d-e33fd88db38d",
-        AspectRatio = "16:9",
-        Radius = 9,
-    })
-    
     AboutSection:Space()
     
     AboutSection:Section({
@@ -1268,7 +1263,7 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se agrego el objetivo fijado (esto aplica con los mienbros a exepcion de los adminss)",
+        Title = "- se agrego un el apartado de script.\n- variacion de registro.\n- se añadio un enlace al server del script.\n- asignacion de rangos.",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,})
@@ -1427,4 +1422,4 @@ WindUI:Notify({
     Icon = "solar:check-circle-bold",
     Duration = 5,
 })
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verefication.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
