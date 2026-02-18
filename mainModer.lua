@@ -1165,6 +1165,63 @@ UtilityTab:Button({
     end
 })
 
+do
+    local ColorHector = Color3.fromHex("#ff7300")
+    local ColorYami = Color3.fromHex("#d400ff")
+    local ColorSuki = Color3.fromHex("#fd9d4f")
+
+    local ScriptsTab = Window:Tab({
+        Title = "Scripts",
+        Icon = "solar:cursor-square-bold",
+        IconColor = Color3.fromHex("#7700ff"),
+        IconShape = "Square",
+        Border = true,})
+
+    ScriptsTab:Button({
+        Title = "7yd7-Emote-Animation-Script",
+        Desc = "Un script de emotes para todos los juegos compatibles con r15",
+        Color = ColorYami,
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-7yd7-Emote-Animation-Script-UGC-LAG-Fixed-Delta-Console-bug-72656"))()
+        end
+    })
+
+    ScriptsTab:Button({
+        Title = "AK Admin",
+        Desc = "un script global similar a infity yield",
+        Color = ColorYami,
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-ANTI-VC-BAN-75240"))()
+        end
+    })
+
+    ScriptsTab:Button({
+        Title = "Animation Therean",
+        Desc = "un paquete de animaciones tipo therean",
+        Color = ColorYami,
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/AnimationPet.lua"))()
+        end
+    })
+
+    ScriptsTab:Button({
+        Title = "en proseso",
+        Desc = "",
+        Locked = true,
+        LockedTitle = "proximente",
+        Color = Color3.fromHex("#585858"),
+        Icon = "",
+        Callback = function()
+            -- loadstring(game:HttpGet(""))()
+        end
+    })
+
+end
+
+
 --Creaditos y version
 do
     local AboutTab = Window:Tab({
@@ -1180,13 +1237,7 @@ do
         Title = "acerca",
     })
     
-    AboutSection:Image({
-        Image = "https://repository-images.githubusercontent.com/880118829/22c020eb-d1b1-4b34-ac4d-e33fd88db38d",
-        AspectRatio = "16:9",
-        Radius = 9,
-    })
-    
-    AboutSection:Space({ Columns = 3 })
+    AboutSection:Space()
     
     AboutSection:Section({
         Title = "Creditos",
@@ -1212,11 +1263,82 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se agrego el objetivo fijado (esto aplica con los mienbros a exepcion de los adminss)",
+        Title = "- se agrego un el apartado de script.\n- variacion de registro.\n- se añadio un enlace al server del script.\n- asignacion de rangos.",
         TextSize = 18,
         TextTransparency = .35,
-        FontWeight = Enum.FontWeight.Medium,
+        FontWeight = Enum.FontWeight.Medium,})
+
+    local InviteCode = "fczDncduyR"
+    local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
+
+    local Response = WindUI.cloneref(game:GetService("HttpService")):JSONDecode(WindUI.Creator.Request and WindUI.Creator.Request({
+        Url = DiscordAPI,
+        Method = "GET",
+        Headers = {
+            ["User-Agent"] = "WindUI/Example",
+            ["Accept"] = "application/json"
+        }
+    }).Body or "{}")
+    
+    local DiscordTab = AboutTab:Section({
+        Title = "discord",
     })
+    
+    if Response and Response.guild then
+        DiscordTab:Section({
+            Title = "Join our Discord server!",
+            TextSize = 20,
+        })
+        local DiscordServerParagraph = DiscordTab:Paragraph({
+            Title = tostring(Response.guild.name),
+            Desc = tostring(Response.guild.description),
+            Image = "https://cdn.discordapp.com/icons/" .. Response.guild.id .. "/" .. Response.guild.icon .. ".png?size=1024",
+            Thumbnail = "https://cdn.discordapp.com/banners/1300692552005189632/35981388401406a4b7dffd6f447a64c4.png?size=512",
+            ImageSize = 48,
+            Buttons = {
+                {
+                    Title = "Copy link",
+                    Icon = "link",
+                    Callback = function()
+                        setclipboard("https://discord.gg/" .. InviteCode)
+                    end
+                }
+            }
+        })
+    elseif RunService:IsStudio() or not writefile then
+        DiscordTab:Paragraph({
+            Title = "Discord API is not available in Studio mode.",
+            TextSize = 20,
+            Justify = "Center",
+            Image = "solar:info-circle-bold",
+            Color = "Red",
+            Buttons = {
+                {
+                    Title = "Get/Copy Invite Link",
+                    Icon = "link",
+                    Callback = function()
+                        if setclipboard then 
+                            setclipboard("https://discord.gg/" .. InviteCode)
+                        else
+                            WindUI:Notify({
+                                Title = "Discord Invite Link",
+                                Content = "https://discord.gg/" .. InviteCode,
+                            })
+                        end
+                    end
+                }
+            }
+        })
+    else
+        DiscordTab:Paragraph({
+            Title = "Failed to fetch Discord server info.",
+            TextSize = 20,
+            Justify = "Center",
+            Image = "solar:info-circle-bold",
+            Color = "Red",
+        })
+    end
+
 
 end
 
@@ -1279,10 +1401,17 @@ end)
 
 do
     Window:Tag({
-        Title = "V 1.5",
+        Title = "V 2.3",
         Icon = "github",
-        Color = Color3.fromHex("#ff9100"),
+        Color = Color3.fromHex("#807f7e"),
         Border = true,
+    })
+
+    Window:Tag({
+        Title = "Moderador",
+        Icon = "lucide:panda",
+        Color = Color3.fromHex("#ff7b00"),
+        Border = false,
     })
 end
 
@@ -1293,4 +1422,4 @@ WindUI:Notify({
     Icon = "solar:check-circle-bold",
     Duration = 5,
 })
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verefication.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/moder.lua"))()
