@@ -801,61 +801,63 @@ CombatTab:Keybind({
     end
 })
 
--- Movement Tab
-local MovementTab = Window:Tab({
-    Title = "Movement",
-    Icon = "solar:running-round-bold",
-    IconColor = Color3.fromRGB(16, 197, 80),
-    IconShape = "Square",
-    Border = true,
-})
+-- Movement 
+do
+    local MovementTab = Window:Tab({
+        Title = "Movement",
+        Icon = "solar:running-round-bold",
+        IconColor = Color3.fromRGB(16, 197, 80),
+        IconShape = "Square",
+        Border = true,
+    })
 
-MovementTab:Section({
-    Title = "Fly Settings",
-    TextSize = 18,
-})
+    MovementTab:Section({
+        Title = "Fly Settings",
+        TextSize = 18,
+    })
 
-MovementTab:Toggle({
-    Title = "Enable Fly",
-    Desc = "Use WASD + Space/Shift to fly",
-    Value = false,
-    Callback = function(state)
-        Settings.Fly.Enabled = state
-        if state then
-            StartFly()
-        else
-            StopFly()
+    MovementTab:Toggle({
+        Title = "Enable Fly",
+        Desc = "Use WASD + Space/Shift to fly",
+        Value = false,
+        Callback = function(state)
+            Settings.Fly.Enabled = state
+            if state then
+                StartFly()
+            else
+                StopFly()
+            end
         end
-    end
-})
+    })
 
-MovementTab:Slider({
-    Title = "Fly Speed",
-    Step = 1,
-    Value = {
-        Min = 10,
-        Max = 200,
-        Default = 50,
-    },
-    Callback = function(value)
-        Settings.Fly.Speed = value
-    end
-})
+    MovementTab:Slider({
+        Title = "Fly Speed",
+        Step = 1,
+        Value = {
+            Min = 10,
+            Max = 200,
+            Default = 50,
+        },
+        Callback = function(value)
+            Settings.Fly.Speed = value
+        end
+    })
 
-MovementTab:Space()
+    MovementTab:Space()
 
-MovementTab:Section({
-    Title = "Jump Settings",
-    TextSize = 18,
-})
+    MovementTab:Section({
+        Title = "Jump Settings",
+        TextSize = 18,
+    })
 
-MovementTab:Toggle({
-    Title = "Infinite Jump",
-    Value = false,
-    Callback = function(state)
-        Settings.InfiniteJump.Enabled = state
-    end
-})
+    MovementTab:Toggle({
+        Title = "Infinite Jump",
+        Value = false,
+        Callback = function(state)
+            Settings.InfiniteJump.Enabled = state
+        end
+    })
+end
 
 -- Visuals Tab
 do
