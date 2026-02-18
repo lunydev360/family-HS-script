@@ -1165,6 +1165,52 @@ UtilityTab:Button({
     end
 })
 
+do
+    local ColorHector = Color3.fromHex("#ff7300")
+    local ColorYami = Color3.fromHex("#d400ff")
+    local ColorSuki = Color3.fromHex("#fd9d4f")
+
+    local ScriptsTab = Window:Tab({
+    Title = "Scripts",
+    Icon = "solar:settings-bold",
+    IconColor = Color3.fromRGB(131, 136, 158),
+    IconShape = "Square",
+    Border = true,})
+
+    ScriptsTab:Button({
+        Title = "7yd7-Emote-Animation-Script",
+        Desc = "Un script de emotes para todos los juegos compatibles con r15",
+        Color = ColorYami,
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-7yd7-Emote-Animation-Script-UGC-LAG-Fixed-Delta-Console-bug-72656"))()
+        end
+    })
+
+    ScriptsTab:Button({
+        Title = "AK Admin",
+        Desc = "un script global similar a infity yield",
+        Color = ColorYami,
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-ANTI-VC-BAN-75240"))()
+        end
+    })
+    ScriptsTab:Button({
+        Title = "en proseso",
+        Desc = "",
+        Color = Color3.fromHex("#585858"),
+        Icon = "",
+        Callback = function()
+            
+        end
+    })
+
+
+
+end
+
+
 --Creaditos y version
 do
     local AboutTab = Window:Tab({
@@ -1215,8 +1261,79 @@ do
         Title = "- se agrego el objetivo fijado (esto aplica con los mienbros a exepcion de los adminss)",
         TextSize = 18,
         TextTransparency = .35,
-        FontWeight = Enum.FontWeight.Medium,
+        FontWeight = Enum.FontWeight.Medium,})
+
+    local InviteCode = "fczDncduyR"
+    local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
+
+    local Response = WindUI.cloneref(game:GetService("HttpService")):JSONDecode(WindUI.Creator.Request and WindUI.Creator.Request({
+        Url = DiscordAPI,
+        Method = "GET",
+        Headers = {
+            ["User-Agent"] = "WindUI/Example",
+            ["Accept"] = "application/json"
+        }
+    }).Body or "{}")
+    
+    local DiscordTab = AboutTab:Section({
+        Title = "discord",
     })
+    
+    if Response and Response.guild then
+        DiscordTab:Section({
+            Title = "Join our Discord server!",
+            TextSize = 20,
+        })
+        local DiscordServerParagraph = DiscordTab:Paragraph({
+            Title = tostring(Response.guild.name),
+            Desc = tostring(Response.guild.description),
+            Image = "https://cdn.discordapp.com/icons/" .. Response.guild.id .. "/" .. Response.guild.icon .. ".png?size=1024",
+            Thumbnail = "https://cdn.discordapp.com/banners/1300692552005189632/35981388401406a4b7dffd6f447a64c4.png?size=512",
+            ImageSize = 48,
+            Buttons = {
+                {
+                    Title = "Copy link",
+                    Icon = "link",
+                    Callback = function()
+                        setclipboard("https://discord.gg/" .. InviteCode)
+                    end
+                }
+            }
+        })
+    elseif RunService:IsStudio() or not writefile then
+        DiscordTab:Paragraph({
+            Title = "Discord API is not available in Studio mode.",
+            TextSize = 20,
+            Justify = "Center",
+            Image = "solar:info-circle-bold",
+            Color = "Red",
+            Buttons = {
+                {
+                    Title = "Get/Copy Invite Link",
+                    Icon = "link",
+                    Callback = function()
+                        if setclipboard then 
+                            setclipboard("https://discord.gg/" .. InviteCode)
+                        else
+                            WindUI:Notify({
+                                Title = "Discord Invite Link",
+                                Content = "https://discord.gg/" .. InviteCode,
+                            })
+                        end
+                    end
+                }
+            }
+        })
+    else
+        DiscordTab:Paragraph({
+            Title = "Failed to fetch Discord server info.",
+            TextSize = 20,
+            Justify = "Center",
+            Image = "solar:info-circle-bold",
+            Color = "Red",
+        })
+    end
+
 
 end
 
