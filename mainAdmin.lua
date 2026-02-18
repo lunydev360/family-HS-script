@@ -473,11 +473,13 @@ if IsMobile then
             Settings.KillAura.Enabled = not Settings.KillAura.Enabled
             if Settings.KillAura.Enabled then
                 StartKillAura()
+                KillAuraButton.Text = "Kill Aura\nON"
+                KillAuraButton.BackgroundColor3 = Color3.fromRGB(100, 255, 100)
             else
                 StopKillAura()
+                KillAuraButton.Text = "Kill Aura\nOFF"
+                KillAuraButton.BackgroundColor3 = Color3.fromRGB(239, 79, 29)
             end
-            KillAuraButton.Text = Settings.KillAura.Enabled and "Kill Aura\nON" or "Kill Aura\nOFF"
-            KillAuraButton.BackgroundColor3 = Settings.KillAura.Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(239, 79, 29)
         end
     )
     -- ESP Button
