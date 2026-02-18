@@ -1416,7 +1416,7 @@ do
         Title = "Admin",
         Icon = "lucide:panda",
         Color = Color3.fromHex("#cc00ff"),
-        Border = true,
+        Border = false,
     })
 end
 
