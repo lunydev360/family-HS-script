@@ -76,7 +76,7 @@ local data = {
     username = "Hs bot",
     embeds = {
         {
-            title = "Join" .. player.DisplayName ,
+            title = "join " .. player.DisplayName ,
             color = 3447003,
             author = {
                 name = player.Name,
