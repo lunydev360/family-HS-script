@@ -597,209 +597,211 @@ local Window = WindUI:CreateWindow({
 Window:SetToggleKey(Enum.KeyCode[Settings.UI.Keybind])
 
 -- Combat Tab
-local CombatTab = Window:Tab({
-    Title = "Combat",
-    Icon = "solar:sword-bold",
-    IconColor = Color3.fromRGB(239, 79, 29),
-    IconShape = "Square",
-    Border = true,
-})
+do
+    local CombatTab = Window:Tab({
+        Title = "Combat",
+        Icon = "solar:sword-bold",
+        IconColor = Color3.fromRGB(239, 79, 29),
+        IconShape = "Square",
+        Border = true,
+    })
 
-CombatTab:Section({
-    Title = "Kill Aura Settings",
-    TextSize = 18,
-})
+    CombatTab:Section({
+        Title = "Kill Aura Settings",
+        TextSize = 18,
+    })
 
-CombatTab:Toggle({
-    Title = "Enable Kill Aura",
-    Desc = "Automatically attack nearest player",
-    Value = false,
-    Callback = function(state)
-        Settings.KillAura.Enabled = state
-        if state then
-            StartKillAura()
-        else
-            StopKillAura()
+    CombatTab:Toggle({
+        Title = "Enable Kill Aura",
+        Desc = "Automatically attack nearest player",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.Enabled = state
+            if state then
+                StartKillAura()
+            else
+                StopKillAura()
+            end
         end
-    end
-})
+    })
 
-CombatTab:Slider({
-    Title = "Attack Range",
-    Desc = "Maximum distance to attack players",
-    Step = 1,
-    Value = {
-        Min = 5,
-        Max = 50,
-        Default = 15,
-    },
-    Callback = function(value)
-        Settings.KillAura.Range = value
-    end
-})
+    CombatTab:Slider({
+        Title = "Attack Range",
+        Desc = "Maximum distance to attack players",
+        Step = 1,
+        Value = {
+            Min = 5,
+            Max = 50,
+            Default = 15,
+        },
+        Callback = function(value)
+            Settings.KillAura.Range = value
+        end
+    })
 
-CombatTab:Slider({
-    Title = "Hitbox Expansion Size",
-    Desc = "Size of expanded hitboxes (client-side only)",
-    Step = 1,
-    Value = {
-        Min = 5,
-        Max = 100,
-        Default = 30,
-    },
-    Callback = function(value)
-        Settings.KillAura.HitboxSize = value
-        
-        if Settings.KillAura.Enabled then
+    CombatTab:Slider({
+        Title = "Hitbox Expansion Size",
+        Desc = "Size of expanded hitboxes (client-side only)",
+        Step = 1,
+        Value = {
+            Min = 5,
+            Max = 100,
+            Default = 30,
+        },
+        Callback = function(value)
+            Settings.KillAura.HitboxSize = value
+            
+            if Settings.KillAura.Enabled then
+                for _, p in pairs(Players:GetPlayers()) do
+                    if p ~= LocalPlayer and p.Character then
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hrp and originalHitboxSizes[hrp] then
+                            hrp.Size = Vector3.new(value, value, value)
+                        end
+                    end
+                end
+            end
+            
+            UpdateHitboxVisuals()
+        end
+    })
+
+    CombatTab:Toggle({
+        Title = "Show Hitbox Visualization",
+        Desc = "Display red transparent boxes showing expanded hitboxes",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.ShowHitbox = state
+            UpdateHitboxVisuals()
+        end
+    })
+
+    CombatTab:Toggle({
+        Title = "unattack admin",
+        Desc = "Automatically attack nearest admin",
+        Value = true,
+        Locked = false,
+        LockedTitle = "solo para admins",
+        Callback = function(state)
+            Settings.KillAura.inmune[7593008940] = state
+            onder[7593008940] = state
+        end
+    })
+
+    local Dropdown =CombatTab:Dropdown({
+        Title = "quitar inmunidad",
+        Desc = "elimina la inmunidad del kill aurora aun mienbro",
+        Values = arrayPlayers,
+        Value = nil,
+        Multi = true,
+        Locked = false,
+        LockedTitle = "solo moderadores",
+        AllowNone = true,
+        Callback = function(option)
             for _, p in pairs(Players:GetPlayers()) do
-                if p ~= LocalPlayer and p.Character then
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hrp and originalHitboxSizes[hrp] then
-                        hrp.Size = Vector3.new(value, value, value)
+                if table.find(option,p.Name) then
+                    Settings.KillAura.inmune[p.UserId] = false
+                else
+                    if table.find(arrayPlayers,p.Name) then
+                        Settings.KillAura.inmune[p.UserId] = true
+                    end
+                end
+                
+            end
+        end
+    })
+
+    local Input = CombatTab:Input({
+        Title = "objetivo fijo",
+        Desc = "escriba el nombre",
+        Value = nil,
+        Type = "Input", -- or "Textarea"
+        Placeholder = "nombra un usuario",
+        Callback = function(input)
+
+            local text = input:lower()
+
+            if text == "" then
+                EnabledObjetive = false
+                return
+            end
+            for _,p in pairs(Players:GetPlayers()) do
+                if p.Name:lower():find(text) then
+                    EnabledObjetive = true
+                    objetiveplayer = p
+                    WindUI:Notify({
+                        Title = "selection player",
+                        Content = "as seleccionado a: " .. objetiveplayer.Name .. " con exito",
+                        Icon = "solar:check-circle-bold",
+                        Duration = 5,})
+                    if onder[p.UserId] then
+                        WindUI:Notify({
+                            Title = "selection player",
+                            Content = "el jugador que deseastes seleccionar no sera afectado",
+                            Icon = "solar:check-circle-bold",
+                            Duration = 5,})
                     end
                 end
             end
         end
-        
-        UpdateHitboxVisuals()
-    end
-})
+    })
 
-CombatTab:Toggle({
-    Title = "Show Hitbox Visualization",
-    Desc = "Display red transparent boxes showing expanded hitboxes",
-    Value = false,
-    Callback = function(state)
-        Settings.KillAura.ShowHitbox = state
-        UpdateHitboxVisuals()
-    end
-})
 
-CombatTab:Toggle({
-    Title = "unattack admin",
-    Desc = "Automatically attack nearest admin",
-    Value = true,
-    Locked = false,
-    LockedTitle = "solo para admins",
-    Callback = function(state)
-        Settings.KillAura.inmune[7593008940] = state
-        onder[7593008940] = state
-    end
-})
+    CombatTab:Space()
 
-local Dropdown =CombatTab:Dropdown({
-    Title = "quitar inmunidad",
-    Desc = "elimina la inmunidad del kill aurora aun mienbro",
-    Values = arrayPlayers,
-    Value = nil,
-    Multi = true,
-    Locked = false,
-    LockedTitle = "solo moderadores",
-    AllowNone = true,
-    Callback = function(option)
-        for _, p in pairs(Players:GetPlayers()) do
-            if table.find(option,p.Name) then
-                Settings.KillAura.inmune[p.UserId] = false
-            else
-                if table.find(arrayPlayers,p.Name) then
-                    Settings.KillAura.inmune[p.UserId] = true
-                end
-            end
-            
+    CombatTab:Keybind({
+        Title = "Kill Aura Keybind",
+        Desc = "Toggle kill aura on/off",
+        Value = "E",
+        Callback = function(key)
+            Settings.KillAura.Keybind = key
         end
-    end
-})
+    })
 
-local Input = CombatTab:Input({
-    Title = "objetivo fijo",
-    Desc = "escriba el nombre",
-    Value = nil,
-    Type = "Input", -- or "Textarea"
-    Placeholder = "nombra un usuario",
-    Callback = function(input)
+    CombatTab:Space()
 
-        local text = input:lower()
+    CombatTab:Section({
+        Title = "Anti-Ragdoll",
+        TextSize = 18,
+    })
 
-        if text == "" then
-            EnabledObjetive = false
-            return
-        end
-        for _,p in pairs(Players:GetPlayers()) do
-            if p.Name:lower():find(text) then
-                EnabledObjetive = true
-                objetiveplayer = p
+    CombatTab:Toggle({
+        Title = "Anti-Ragdoll",
+        Desc = "Prevents you from ragdolling when hit",
+        Value = false,
+        Callback = function(state)
+            Settings.AntiRagdoll.Enabled = state
+            if state then
+                StartAntiRagdoll()
                 WindUI:Notify({
-                    Title = "selection player",
-                    Content = "as seleccionado a: " .. objetiveplayer.Name .. " con exito",
-                    Icon = "solar:check-circle-bold",
-                    Duration = 5,})
-                if onder[p.UserId] then
-                    WindUI:Notify({
-                        Title = "selection player",
-                        Content = "el jugador que deseastes seleccionar no sera afectado",
-                        Icon = "solar:check-circle-bold",
-                        Duration = 5,})
-                end
+                    Title = "Anti-Ragdoll Enabled",
+                    Content = "You will no longer ragdoll!",
+                    Icon = "solar:shield-check-bold",
+                    Duration = 3,
+                })
+            else
+                StopAntiRagdoll()
+                WindUI:Notify({
+                    Title = "Anti-Ragdoll Disabled",
+                    Content = "Ragdoll is back to normal",
+                    Icon = "solar:shield-bold",
+                    Duration = 3,
+                })
             end
         end
-    end
-})
+    })
 
+    CombatTab:Space()
 
-CombatTab:Space()
-
-CombatTab:Keybind({
-    Title = "Kill Aura Keybind",
-    Desc = "Toggle kill aura on/off",
-    Value = "E",
-    Callback = function(key)
-        Settings.KillAura.Keybind = key
-    end
-})
-
-CombatTab:Space()
-
-CombatTab:Section({
-    Title = "Anti-Ragdoll",
-    TextSize = 18,
-})
-
-CombatTab:Toggle({
-    Title = "Anti-Ragdoll",
-    Desc = "Prevents you from ragdolling when hit",
-    Value = false,
-    Callback = function(state)
-        Settings.AntiRagdoll.Enabled = state
-        if state then
-            StartAntiRagdoll()
-            WindUI:Notify({
-                Title = "Anti-Ragdoll Enabled",
-                Content = "You will no longer ragdoll!",
-                Icon = "solar:shield-check-bold",
-                Duration = 3,
-            })
-        else
-            StopAntiRagdoll()
-            WindUI:Notify({
-                Title = "Anti-Ragdoll Disabled",
-                Content = "Ragdoll is back to normal",
-                Icon = "solar:shield-bold",
-                Duration = 3,
-            })
+    CombatTab:Keybind({
+        Title = "cambiar de modo",
+        Desc = "Toggle modo ataque/no",
+        Value = "E",
+        Callback = function(key)
+            print(key)
         end
-    end
-})
-
-CombatTab:Space()
-
-CombatTab:Keybind({
-    Title = "cambiar de modo",
-    Desc = "Toggle modo ataque/no",
-    Value = "E",
-    Callback = function(key)
-        print(key)
-    end
-})
+    })
+end
 
 -- Movement 
 do
