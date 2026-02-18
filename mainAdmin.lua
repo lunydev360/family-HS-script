@@ -165,7 +165,6 @@ local function StartKillAura()
             }
             pcall(function()
                 HitRemote:InvokeServer(unpack(args))
-                HitRemote:InvokeServer(unpack(args))
             end)
         end
     end)
@@ -1368,7 +1367,6 @@ end
 -- Character Respawn Handler
 LocalPlayer.CharacterAdded:Connect(function()
     wait(0.5)
-    UpdateSpeed()
     if Settings.Fly.Enabled then
         StopFly()
         wait(0.1)
@@ -1376,7 +1374,7 @@ LocalPlayer.CharacterAdded:Connect(function()
     end
     if Settings.KillAura.Enabled then
         StopKillAura()
-        wait(0.1)
+        wait(0.01)
         StartKillAura()
     end
     if Settings.AntiRagdoll.Enabled then
