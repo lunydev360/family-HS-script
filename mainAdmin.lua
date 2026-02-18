@@ -1172,7 +1172,7 @@ do
 
     local ScriptsTab = Window:Tab({
     Title = "Scripts",
-    Icon = "solar:settings-bold",
+    Icon = "solar:cursor-square-bold",
     IconColor = Color3.fromRGB(131, 136, 158),
     IconShape = "Square",
     Border = true,})
@@ -1197,16 +1197,26 @@ do
         end
     })
     ScriptsTab:Button({
-        Title = "en proseso",
-        Desc = "",
-        Color = Color3.fromHex("#585858"),
+        Title = "Animation Therean",
+        Desc = "un paquete de animaciones tipo therean",
+        Color = ColorYami,
         Icon = "",
         Callback = function()
-            
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/AnimationPet.lua"))()
         end
     })
 
-
+    ScriptsTab:Button({
+        Title = "en proseso",
+        Desc = "",
+        Locked = true,
+        LockedTitle = "proximente",
+        Color = Color3.fromHex("#585858"),
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet(""))()
+        end
+    })
 
 end
 
@@ -1232,7 +1242,7 @@ do
         Radius = 9,
     })
     
-    AboutSection:Space({ Columns = 3 })
+    AboutSection:Space()
     
     AboutSection:Section({
         Title = "Creditos",
@@ -1258,7 +1268,7 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se agrego el objetivo fijado (esto aplica con los mienbros a exepcion de los adminss)",
+        Title = "- se añadio el apartado de scripts.\n- se a integrado la invitacion de nuestro server en el script.\n- ahora el registro de usuario es variado.\n- se aplicaron rangos visuales al momento de executar el script.",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,})
@@ -1396,9 +1406,16 @@ end)
 
 do
     Window:Tag({
-        Title = "V 1.5",
+        Title = "V 2.3,
         Icon = "github",
-        Color = Color3.fromHex("#ff9100"),
+        Color = Color3.fromHex("#686868"),
+        Border = true,
+    })
+
+    Window:Tag({
+        Title = "ADMIN",
+        Icon = "lucide:panda",
+        Color = Color3.fromHex("#cc00ff"),
         Border = true,
     })
 end
@@ -1410,4 +1427,4 @@ WindUI:Notify({
     Icon = "solar:check-circle-bold",
     Duration = 5,
 })
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verefication.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
