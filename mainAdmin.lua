@@ -858,81 +858,83 @@ MovementTab:Toggle({
 })
 
 -- Visuals Tab
-local VisualsTab = Window:Tab({
-    Title = "Visuals",
-    Icon = "solar:eye-bold",
-    IconColor = Color3.fromRGB(37, 122, 247),
-    IconShape = "Square",
-    Border = true,
-})
+do
+    local VisualsTab = Window:Tab({
+        Title = "Visuals",
+        Icon = "solar:eye-bold",
+        IconColor = Color3.fromRGB(37, 122, 247),
+        IconShape = "Square",
+        Border = true,
+    })
 
-VisualsTab:Section({
-    Title = "ESP Settings",
-    TextSize = 18,
-})
+    VisualsTab:Section({
+        Title = "ESP Settings",
+        TextSize = 18,
+    })
 
-VisualsTab:Toggle({
-    Title = "Name ESP",
-    Value = false,
-    Callback = function(state)
-        Settings.ESP.Name = state
-        
-        if state then
-            for _, player in pairs(Players:GetPlayers()) do
-                if player ~= LocalPlayer and player.Character then
-                    CreateESP(player)
+    VisualsTab:Toggle({
+        Title = "Name ESP",
+        Value = false,
+        Callback = function(state)
+            Settings.ESP.Name = state
+            
+            if state then
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character then
+                        CreateESP(player)
+                    end
+                end
+            end
+            UpdateAllESP()
+        end
+    })
+
+    VisualsTab:Toggle({
+        Title = "interfaz",
+        Desc = "oculta o activa la interfaz",
+        Value = true,
+        Callback = function(state)
+            local player = game.Players.LocalPlayer
+            local gui = player.PlayerGui:FindFirstChild("ScreenGui")
+            if gui then
+                gui.Enabled = state
+            end
+        end
+    })
+    VisualsTab:Space()
+
+    VisualsTab:Section({
+        Title = "Chams Settings",
+        TextSize = 18,
+    })
+
+    VisualsTab:Toggle({
+        Title = "Enable Chams",
+        Desc = "Highlight players through walls",
+        Value = false,
+        Callback = function(state)
+            Settings.ESP.Chams = state
+            UpdateAllChams()
+        end
+    })
+
+    VisualsTab:Colorpicker({
+        Title = "Chams Color",
+        Default = Color3.fromRGB(255, 0, 255),
+        Callback = function(color)
+            Settings.ESP.ChamsColor = color
+            
+            for player, chams in pairs(ChamsObjects) do
+                for _, cham in pairs(chams) do
+                    if cham and cham.Parent then
+                        cham.FillColor = color
+                        cham.OutlineColor = color
+                    end
                 end
             end
         end
-        UpdateAllESP()
-    end
-})
-
-VisualsTab:Toggle({
-    Title = "interfaz",
-    Desc = "oculta o activa la interfaz",
-    Value = true,
-    Callback = function(state)
-        local player = game.Players.LocalPlayer
-        local gui = player.PlayerGui:FindFirstChild("ScreenGui")
-        if gui then
-            gui.Enabled = state
-        end
-    end
-})
-VisualsTab:Space()
-
-VisualsTab:Section({
-    Title = "Chams Settings",
-    TextSize = 18,
-})
-
-VisualsTab:Toggle({
-    Title = "Enable Chams",
-    Desc = "Highlight players through walls",
-    Value = false,
-    Callback = function(state)
-        Settings.ESP.Chams = state
-        UpdateAllChams()
-    end
-})
-
-VisualsTab:Colorpicker({
-    Title = "Chams Color",
-    Default = Color3.fromRGB(255, 0, 255),
-    Callback = function(color)
-        Settings.ESP.ChamsColor = color
-        
-        for player, chams in pairs(ChamsObjects) do
-            for _, cham in pairs(chams) do
-                if cham and cham.Parent then
-                    cham.FillColor = color
-                    cham.OutlineColor = color
-                end
-            end
-        end
-    end
-})
+    })
+end
 
 -- Utility 
 do
@@ -1165,6 +1167,8 @@ do
         end
     })
 end
+
+-- Scripts
 do
     local ColorHector = Color3.fromHex("#ff7300")
     local ColorYami = Color3.fromHex("#d400ff")
