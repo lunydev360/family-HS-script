@@ -1411,13 +1411,6 @@ do
         Color = Color3.fromHex("#686868"),
         Border = true,
     })
-
-    Window:Tag({
-        Title = "ADMIN",
-        Icon = "lucide:panda",
-        Color = Color3.fromHex("#cc00ff"),
-        Border = true,
-    })
 end
 
 
