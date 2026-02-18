@@ -1214,7 +1214,7 @@ do
         Color = Color3.fromHex("#585858"),
         Icon = "",
         Callback = function()
-            loadstring(game:HttpGet(""))()
+            -- loadstring(game:HttpGet(""))()
         end
     })
 
@@ -1268,7 +1268,7 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se añadio el apartado de scripts.\n- se a integrado la invitacion de nuestro server en el script.\n- ahora el registro de usuario es variado.\n- se aplicaron rangos visuales al momento de executar el script.",
+        Title = "- se agrego el objetivo fijado (esto aplica con los mienbros a exepcion de los adminss)",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,})
@@ -1406,9 +1406,9 @@ end)
 
 do
     Window:Tag({
-        Title = "V 2.3,
+        Title = "V 1.5",
         Icon = "github",
-        Color = Color3.fromHex("#686868"),
+        Color = Color3.fromHex("#ff9100"),
         Border = true,
     })
 end
@@ -1420,4 +1420,4 @@ WindUI:Notify({
     Icon = "solar:check-circle-bold",
     Duration = 5,
 })
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verefication.lua"))()
