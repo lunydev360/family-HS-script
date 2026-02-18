@@ -465,43 +465,21 @@ if IsMobile then
         return Button
     end
     -- Kill Aura Button
-    do
-        local function updateButtonKillAura()
-            Button.Text = Settings.KillAura.Enabled and "Kill Aura\nON" or "Kill Aura\nOFF"
-            Button.BackgroundColor3 = Settings.KillAura.Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(239, 79, 29)
-        end
-        
-        local Button = Instance.new("TextButton")
-        Button.AnchorPoint = Vector2.new(1,0)
-        Button.Size = UDim2.fromScale(0.12,0.12)
-        Button.Position = position
-        Button.BackgroundColor3 = color
-        Button.Text = text
-        Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Button.Font = Enum.Font.GothamBold
-        Button.TextSize = 16
-        Button.BorderSizePixel = 0
-        Button.Parent = ScreenGui
-        local Corner = Instance.new("UICorner")
-        Corner.CornerRadius = UDim.new(0, 12)
-        Corner.Parent = Button    
-        local Stroke = Instance.new("UIStroke")
-        Stroke.Color = Color3.fromRGB(255, 255, 255)
-        Stroke.Thickness = 2
-        Stroke.Transparency = 0.5
-        Stroke.Parent = Button
-
-        updateButtonKillAura()
-        Button.MouseButton1Click:Connect(function()
+    local KillAuraButton = CreateMobileButton(
+        "Kill Aura\nOFF",
+        UDim2.fromScale(0.950,0.04),
+        Color3.fromRGB(239, 79, 29),
+        function()
+            Settings.KillAura.Enabled = not Settings.KillAura.Enabled
             if Settings.KillAura.Enabled then
-                    StartKillAura()
-                else
-                    StopKillAura()
-                end
-            updateButtonKillAura()
-        end)
-    end
-
+                StartKillAura()
+            else
+                StopKillAura()
+            end
+            KillAuraButton.Text = Settings.KillAura.Enabled and "Kill Aura\nON" or "Kill Aura\nOFF"
+            KillAuraButton.BackgroundColor3 = Settings.KillAura.Enabled and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(239, 79, 29)
+        end
+    )
     -- ESP Button
     local ESPButton = CreateMobileButton(
         "ESP\nOFF",
