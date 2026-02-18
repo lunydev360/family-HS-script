@@ -1374,7 +1374,7 @@ LocalPlayer.CharacterAdded:Connect(function()
     end
     if Settings.KillAura.Enabled then
         StopKillAura()
-        wait(0.01)
+        wait(0.001)
         StartKillAura()
     end
     if Settings.AntiRagdoll.Enabled then
@@ -1386,7 +1386,7 @@ end)
 Players.PlayerAdded:Connect(function(newPlayer)
     newPlayer.CharacterAdded:Connect(function(character)
         if Settings.KillAura.Enabled then
-            wait(0.5)
+            wait(0.1)
             local hrp = character:FindFirstChild("HumanoidRootPart")
             if hrp then
                 originalHitboxSizes[hrp] = hrp.Size
