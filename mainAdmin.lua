@@ -1147,8 +1147,6 @@ do
     
     AboutSection:Section({
         Title = "Creditos",
-        TextSize = 24,
-        FontWeight = Enum.FontWeight.SemiBold,
     })
 
     AboutSection:Space()
