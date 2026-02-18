@@ -934,236 +934,237 @@ VisualsTab:Colorpicker({
     end
 })
 
--- Utility Tab
-local UtilityTab = Window:Tab({
-    Title = "Utility",
-    Icon = "solar:settings-bold",
-    IconColor = Color3.fromRGB(131, 136, 158),
-    IconShape = "Square",
-    Border = true,
-})
+-- Utility 
+do
+    local UtilityTab = Window:Tab({
+        Title = "Utility",
+        Icon = "solar:settings-bold",
+        IconColor = Color3.fromRGB(131, 136, 158),
+        IconShape = "Square",
+        Border = true,
+    })
 
-UtilityTab:Section({
-    Title = "UI Settings",
-    TextSize = 18,
-})
+    UtilityTab:Section({
+        Title = "UI Settings",
+        TextSize = 18,
+    })
 
-UtilityTab:Keybind({
-    Title = "UI Toggle Keybind",
-    Desc = "Press to hide/show the UI",
-    Value = "RightShift",
-    Callback = function(key)
-        Settings.UI.Keybind = key
-        Window:SetToggleKey(Enum.KeyCode[key])
-        WindUI:Notify({
-            Title = "UI Keybind Changed",
-            Content = "Press " .. key .. " to toggle UI",
-            Icon = "solar:keyboard-bold",
-            Duration = 3,
-        })
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Server Functions",
-    TextSize = 18,
-})
-
-UtilityTab:Button({
-    Title = "Rejoin Server",
-    Desc = "Rejoin the current server",
-    Icon = "refresh-cw",
-    Justify = "Center",
-    Callback = function()
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Server Hop",
-    Desc = "Join a random different server",
-    Icon = "shuffle",
-    Justify = "Center",
-    Callback = function()
-        local servers = {}
-        local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-        local body = HttpService:JSONDecode(req)
-        
-        if body and body.data then
-            for _, server in pairs(body.data) do
-                if server.id ~= game.JobId and server.playing < server.maxPlayers then
-                    table.insert(servers, server.id)
-                end
-            end
-            
-            if #servers > 0 then
-                local randomServer = servers[math.random(1, #servers)]
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, randomServer, LocalPlayer)
-            else
-                WindUI:Notify({
-                    Title = "Server Hop Failed",
-                    Content = "No available servers found!",
-                    Icon = "solar:danger-bold",
-                    Duration = 3,
-                })
-            end
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Server Hop (Lowest Players)",
-    Desc = "Join the server with the least players",
-    Icon = "users",
-    Justify = "Center",
-    Callback = function()
-        local servers = {}
-        local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-        local body = HttpService:JSONDecode(req)
-        
-        if body and body.data then
-            for _, server in pairs(body.data) do
-                if server.id ~= game.JobId then
-                    table.insert(servers, server)
-                end
-            end
-            
-            table.sort(servers, function(a, b)
-                return a.playing < b.playing
-            end)
-            
-            if #servers > 0 then
-                local lowestServer = servers[1].id
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, lowestServer, LocalPlayer)
-            else
-                WindUI:Notify({
-                    Title = "Server Hop Failed",
-                    Content = "No available servers found!",
-                    Icon = "solar:danger-bold",
-                    Duration = 3,
-                })
-            end
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Character Functions",
-    TextSize = 18,
-})
-
-UtilityTab:Button({
-    Title = "Reset Character",
-    Desc = "Respawn your character",
-    Icon = "rotate-ccw",
-    Color = Color3.fromRGB(239, 79, 29),
-    Justify = "Center",
-    Callback = function()
-        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            LocalPlayer.Character.Humanoid.Health = 0
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Teleport to Player",
-    TextSize = 18,
-})
-
-local function GetPlayersList()
-    local playersList = {}
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            table.insert(playersList, player.Name)
-        end
-    end
-    return playersList
-end
-
-local TeleportDropdown = UtilityTab:Dropdown({
-    Title = "Select Player",
-    Desc = "Choose a player to teleport to",
-    Values = GetPlayersList(),
-    Value = nil,
-    AllowNone = true,
-    Callback = function(selectedName) end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Teleport to Selected Player",
-    Desc = "Instantly teleport to the selected player",
-    Icon = "zap",
-    Color = Color3.fromRGB(37, 122, 247),
-    Justify = "Center",
-    Callback = function()
-        local selectedPlayer = nil
-        
-        for _, player in pairs(Players:GetPlayers()) do
-            if player.Name == TeleportDropdown.Value then
-                selectedPlayer = player
-                break
-            end
-        end
-        
-        if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                LocalPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
-                
-                WindUI:Notify({
-                    Title = "Teleported",
-                    Content = "Teleported to " .. selectedPlayer.Name,
-                    Icon = "solar:bolt-bold",
-                    Duration = 3,
-                })
-            else
-                WindUI:Notify({
-                    Title = "Teleport Failed",
-                    Content = "Your character is not loaded!",
-                    Icon = "solar:danger-bold",
-                    Duration = 3,
-                })
-            end
-        else
+    UtilityTab:Keybind({
+        Title = "UI Toggle Keybind",
+        Desc = "Press to hide/show the UI",
+        Value = "RightShift",
+        Callback = function(key)
+            Settings.UI.Keybind = key
+            Window:SetToggleKey(Enum.KeyCode[key])
             WindUI:Notify({
-                Title = "Teleport Failed",
-                Content = "Player not found or character not loaded!",
-                Icon = "solar:danger-bold",
+                Title = "UI Keybind Changed",
+                Content = "Press " .. key .. " to toggle UI",
+                Icon = "solar:keyboard-bold",
                 Duration = 3,
             })
         end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Server Functions",
+        TextSize = 18,
+    })
+
+    UtilityTab:Button({
+        Title = "Rejoin Server",
+        Desc = "Rejoin the current server",
+        Icon = "refresh-cw",
+        Justify = "Center",
+        Callback = function()
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Server Hop",
+        Desc = "Join a random different server",
+        Icon = "shuffle",
+        Justify = "Center",
+        Callback = function()
+            local servers = {}
+            local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+            local body = HttpService:JSONDecode(req)
+            
+            if body and body.data then
+                for _, server in pairs(body.data) do
+                    if server.id ~= game.JobId and server.playing < server.maxPlayers then
+                        table.insert(servers, server.id)
+                    end
+                end
+                
+                if #servers > 0 then
+                    local randomServer = servers[math.random(1, #servers)]
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, randomServer, LocalPlayer)
+                else
+                    WindUI:Notify({
+                        Title = "Server Hop Failed",
+                        Content = "No available servers found!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Server Hop (Lowest Players)",
+        Desc = "Join the server with the least players",
+        Icon = "users",
+        Justify = "Center",
+        Callback = function()
+            local servers = {}
+            local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+            local body = HttpService:JSONDecode(req)
+            
+            if body and body.data then
+                for _, server in pairs(body.data) do
+                    if server.id ~= game.JobId then
+                        table.insert(servers, server)
+                    end
+                end
+                
+                table.sort(servers, function(a, b)
+                    return a.playing < b.playing
+                end)
+                
+                if #servers > 0 then
+                    local lowestServer = servers[1].id
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, lowestServer, LocalPlayer)
+                else
+                    WindUI:Notify({
+                        Title = "Server Hop Failed",
+                        Content = "No available servers found!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Character Functions",
+        TextSize = 18,
+    })
+
+    UtilityTab:Button({
+        Title = "Reset Character",
+        Desc = "Respawn your character",
+        Icon = "rotate-ccw",
+        Color = Color3.fromRGB(239, 79, 29),
+        Justify = "Center",
+        Callback = function()
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.Health = 0
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Teleport to Player",
+        TextSize = 18,
+    })
+
+    local function GetPlayersList()
+        local playersList = {}
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                table.insert(playersList, player.Name)
+            end
+        end
+        return playersList
     end
-})
 
-UtilityTab:Space()
+    local TeleportDropdown = UtilityTab:Dropdown({
+        Title = "Select Player",
+        Desc = "Choose a player to teleport to",
+        Values = GetPlayersList(),
+        Value = nil,
+        AllowNone = true,
+        Callback = function(selectedName) end
+    })
 
-UtilityTab:Button({
-    Title = "Refresh Player List",
-    Desc = "Update the player dropdown list",
-    Icon = "refresh-cw",
-    Justify = "Center",
-    Callback = function()
-        TeleportDropdown:Refresh(GetPlayersList())
-        WindUI:Notify({
-            Title = "Player List Refreshed",
-            Content = "Updated player dropdown",
-            Icon = "solar:check-circle-bold",
-            Duration = 2,
-        })
-    end
-})
+    UtilityTab:Space()
 
+    UtilityTab:Button({
+        Title = "Teleport to Selected Player",
+        Desc = "Instantly teleport to the selected player",
+        Icon = "zap",
+        Color = Color3.fromRGB(37, 122, 247),
+        Justify = "Center",
+        Callback = function()
+            local selectedPlayer = nil
+            
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Name == TeleportDropdown.Value then
+                    selectedPlayer = player
+                    break
+                end
+            end
+            
+            if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+                    
+                    WindUI:Notify({
+                        Title = "Teleported",
+                        Content = "Teleported to " .. selectedPlayer.Name,
+                        Icon = "solar:bolt-bold",
+                        Duration = 3,
+                    })
+                else
+                    WindUI:Notify({
+                        Title = "Teleport Failed",
+                        Content = "Your character is not loaded!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
+            else
+                WindUI:Notify({
+                    Title = "Teleport Failed",
+                    Content = "Player not found or character not loaded!",
+                    Icon = "solar:danger-bold",
+                    Duration = 3,
+                })
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Refresh Player List",
+        Desc = "Update the player dropdown list",
+        Icon = "refresh-cw",
+        Justify = "Center",
+        Callback = function()
+            TeleportDropdown:Refresh(GetPlayersList())
+            WindUI:Notify({
+                Title = "Player List Refreshed",
+                Content = "Updated player dropdown",
+                Icon = "solar:check-circle-bold",
+                Duration = 2,
+            })
+        end
+    })
+end
 do
     local ColorHector = Color3.fromHex("#ff7300")
     local ColorYami = Color3.fromHex("#d400ff")
@@ -1262,7 +1263,7 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se agrego un el apartado de script.\n- variacion de registro.\n- se añadio un enlace al server del script.\n- asignacion de rangos.",
+        Title = "- cambios en los iconos.\n- se removio la tecla de cambiar modo ataque.\n- killaura aumento de velocidad por defecto.\n- se añadio un nuevo script como parametro cambiar modo echo para movil.\n- ",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,})
@@ -1399,9 +1400,9 @@ end)
 
 do
     Window:Tag({
-        Title = "V 1.5",
-        Icon = "github",
-        Color = Color3.fromHex("#ff9100"),
+        Title = "V 2.6",
+        Icon = "lucide:braces",
+        Color = Color3.fromHex("#696969"),
         Border = true,
     })
 
@@ -1416,7 +1417,7 @@ end
 
 local Dialog = Window:Dialog({
     Icon = "lucide:shield-alert",
-    Title = "acepta terminos y con diciones",
+    Title = "acepta terminos y condiciones",
     Content = "al momento de utilizar nuestro script debes entender que este script esta echo por mi(dep0700) y no permito que un extraño o desconosido tenga acceso a este script.\npor lo tanto no comparta el script con nadien o seras baneado .\nsi quieres compartir el script con alguien debes informarme primero, ya sea en el server / MD /Roblox y es nesesario hablar con el invitado \nNota: Si no respondo a tiempo la solicitud de compartir favor de esperar y no dar el script asta yo dar el acceso.",
     Buttons = {
         {
@@ -1434,9 +1435,9 @@ local Dialog = Window:Dialog({
 
 
 WindUI:Notify({
-    Title = "Script Loaded",
-    Content = IsMobile and "Mobile buttons enabled on left/right side!" or "Universal Script Hub loaded successfully!",
-    Icon = "solar:check-circle-bold",
+    Title = "Bienbenido",
+    Content = "listo para el combate HS",
+    Icon = "geist:box",
     Duration = 5,
 })
 loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
