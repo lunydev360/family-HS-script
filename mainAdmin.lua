@@ -1324,7 +1324,7 @@ end
 
 local Dialog = Window:Dialog({
     Icon = "lucide:shield-alert",
-    Title = "acepta terminos y condiciones",
+    Title = "acepta terminos y condicions",
     Content = "al momento de utilizar nuestro script debes entender que este script esta echo por mi(dep0700) y no permito que un extraño o desconosido tenga acceso a este script.\npor lo tanto no comparta el script con nadien o seras baneado .\nsi quieres compartir el script con alguien debes informarme primero, ya sea en el server / MD /Roblox y es nesesario hablar con el invitado \nNota: Si no respondo a tiempo la solicitud de compartir favor de esperar y no dar el script asta yo dar el acceso.",
     Buttons = {
         {
