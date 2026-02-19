@@ -106,6 +106,7 @@ end)
 local lookModer = false
 local lookAdmin = false
 
+
 if RangeRol == "Admin" then
     lookAdmin = false
     lookModer = false
