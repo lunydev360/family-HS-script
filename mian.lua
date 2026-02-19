@@ -74,6 +74,9 @@ local Settings = {
 }
 
 -- Variables
+
+local RangeRol = "Mienbro" --[Admin, Moder, text]
+local VercionHub = "2.8"
 local ESPObjects = {}
 local ChamsObjects = {}
 local KillAuraConnection
@@ -100,136 +103,152 @@ pcall(function()
         :WaitForChild("Hit")
 end)
 
+local lookModer = false
+local lookAdmin = false
+local ColorRole = Color3.fromHex("#ffffff")
+
+if RangeRol == "Admin" then
+    lookAdmin = false
+    lookModer = false
+    ColorRole = Color3.fromHex("#8c00ff")
+elseif RangeRol == "Moder" then
+    lookAdmin = true
+    lookModer = false
+    ColorRole = Color3.fromHex("#ff7b00")
+else
+    lookAdmin = true
+    lookModer = true
+    ColorRole = Color3.fromHex("#32fc00")
+end
+
+
 -- Kill Aura Functions
-local function StartKillAura()
-    if not HitRemote then
-        WindUI:Notify({
-            Title = "Kill Aura Error",
-            Content = "Could not find Hit Remote. This feature may not work on this game.",
-            Icon = "solar:danger-bold",
-            Duration = 5,
-        })
-        Settings.KillAura.Enabled = false
-        return
-    end
-    
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character then
-            local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                originalHitboxSizes[hrp] = hrp.Size
-                hrp.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
-            end
+    local function StartKillAura()
+        if not HitRemote then
+            WindUI:Notify({
+                Title = "Kill Aura Error",
+                Content = "Could not find Hit Remote. This feature may not work on this game.",
+                Icon = "solar:danger-bold",
+                Duration = 5,
+            })
+            Settings.KillAura.Enabled = false
+            return
         end
-    end
-    
-    KillAuraConnection = RunService.Heartbeat:Connect(function()
-        if not Settings.KillAura.Enabled then return end
-        if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
-        
-        local myHRP = LocalPlayer.Character.HumanoidRootPart
-        local closest, closestDist = nil, Settings.KillAura.Range
         
         for _, p in pairs(Players:GetPlayers()) do
-            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
-                if EnabledObjetive and p.userId == objetiveplayer.UserId and not onder[p.UserId] then
-                    local hum = p.Character.Humanoid
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hum.Health > 0 and hrp then
-                        local dist = (hrp.Position - myHRP.Position).Magnitude
-                        if dist <= closestDist then
-                            closestDist = dist
-                            closest = p
-                        end
-                    end
-                end
-
-                if not Settings.KillAura.inmune[p.UserId] and not EnabledObjetive then
-                    local hum = p.Character.Humanoid
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hum.Health > 0 and hrp then
-                        local dist = (hrp.Position - myHRP.Position).Magnitude
-                        if dist <= closestDist then
-                            closestDist = dist
-                            closest = p
-                        end
-                    end
+            if p ~= LocalPlayer and p.Character then
+                local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    originalHitboxSizes[hrp] = hrp.Size
+                    hrp.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
                 end
             end
         end
         
-        if closest and closest.Character and closest.Character:FindFirstChild("Humanoid") then
-            local args = {
-                closest.Character.Humanoid,
-                vector.create(myHRP.Position.X, myHRP.Position.Y, myHRP.Position.Z)
-            }
-            pcall(function()
-                HitRemote:InvokeServer(unpack(args))
-                HitRemote:InvokeServer(unpack(args))
-            end)
-        end
-    end)
-end
-
-local function StopKillAura()
-    if KillAuraConnection then
-        KillAuraConnection:Disconnect()
-        KillAuraConnection = nil
-    end
-    
-    for hrp, oldSize in pairs(originalHitboxSizes) do
-        if hrp and hrp.Parent then
-            hrp.Size = oldSize
-        end
-    end
-    originalHitboxSizes = {}
-    
-    for _, visual in pairs(hitboxVisuals) do
-        if visual and visual.Parent then
-            visual:Destroy()
-        end
-    end
-    hitboxVisuals = {}
-end
-
-local function UpdateHitboxVisuals()
-    for _, visual in pairs(hitboxVisuals) do
-        if visual and visual.Parent then
-            visual:Destroy()
-        end
-    end
-    hitboxVisuals = {}
-    
-    if not Settings.KillAura.ShowHitbox then return end
-    
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer and p.Character then
-            local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local visual = Instance.new("Part")
-                visual.Name = "HitboxVisual"
-                visual.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
-                visual.CFrame = hrp.CFrame
-                visual.Anchored = true
-                visual.CanCollide = false
-                visual.Material = Enum.Material.ForceField
-                visual.Color = Color3.fromRGB(255, 0, 0)
-                visual.Transparency = 0.7
-                visual.Parent = workspace
-                
-                hitboxVisuals[hrp] = visual
-                
-                RunService.Heartbeat:Connect(function()
-                    if visual and visual.Parent and hrp and hrp.Parent then
-                        visual.CFrame = hrp.CFrame
+        KillAuraConnection = RunService.Heartbeat:Connect(function()
+            if not Settings.KillAura.Enabled then return end
+            if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+            
+            local myHRP = LocalPlayer.Character.HumanoidRootPart
+            local closest, closestDist = nil, Settings.KillAura.Range
+            
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Humanoid") then
+                    if EnabledObjetive and p.userId == objetiveplayer.UserId and not onder[p.UserId] then
+                        local hum = p.Character.Humanoid
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hum.Health > 0 and hrp then
+                            local dist = (hrp.Position - myHRP.Position).Magnitude
+                            if dist <= closestDist then
+                                closestDist = dist
+                                closest = p
+                            end
+                        end
                     end
+
+                    if not Settings.KillAura.inmune[p.UserId] and not EnabledObjetive then
+                        local hum = p.Character.Humanoid
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hum.Health > 0 and hrp then
+                            local dist = (hrp.Position - myHRP.Position).Magnitude
+                            if dist <= closestDist then
+                                closestDist = dist
+                                closest = p
+                            end
+                        end
+                    end
+                end
+            end
+            
+            if closest and closest.Character and closest.Character:FindFirstChild("Humanoid") then
+                local args = {
+                    closest.Character.Humanoid,
+                    vector.create(myHRP.Position.X, myHRP.Position.Y, myHRP.Position.Z)
+                }
+                pcall(function()
+                    HitRemote:InvokeServer(unpack(args))
                 end)
+            end
+        end)
+    end
+
+    local function StopKillAura()
+        if KillAuraConnection then
+            KillAuraConnection:Disconnect()
+            KillAuraConnection = nil
+        end
+        
+        for hrp, oldSize in pairs(originalHitboxSizes) do
+            if hrp and hrp.Parent then
+                hrp.Size = oldSize
+            end
+        end
+        originalHitboxSizes = {}
+        
+        for _, visual in pairs(hitboxVisuals) do
+            if visual and visual.Parent then
+                visual:Destroy()
+            end
+        end
+        hitboxVisuals = {}
+    end
+
+    local function UpdateHitboxVisuals()
+        for _, visual in pairs(hitboxVisuals) do
+            if visual and visual.Parent then
+                visual:Destroy()
+            end
+        end
+        hitboxVisuals = {}
+        
+        if not Settings.KillAura.ShowHitbox then return end
+        
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character then
+                local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    local visual = Instance.new("Part")
+                    visual.Name = "HitboxVisual"
+                    visual.Size = Vector3.new(Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize, Settings.KillAura.HitboxSize)
+                    visual.CFrame = hrp.CFrame
+                    visual.Anchored = true
+                    visual.CanCollide = false
+                    visual.Material = Enum.Material.ForceField
+                    visual.Color = Color3.fromRGB(255, 0, 0)
+                    visual.Transparency = 0.7
+                    visual.Parent = workspace
+                    
+                    hitboxVisuals[hrp] = visual
+                    
+                    RunService.Heartbeat:Connect(function()
+                        if visual and visual.Parent and hrp and hrp.Parent then
+                            visual.CFrame = hrp.CFrame
+                        end
+                    end)
+                end
             end
         end
     end
-end
-
-
 -- Fly Functions
 local function StartFly()
     local character = LocalPlayer.Character
@@ -396,65 +415,6 @@ local function UpdateAllESP()
     end
 end
 
--- Chams Functions
-local function CreateChams(player)
-    if ChamsObjects[player] then return end
-    
-    ChamsObjects[player] = {}
-    
-    local function UpdateChams()
-        if not player.Character then return end
-        
-        for _, cham in pairs(ChamsObjects[player]) do
-            if cham and cham.Parent then
-                cham:Destroy()
-            end
-        end
-        ChamsObjects[player] = {}
-        
-        if not Settings.ESP.Chams then return end
-        
-        for _, part in pairs(player.Character:GetDescendants()) do
-            if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-                local highlight = Instance.new("Highlight")
-                highlight.FillColor = Settings.ESP.ChamsColor
-                highlight.OutlineColor = Settings.ESP.ChamsColor
-                highlight.FillTransparency = 0.5
-                highlight.OutlineTransparency = 0
-                highlight.Adornee = part
-                highlight.Parent = part
-                
-                table.insert(ChamsObjects[player], highlight)
-            end
-        end
-    end
-    
-    player.CharacterAdded:Connect(UpdateChams)
-    UpdateChams()
-end
-
-local function RemoveChams(player)
-    if ChamsObjects[player] then
-        for _, cham in pairs(ChamsObjects[player]) do
-            if cham and cham.Parent then
-                cham:Destroy()
-            end
-        end
-        ChamsObjects[player] = nil
-    end
-end
-
-local function UpdateAllChams()
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            if Settings.ESP.Chams then
-                CreateChams(player)
-            else
-                RemoveChams(player)
-            end
-        end
-    end
-end
 
 -- Player Events
 Players.PlayerAdded:Connect(function(player)
@@ -463,23 +423,16 @@ Players.PlayerAdded:Connect(function(player)
         if Settings.ESP.Name or Settings.ESP.Health then
             CreateESP(player)
         end
-        if Settings.ESP.Chams then
-            CreateChams(player)
-        end
     end)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
     RemoveESP(player)
-    RemoveChams(player)
 end)
 
 for _, player in pairs(Players:GetPlayers()) do
     if player ~= LocalPlayer and player.Character then
         CreateESP(player)
-        if Settings.ESP.Chams then
-            CreateChams(player)
-        end
     end
 end
 
@@ -598,573 +551,541 @@ local Window = WindUI:CreateWindow({
 Window:SetToggleKey(Enum.KeyCode[Settings.UI.Keybind])
 
 -- Combat Tab
-local CombatTab = Window:Tab({
-    Title = "Combat",
-    Icon = "solar:sword-bold",
-    IconColor = Color3.fromRGB(239, 79, 29),
-    IconShape = "Square",
-    Border = true,
-})
+do
+    local CombatTab = Window:Tab({
+        Title = "Combat",
+        Icon = "solar:sword-bold",
+        IconColor = Color3.fromRGB(239, 79, 29),
+        IconShape = "Square",
+        Border = true,
+    })
 
-CombatTab:Section({
-    Title = "Kill Aura Settings",
-    TextSize = 18,
-})
+    CombatTab:Section({
+        Title = "Kill Aura Settings",
+        TextSize = 18,
+    })
 
-CombatTab:Toggle({
-    Title = "Enable Kill Aura",
-    Desc = "Automatically attack nearest player",
-    Value = false,
-    Callback = function(state)
-        Settings.KillAura.Enabled = state
-        if state then
-            StartKillAura()
-        else
-            StopKillAura()
+    CombatTab:Toggle({
+        Title = "Enable Kill Aura",
+        Desc = "Automatically attack nearest player",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.Enabled = state
+            if state then
+                StartKillAura()
+            else
+                StopKillAura()
+            end
         end
-    end
-})
+    })
 
-CombatTab:Slider({
-    Title = "Attack Range",
-    Desc = "Maximum distance to attack players",
-    Step = 1,
-    Value = {
-        Min = 5,
-        Max = 50,
-        Default = 15,
-    },
-    Callback = function(value)
-        Settings.KillAura.Range = value
-    end
-})
+    CombatTab:Slider({
+        Title = "Attack Range",
+        Desc = "Maximum distance to attack players",
+        Step = 1,
+        Value = {
+            Min = 5,
+            Max = 50,
+            Default = 15,
+        },
+        Callback = function(value)
+            Settings.KillAura.Range = value
+        end
+    })
 
-CombatTab:Slider({
-    Title = "Hitbox Expansion Size",
-    Desc = "Size of expanded hitboxes (client-side only)",
-    Step = 1,
-    Value = {
-        Min = 5,
-        Max = 100,
-        Default = 30,
-    },
-    Callback = function(value)
-        Settings.KillAura.HitboxSize = value
-        
-        if Settings.KillAura.Enabled then
+    CombatTab:Slider({
+        Title = "Hitbox Expansion Size",
+        Desc = "Size of expanded hitboxes (client-side only)",
+        Step = 1,
+        Value = {
+            Min = 5,
+            Max = 100,
+            Default = 30,
+        },
+        Callback = function(value)
+            Settings.KillAura.HitboxSize = value
+            
+            if Settings.KillAura.Enabled then
+                for _, p in pairs(Players:GetPlayers()) do
+                    if p ~= LocalPlayer and p.Character then
+                        local hrp = p.Character:FindFirstChild("HumanoidRootPart")
+                        if hrp and originalHitboxSizes[hrp] then
+                            hrp.Size = Vector3.new(value, value, value)
+                        end
+                    end
+                end
+            end
+            
+            UpdateHitboxVisuals()
+        end
+    })
+
+    CombatTab:Toggle({
+        Title = "Show Hitbox Visualization",
+        Desc = "Display red transparent boxes showing expanded hitboxes",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.ShowHitbox = state
+            UpdateHitboxVisuals()
+        end
+    })
+
+    CombatTab:Toggle({
+        Title = "unattack admin",
+        Desc = "Automatically attack nearest admin",
+        Value = true,
+        Locked = lookAdmin,
+        LockedTitle = "solo para admins",
+        Callback = function(state)
+            Settings.KillAura.inmune[7593008940] = state
+            onder[7593008940] = state
+        end
+    })
+
+    local Dropdown =CombatTab:Dropdown({
+        Title = "quitar inmunidad",
+        Desc = "elimina la inmunidad del kill aurora aun mienbro",
+        Values = arrayPlayers,
+        Value = nil,
+        Multi = true,
+        Locked = lookModer,
+        LockedTitle = "solo moderadores",
+        AllowNone = true,
+        Callback = function(option)
             for _, p in pairs(Players:GetPlayers()) do
-                if p ~= LocalPlayer and p.Character then
-                    local hrp = p.Character:FindFirstChild("HumanoidRootPart")
-                    if hrp and originalHitboxSizes[hrp] then
-                        hrp.Size = Vector3.new(value, value, value)
+                if table.find(option,p.Name) then
+                    Settings.KillAura.inmune[p.UserId] = false
+                else
+                    if table.find(arrayPlayers,p.Name) then
+                        Settings.KillAura.inmune[p.UserId] = true
+                    end
+                end
+                
+            end
+        end
+    })
+
+    local Input = CombatTab:Input({
+        Title = "objetivo fijo",
+        Desc = "escriba el nombre",
+        Value = nil,
+        Type = "Input", -- or "Textarea"
+        Placeholder = "nombra un usuario",
+        Callback = function(input)
+
+            local text = input:lower()
+
+            if text == "" then
+                EnabledObjetive = false
+                return
+            end
+            for _,p in pairs(Players:GetPlayers()) do
+                if p.Name:lower():find(text) then
+                    EnabledObjetive = true
+                    objetiveplayer = p
+                    WindUI:Notify({
+                        Title = "selection player",
+                        Content = "as seleccionado a: " .. objetiveplayer.Name .. " con exito",
+                        Icon = "solar:check-circle-bold",
+                        Duration = 5,})
+                    if onder[p.UserId] then
+                        WindUI:Notify({
+                            Title = "selection player",
+                            Content = "el jugador que deseastes seleccionar no sera afectado",
+                            Icon = "solar:check-circle-bold",
+                            Duration = 5,})
                     end
                 end
             end
         end
-        
-        UpdateHitboxVisuals()
-    end
-})
+    })
 
-CombatTab:Toggle({
-    Title = "Show Hitbox Visualization",
-    Desc = "Display red transparent boxes showing expanded hitboxes",
-    Value = false,
-    Callback = function(state)
-        Settings.KillAura.ShowHitbox = state
-        UpdateHitboxVisuals()
-    end
-})
 
-CombatTab:Toggle({
-    Title = "unattack admin",
-    Desc = "Automatically attack nearest admin",
-    Value = true,
-    Locked = true,
-    LockedTitle = "solo para admins",
-    Callback = function(state)
-        Settings.KillAura.inmune[7593008940] = state
-        onder[7593008940] = state
-    end
-})
+    CombatTab:Space()
 
-local Dropdown =CombatTab:Dropdown({
-    Title = "quitar inmunidad",
-    Desc = "elimina la inmunidad del kill aurora aun mienbro",
-    Values = arrayPlayers,
-    Value = nil,
-    Multi = true,
-    Locked = true,
-    LockedTitle = "solo moderadores",
-    AllowNone = true,
-    Callback = function(option)
-        for _, p in pairs(Players:GetPlayers()) do
-            if table.find(option,p.Name) then
-                Settings.KillAura.inmune[p.UserId] = false
-            else
-                if table.find(arrayPlayers,p.Name) then
-                    Settings.KillAura.inmune[p.UserId] = true
-                end
-            end
-            
+    CombatTab:Keybind({
+        Title = "Kill Aura Keybind",
+        Desc = "Toggle kill aura on/off",
+        Value = "E",
+        Callback = function(key)
+            Settings.KillAura.Keybind = key
         end
-    end
-})
+    })
 
-local Input = CombatTab:Input({
-    Title = "objetivo fijo",
-    Desc = "escriba el nombre",
-    Value = nil,
-    Type = "Input", -- or "Textarea"
-    Placeholder = "nombra un usuario",
-    Callback = function(input)
+    CombatTab:Space()
 
-        local text = input:lower()
+    CombatTab:Section({
+        Title = "Anti-Ragdoll",
+        TextSize = 18,
+    })
 
-        if text == "" then
-            EnabledObjetive = false
-            return
-        end
-        for _,p in pairs(Players:GetPlayers()) do
-            if p.Name:lower():find(text) then
-                EnabledObjetive = true
-                objetiveplayer = p
+    CombatTab:Toggle({
+        Title = "Anti-Ragdoll",
+        Desc = "Prevents you from ragdolling when hit",
+        Value = false,
+        Callback = function(state)
+            Settings.AntiRagdoll.Enabled = state
+            if state then
+                StartAntiRagdoll()
                 WindUI:Notify({
-                    Title = "selection player",
-                    Content = "as seleccionado a: " .. objetiveplayer.Name .. " con exito",
-                    Icon = "solar:check-circle-bold",
-                    Duration = 5,})
-                if onder[p.UserId] then
-                    WindUI:Notify({
-                        Title = "selection player",
-                        Content = "el jugador que deseastes seleccionar no sera afectado",
-                        Icon = "solar:check-circle-bold",
-                        Duration = 5,})
-                end
-            end
-        end
-    end
-})
-
-
-CombatTab:Space()
-
-CombatTab:Keybind({
-    Title = "Kill Aura Keybind",
-    Desc = "Toggle kill aura on/off",
-    Value = "E",
-    Callback = function(key)
-        Settings.KillAura.Keybind = key
-    end
-})
-
-CombatTab:Space()
-
-CombatTab:Section({
-    Title = "Anti-Ragdoll",
-    TextSize = 18,
-})
-
-CombatTab:Toggle({
-    Title = "Anti-Ragdoll",
-    Desc = "Prevents you from ragdolling when hit",
-    Value = false,
-    Callback = function(state)
-        Settings.AntiRagdoll.Enabled = state
-        if state then
-            StartAntiRagdoll()
-            WindUI:Notify({
-                Title = "Anti-Ragdoll Enabled",
-                Content = "You will no longer ragdoll!",
-                Icon = "solar:shield-check-bold",
-                Duration = 3,
-            })
-        else
-            StopAntiRagdoll()
-            WindUI:Notify({
-                Title = "Anti-Ragdoll Disabled",
-                Content = "Ragdoll is back to normal",
-                Icon = "solar:shield-bold",
-                Duration = 3,
-            })
-        end
-    end
-})
-
-CombatTab:Space()
-
-CombatTab:Keybind({
-    Title = "cambiar de modo",
-    Desc = "Toggle modo ataque/no",
-    Value = "E",
-    Callback = function(key)
-        print(key)
-    end
-})
-
--- Movement Tab
-local MovementTab = Window:Tab({
-    Title = "Movement",
-    Icon = "solar:running-round-bold",
-    IconColor = Color3.fromRGB(16, 197, 80),
-    IconShape = "Square",
-    Border = true,
-})
-
-MovementTab:Section({
-    Title = "Fly Settings",
-    TextSize = 18,
-})
-
-MovementTab:Toggle({
-    Title = "Enable Fly",
-    Desc = "Use WASD + Space/Shift to fly",
-    Value = false,
-    Callback = function(state)
-        Settings.Fly.Enabled = state
-        if state then
-            StartFly()
-        else
-            StopFly()
-        end
-    end
-})
-
-MovementTab:Slider({
-    Title = "Fly Speed",
-    Step = 1,
-    Value = {
-        Min = 10,
-        Max = 200,
-        Default = 50,
-    },
-    Callback = function(value)
-        Settings.Fly.Speed = value
-    end
-})
-
-MovementTab:Space()
-
-MovementTab:Section({
-    Title = "Jump Settings",
-    TextSize = 18,
-})
-
-MovementTab:Toggle({
-    Title = "Infinite Jump",
-    Value = false,
-    Callback = function(state)
-        Settings.InfiniteJump.Enabled = state
-    end
-})
-
--- Visuals Tab
-local VisualsTab = Window:Tab({
-    Title = "Visuals",
-    Icon = "solar:eye-bold",
-    IconColor = Color3.fromRGB(37, 122, 247),
-    IconShape = "Square",
-    Border = true,
-})
-
-VisualsTab:Section({
-    Title = "ESP Settings",
-    TextSize = 18,
-})
-
-VisualsTab:Toggle({
-    Title = "Name ESP",
-    Value = false,
-    Callback = function(state)
-        Settings.ESP.Name = state
-        
-        if state then
-            for _, player in pairs(Players:GetPlayers()) do
-                if player ~= LocalPlayer and player.Character then
-                    CreateESP(player)
-                end
-            end
-        end
-        UpdateAllESP()
-    end
-})
-
-VisualsTab:Toggle({
-    Title = "interfaz",
-    Desc = "oculta o activa la interfaz",
-    Value = true,
-    Callback = function(state)
-        local player = game.Players.LocalPlayer
-        local gui = player.PlayerGui:FindFirstChild("ScreenGui")
-        if gui then
-            gui.Enabled = state
-        end
-    end
-})
-VisualsTab:Space()
-
-VisualsTab:Section({
-    Title = "Chams Settings",
-    TextSize = 18,
-})
-
-VisualsTab:Toggle({
-    Title = "Enable Chams",
-    Desc = "Highlight players through walls",
-    Value = false,
-    Callback = function(state)
-        Settings.ESP.Chams = state
-        UpdateAllChams()
-    end
-})
-
-VisualsTab:Colorpicker({
-    Title = "Chams Color",
-    Default = Color3.fromRGB(255, 0, 255),
-    Callback = function(color)
-        Settings.ESP.ChamsColor = color
-        
-        for player, chams in pairs(ChamsObjects) do
-            for _, cham in pairs(chams) do
-                if cham and cham.Parent then
-                    cham.FillColor = color
-                    cham.OutlineColor = color
-                end
-            end
-        end
-    end
-})
-
--- Utility Tab
-local UtilityTab = Window:Tab({
-    Title = "Utility",
-    Icon = "solar:settings-bold",
-    IconColor = Color3.fromRGB(131, 136, 158),
-    IconShape = "Square",
-    Border = true,
-})
-
-UtilityTab:Section({
-    Title = "UI Settings",
-    TextSize = 18,
-})
-
-UtilityTab:Keybind({
-    Title = "UI Toggle Keybind",
-    Desc = "Press to hide/show the UI",
-    Value = "RightShift",
-    Callback = function(key)
-        Settings.UI.Keybind = key
-        Window:SetToggleKey(Enum.KeyCode[key])
-        WindUI:Notify({
-            Title = "UI Keybind Changed",
-            Content = "Press " .. key .. " to toggle UI",
-            Icon = "solar:keyboard-bold",
-            Duration = 3,
-        })
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Server Functions",
-    TextSize = 18,
-})
-
-UtilityTab:Button({
-    Title = "Rejoin Server",
-    Desc = "Rejoin the current server",
-    Icon = "refresh-cw",
-    Justify = "Center",
-    Callback = function()
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Server Hop",
-    Desc = "Join a random different server",
-    Icon = "shuffle",
-    Justify = "Center",
-    Callback = function()
-        local servers = {}
-        local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-        local body = HttpService:JSONDecode(req)
-        
-        if body and body.data then
-            for _, server in pairs(body.data) do
-                if server.id ~= game.JobId and server.playing < server.maxPlayers then
-                    table.insert(servers, server.id)
-                end
-            end
-            
-            if #servers > 0 then
-                local randomServer = servers[math.random(1, #servers)]
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, randomServer, LocalPlayer)
+                    Title = "Anti-Ragdoll Enabled",
+                    Content = "You will no longer ragdoll!",
+                    Icon = "solar:shield-check-bold",
+                    Duration = 3,
+                })
             else
+                StopAntiRagdoll()
                 WindUI:Notify({
-                    Title = "Server Hop Failed",
-                    Content = "No available servers found!",
-                    Icon = "solar:danger-bold",
+                    Title = "Anti-Ragdoll Disabled",
+                    Content = "Ragdoll is back to normal",
+                    Icon = "solar:shield-bold",
                     Duration = 3,
                 })
             end
         end
-    end
-})
+    })
 
-UtilityTab:Space()
+    CombatTab:Space()
 
-UtilityTab:Button({
-    Title = "Server Hop (Lowest Players)",
-    Desc = "Join the server with the least players",
-    Icon = "users",
-    Justify = "Center",
-    Callback = function()
-        local servers = {}
-        local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-        local body = HttpService:JSONDecode(req)
-        
-        if body and body.data then
-            for _, server in pairs(body.data) do
-                if server.id ~= game.JobId then
-                    table.insert(servers, server)
-                end
-            end
-            
-            table.sort(servers, function(a, b)
-                return a.playing < b.playing
-            end)
-            
-            if #servers > 0 then
-                local lowestServer = servers[1].id
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, lowestServer, LocalPlayer)
-            else
-                WindUI:Notify({
-                    Title = "Server Hop Failed",
-                    Content = "No available servers found!",
-                    Icon = "solar:danger-bold",
-                    Duration = 3,
-                })
-            end
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Character Functions",
-    TextSize = 18,
-})
-
-UtilityTab:Button({
-    Title = "Reset Character",
-    Desc = "Respawn your character",
-    Icon = "rotate-ccw",
-    Color = Color3.fromRGB(239, 79, 29),
-    Justify = "Center",
-    Callback = function()
-        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            LocalPlayer.Character.Humanoid.Health = 0
-        end
-    end
-})
-
-UtilityTab:Space()
-
-UtilityTab:Section({
-    Title = "Teleport to Player",
-    TextSize = 18,
-})
-
-local function GetPlayersList()
-    local playersList = {}
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer then
-            table.insert(playersList, player.Name)
-        end
-    end
-    return playersList
 end
 
-local TeleportDropdown = UtilityTab:Dropdown({
-    Title = "Select Player",
-    Desc = "Choose a player to teleport to",
-    Values = GetPlayersList(),
-    Value = nil,
-    AllowNone = true,
-    Callback = function(selectedName) end
-})
+-- Movement 
+do
+    local MovementTab = Window:Tab({
+        Title = "Movement",
+        Icon = "solar:running-round-bold",
+        IconColor = Color3.fromRGB(16, 197, 80),
+        IconShape = "Square",
+        Border = true,
+    })
 
-UtilityTab:Space()
+    MovementTab:Section({
+        Title = "Fly Settings",
+        TextSize = 18,
+    })
 
-UtilityTab:Button({
-    Title = "Teleport to Selected Player",
-    Desc = "Instantly teleport to the selected player",
-    Icon = "zap",
-    Color = Color3.fromRGB(37, 122, 247),
-    Justify = "Center",
-    Callback = function()
-        local selectedPlayer = nil
-        
-        for _, player in pairs(Players:GetPlayers()) do
-            if player.Name == TeleportDropdown.Value then
-                selectedPlayer = player
-                break
+    MovementTab:Toggle({
+        Title = "Enable Fly",
+        Desc = "Use WASD + Space/Shift to fly",
+        Value = false,
+        Callback = function(state)
+            Settings.Fly.Enabled = state
+            if state then
+                StartFly()
+            else
+                StopFly()
             end
         end
-        
-        if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                LocalPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+    })
+
+    MovementTab:Slider({
+        Title = "Fly Speed",
+        Step = 1,
+        Value = {
+            Min = 10,
+            Max = 200,
+            Default = 50,
+        },
+        Callback = function(value)
+            Settings.Fly.Speed = value
+        end
+    })
+
+    MovementTab:Space()
+
+    MovementTab:Section({
+        Title = "Jump Settings",
+        TextSize = 18,
+    })
+
+    MovementTab:Toggle({
+        Title = "Infinite Jump",
+        Value = false,
+        Callback = function(state)
+            Settings.InfiniteJump.Enabled = state
+        end
+    })
+end
+
+-- Visuals Tab
+do
+    local VisualsTab = Window:Tab({
+        Title = "Visuals",
+        Icon = "solar:eye-bold",
+        IconColor = Color3.fromRGB(37, 122, 247),
+        IconShape = "Square",
+        Border = true,
+    })
+
+    VisualsTab:Section({
+        Title = "ESP Settings",
+        TextSize = 18,
+    })
+
+    VisualsTab:Toggle({
+        Title = "Name ESP",
+        Value = false,
+        Callback = function(state)
+            Settings.ESP.Name = state
+            
+            if state then
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character then
+                        CreateESP(player)
+                    end
+                end
+            end
+            UpdateAllESP()
+        end
+    })
+
+    VisualsTab:Toggle({
+        Title = "interfaz",
+        Desc = "oculta o activa la interfaz",
+        Value = true,
+        Callback = function(state)
+            local player = game.Players.LocalPlayer
+            local gui = player.PlayerGui:FindFirstChild("ScreenGui")
+            if gui then
+                gui.Enabled = state
+            end
+        end
+    })
+end
+
+-- Utility 
+do
+    local UtilityTab = Window:Tab({
+        Title = "Utility",
+        Icon = "solar:settings-bold",
+        IconColor = Color3.fromRGB(131, 136, 158),
+        IconShape = "Square",
+        Border = true,
+    })
+
+    UtilityTab:Section({
+        Title = "UI Settings",
+        TextSize = 18,
+    })
+
+    UtilityTab:Keybind({
+        Title = "UI Toggle Keybind",
+        Desc = "Press to hide/show the UI",
+        Value = "RightShift",
+        Callback = function(key)
+            Settings.UI.Keybind = key
+            Window:SetToggleKey(Enum.KeyCode[key])
+            WindUI:Notify({
+                Title = "UI Keybind Changed",
+                Content = "Press " .. key .. " to toggle UI",
+                Icon = "solar:keyboard-bold",
+                Duration = 3,
+            })
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Server Functions",
+        TextSize = 18,
+    })
+
+    UtilityTab:Button({
+        Title = "Rejoin Server",
+        Desc = "Rejoin the current server",
+        Icon = "refresh-cw",
+        Justify = "Center",
+        Callback = function()
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Server Hop",
+        Desc = "Join a random different server",
+        Icon = "shuffle",
+        Justify = "Center",
+        Callback = function()
+            local servers = {}
+            local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+            local body = HttpService:JSONDecode(req)
+            
+            if body and body.data then
+                for _, server in pairs(body.data) do
+                    if server.id ~= game.JobId and server.playing < server.maxPlayers then
+                        table.insert(servers, server.id)
+                    end
+                end
                 
-                WindUI:Notify({
-                    Title = "Teleported",
-                    Content = "Teleported to " .. selectedPlayer.Name,
-                    Icon = "solar:bolt-bold",
-                    Duration = 3,
-                })
+                if #servers > 0 then
+                    local randomServer = servers[math.random(1, #servers)]
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, randomServer, LocalPlayer)
+                else
+                    WindUI:Notify({
+                        Title = "Server Hop Failed",
+                        Content = "No available servers found!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Server Hop (Lowest Players)",
+        Desc = "Join the server with the least players",
+        Icon = "users",
+        Justify = "Center",
+        Callback = function()
+            local servers = {}
+            local req = game:HttpGetAsync("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
+            local body = HttpService:JSONDecode(req)
+            
+            if body and body.data then
+                for _, server in pairs(body.data) do
+                    if server.id ~= game.JobId then
+                        table.insert(servers, server)
+                    end
+                end
+                
+                table.sort(servers, function(a, b)
+                    return a.playing < b.playing
+                end)
+                
+                if #servers > 0 then
+                    local lowestServer = servers[1].id
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, lowestServer, LocalPlayer)
+                else
+                    WindUI:Notify({
+                        Title = "Server Hop Failed",
+                        Content = "No available servers found!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Character Functions",
+        TextSize = 18,
+    })
+
+    UtilityTab:Button({
+        Title = "Reset Character",
+        Desc = "Respawn your character",
+        Icon = "rotate-ccw",
+        Color = Color3.fromRGB(239, 79, 29),
+        Justify = "Center",
+        Callback = function()
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.Health = 0
+            end
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Section({
+        Title = "Teleport to Player",
+        TextSize = 18,
+    })
+
+    local function GetPlayersList()
+        local playersList = {}
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                table.insert(playersList, player.Name)
+            end
+        end
+        return playersList
+    end
+
+    local TeleportDropdown = UtilityTab:Dropdown({
+        Title = "Select Player",
+        Desc = "Choose a player to teleport to",
+        Values = GetPlayersList(),
+        Value = nil,
+        AllowNone = true,
+        Callback = function(selectedName) end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Teleport to Selected Player",
+        Desc = "Instantly teleport to the selected player",
+        Icon = "zap",
+        Color = Color3.fromRGB(37, 122, 247),
+        Justify = "Center",
+        Callback = function()
+            local selectedPlayer = nil
+            
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Name == TeleportDropdown.Value then
+                    selectedPlayer = player
+                    break
+                end
+            end
+            
+            if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+                    
+                    WindUI:Notify({
+                        Title = "Teleported",
+                        Content = "Teleported to " .. selectedPlayer.Name,
+                        Icon = "solar:bolt-bold",
+                        Duration = 3,
+                    })
+                else
+                    WindUI:Notify({
+                        Title = "Teleport Failed",
+                        Content = "Your character is not loaded!",
+                        Icon = "solar:danger-bold",
+                        Duration = 3,
+                    })
+                end
             else
                 WindUI:Notify({
                     Title = "Teleport Failed",
-                    Content = "Your character is not loaded!",
+                    Content = "Player not found or character not loaded!",
                     Icon = "solar:danger-bold",
                     Duration = 3,
                 })
             end
-        else
+        end
+    })
+
+    UtilityTab:Space()
+
+    UtilityTab:Button({
+        Title = "Refresh Player List",
+        Desc = "Update the player dropdown list",
+        Icon = "refresh-cw",
+        Justify = "Center",
+        Callback = function()
+            TeleportDropdown:Refresh(GetPlayersList())
             WindUI:Notify({
-                Title = "Teleport Failed",
-                Content = "Player not found or character not loaded!",
-                Icon = "solar:danger-bold",
-                Duration = 3,
+                Title = "Player List Refreshed",
+                Content = "Updated player dropdown",
+                Icon = "solar:check-circle-bold",
+                Duration = 2,
             })
         end
-    end
-})
+    })
+end
 
-UtilityTab:Space()
-
-UtilityTab:Button({
-    Title = "Refresh Player List",
-    Desc = "Update the player dropdown list",
-    Icon = "refresh-cw",
-    Justify = "Center",
-    Callback = function()
-        TeleportDropdown:Refresh(GetPlayersList())
-        WindUI:Notify({
-            Title = "Player List Refreshed",
-            Content = "Updated player dropdown",
-            Icon = "solar:check-circle-bold",
-            Duration = 2,
-        })
-    end
-})
-
+-- Scripts
 do
     local ColorHector = Color3.fromHex("#ff7300")
     local ColorYami = Color3.fromHex("#d400ff")
@@ -1236,13 +1157,10 @@ do
     local AboutSection = AboutTab:Section({
         Title = "acerca",
     })
-    
     AboutSection:Space()
     
     AboutSection:Section({
         Title = "Creditos",
-        TextSize = 24,
-        FontWeight = Enum.FontWeight.SemiBold,
     })
 
     AboutSection:Space()
@@ -1263,7 +1181,7 @@ do
     ActualizSeccion:Space()
 
     ActualizSeccion:Section({
-        Title = "- se agrego un el apartado de script.\n- variacion de registro.\n- se añadio un enlace al server del script.\n- asignacion de rangos.",
+        Title = "- cambios en los iconos.\n- se removio la tecla de cambiar modo ataque.\n- killaura aumento de velocidad por defecto.\n- se añadio un nuevo script como parametro cambiar modo echo para movil.\n- se elimino en esp Chamsr. (eso fue eliminado ya que no funcionaba o ya no era nesesario)",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,})
@@ -1339,7 +1257,7 @@ do
         })
     end
 
-
+    AboutTab:Select()
 end
 
 
@@ -1368,7 +1286,6 @@ end
 -- Character Respawn Handler
 LocalPlayer.CharacterAdded:Connect(function()
     wait(0.5)
-    UpdateSpeed()
     if Settings.Fly.Enabled then
         StopFly()
         wait(0.1)
@@ -1376,7 +1293,7 @@ LocalPlayer.CharacterAdded:Connect(function()
     end
     if Settings.KillAura.Enabled then
         StopKillAura()
-        wait(0.1)
+        wait(0.001)
         StartKillAura()
     end
     if Settings.AntiRagdoll.Enabled then
@@ -1401,25 +1318,47 @@ end)
 
 do
     Window:Tag({
-        Title = "V 2.3",
-        Icon = "github",
-        Color = Color3.fromHex("#ff9100"),
+        Title = "V " .. VercionHub ,
+        Icon = "lucide:braces",
+        Color = Color3.fromHex("#696969"),
         Border = true,
     })
 
     Window:Tag({
-        Title = "Mienbro",
+        Title = RangeRol,
         Icon = "lucide:panda",
-        Color = Color3.fromHex("#09ff00"),
+        Color = ColorRole,
         Border = false,
     })
 end
 
 
+local Dialog = Window:Dialog({
+    Icon = "lucide:shield-alert",
+    Title = "acepta terminos y condiciones",
+    Content = "al momento de utilizar nuestro script debes entender que este script esta echo por mi(dep0700) y no permito que un extraño o desconosido tenga acceso a este script.\npor lo tanto no comparta el script con nadien o seras baneado .\nsi quieres compartir el script con alguien debes informarme primero, ya sea en el server / MD /Roblox y es nesesario hablar con el invitado \nNota: Si no respondo a tiempo la solicitud de compartir favor de esperar y no dar el script asta yo dar el acceso.",
+    Buttons = {
+        {
+            Title = "acepto",
+            Callback = function()
+                print("Confirmed!")
+            end,
+        }
+    },
+})
+
 WindUI:Notify({
-    Title = "Script Loaded",
-    Content = IsMobile and "Mobile buttons enabled on left/right side!" or "Universal Script Hub loaded successfully!",
-    Icon = "solar:check-circle-bold",
+    Title = "Bienbenido",
+    Content = "listo para el combate HS",
+    Icon = "geist:box",
     Duration = 5,
 })
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/global.lua"))()
+
+
+if RangeRol == "Admin" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
+elseif RangeRol == "Moder" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/moder.lua"))()
+else
+    oadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/global.lua"))()
+end

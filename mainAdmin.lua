@@ -75,7 +75,7 @@ local Settings = {
 
 -- Variables
 
-local RangeRol = "Moder"
+local RangeRol = "Admin" --[Admin, Moder, text]
 local VercionHub = "2.8"
 local ESPObjects = {}
 local ChamsObjects = {}
@@ -105,17 +105,20 @@ end)
 
 local lookModer = false
 local lookAdmin = false
-
+local ColorRole = Color3.fromHex("#ffffff")
 
 if RangeRol == "Admin" then
     lookAdmin = false
     lookModer = false
+    ColorRole = Color3.fromHex("#8c00ff")
 elseif RangeRol == "Moder" then
     lookAdmin = true
     lookModer = false
+    ColorRole = Color3.fromHex("#ff7b00")
 else
     lookAdmin = true
     lookModer = true
+    ColorRole = Color3.fromHex("#32fc00")
 end
 
 
@@ -1324,7 +1327,7 @@ do
     Window:Tag({
         Title = RangeRol,
         Icon = "lucide:panda",
-        Color = Color3.fromHex("#cc00ff"),
+        Color = ColorRole,
         Border = false,
     })
 end
