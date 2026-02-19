@@ -76,7 +76,7 @@ local Settings = {
 -- Variables
 
 local RangeRol = "Moder" --[Admin, Moder, text]
-local VercionHub = "2.9"
+local VercionHub = "2.8"
 local ESPObjects = {}
 local ChamsObjects = {}
 local KillAuraConnection
@@ -1134,7 +1134,7 @@ do
         Color = ColorYami,
         Icon = "",
         Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/diogo.lua"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/diogopro.lua"))()
         end
     })
 
