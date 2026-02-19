@@ -1129,6 +1129,16 @@ do
     })
 
     ScriptsTab:Button({
+        Title = "Kill Aura diogo",
+        Desc = "un script desactualizado echo por diogo",
+        Color = ColorYami,
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/diogo.lua"))()
+        end
+    })
+
+    ScriptsTab:Button({
         Title = "en proseso",
         Desc = "",
         Locked = true,
@@ -1136,7 +1146,7 @@ do
         Color = Color3.fromHex("#585858"),
         Icon = "",
         Callback = function()
-            -- loadstring(game:HttpGet(""))()
+            -- loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/text.lua"))()
         end
     })
 
