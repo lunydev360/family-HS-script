@@ -75,7 +75,7 @@ local Settings = {
 
 -- Variables
 
-local RangeRol = "Admin"
+local RangeRol = "Moder"
 local VercionHub = "2.8"
 local ESPObjects = {}
 local ChamsObjects = {}
