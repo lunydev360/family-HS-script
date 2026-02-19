@@ -74,6 +74,9 @@ local Settings = {
 }
 
 -- Variables
+
+local RangeRol = "Admin"
+local VercionHub = "2.8"
 local ESPObjects = {}
 local ChamsObjects = {}
 local KillAuraConnection
@@ -99,6 +102,21 @@ pcall(function()
         :WaitForChild("RF")
         :WaitForChild("Hit")
 end)
+
+local lookModer = false
+local lookAdmin = false
+
+if RangeRol == "Admin" then
+    lookAdmin = false
+    lookModer = false
+elseif RangeRol == "Moder" then
+    lookAdmin = true
+    lookModer = false
+else
+    lookAdmin = true
+    lookModer = true
+end
+
 
 -- Kill Aura Functions
     local function StartKillAura()
@@ -612,7 +630,7 @@ do
         Title = "unattack admin",
         Desc = "Automatically attack nearest admin",
         Value = true,
-        Locked = false,
+        Locked = lookAdmin,
         LockedTitle = "solo para admins",
         Callback = function(state)
             Settings.KillAura.inmune[7593008940] = state
@@ -626,7 +644,7 @@ do
         Values = arrayPlayers,
         Value = nil,
         Multi = true,
-        Locked = false,
+        Locked = lookModer,
         LockedTitle = "solo moderadores",
         AllowNone = true,
         Callback = function(option)
@@ -1304,7 +1322,7 @@ end)
 
 do
     Window:Tag({
-        Title = "V 2.6",
+        Title = "V " .. VercionHub ,
         Icon = "lucide:braces",
         Color = Color3.fromHex("#696969"),
         Border = true,
@@ -1339,4 +1357,12 @@ WindUI:Notify({
     Icon = "geist:box",
     Duration = 5,
 })
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
+
+
+if RangeRol == "Admin" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
+elseif RangeRol == "Moder" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/moder.lua"))()
+else
+    oadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/global.lua"))()
+end
