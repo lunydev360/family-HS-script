@@ -744,14 +744,6 @@ do
 
     CombatTab:Space()
 
-    CombatTab:Keybind({
-        Title = "cambiar de modo",
-        Desc = "Toggle modo ataque/no",
-        Value = "E",
-        Callback = function(key)
-            print(key)
-        end
-    })
 end
 
 -- Movement 
@@ -1330,7 +1322,7 @@ do
     })
 
     Window:Tag({
-        Title = "Admin",
+        Title = RangeRol,
         Icon = "lucide:panda",
         Color = Color3.fromHex("#cc00ff"),
         Border = false,
