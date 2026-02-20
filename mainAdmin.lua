@@ -1106,7 +1106,7 @@ do
     AcercaScriptSection:Space()
 
     AcercaScriptSection:Section({
-        Title = "los script que se encuentras aqui no vienen incluidos en la actualizacion , por lo que se recomienda revisar ustedes mismos.\nNota: -los scripts pueden tener diversos colores.\n- morado: scripts recomendados por el admin.\n- naranja: scripts recomendados por los moderadores.\n- verde: script recomendados por los mienbros HS.",
+        Title = "los script que se encuentras aqui no vienen incluidos en la actualizacion , por lo que se recomienda revisar ustedes mismos.\nNota: los scripts pueden tener diversos colores.\n- morado: scripts recomendados por el admin.\n- naranja: scripts recomendados por los moderadores.\n- verde: script recomendados por los mienbros HS.",
         TextSize = 18,
         TextTransparency = .35,
         FontWeight = Enum.FontWeight.Medium,

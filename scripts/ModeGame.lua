@@ -13,41 +13,25 @@ gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
 -- Botón circular (más grande)
-local button = Instance.new("TextButton")
-button.Parent = gui
-button.AnchorPoint = Vector2.new(1, 0)
-button.Position = UDim2.fromScale(0.965, 0.055)
-button.Size = UDim2.fromScale(0.12, 0.12) -- ⬅ MÁS GRANDE
-button.TextScaled = true
-button.Font = Enum.Font.GothamBlack
-button.BorderSizePixel = 0
-button.AutoButtonColor = false
-
--- Redondeado total
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(1, 0)
-corner.Parent = button
-
--- Borde brillante
-local stroke = Instance.new("UIStroke")
-stroke.Thickness = 4
-stroke.Parent = button
-
--- Sombra circular
-local shadow = Instance.new("Frame")
-shadow.Parent = gui
-shadow.AnchorPoint = Vector2.new(1, 0)
-shadow.Position = UDim2.fromScale(0.965, 0.06)
-shadow.Size = UDim2.fromScale(0.12, 0.12)
-shadow.BackgroundColor3 = Color3.new(0, 0, 0)
-shadow.BackgroundTransparency = 0.7
-shadow.ZIndex = 0
-
-local shadowCorner = Instance.new("UICorner")
-shadowCorner.CornerRadius = UDim.new(1, 0)
-shadowCorner.Parent = shadow
-
-button.ZIndex = 1
+local Button = Instance.new("TextButton")
+Button.AnchorPoint = Vector2.new(1,0)
+Button.Size = UDim2.fromScale(0.12,0.12)
+Button.Position = UDim2.fromScale(0.670,0.04)
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.Font = Enum.Font.GothamBold
+Button.TextSize = 16
+Button.BorderSizePixel = 0
+Button.Parent = gui
+        
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 12)
+Corner.Parent = Button
+        
+local Stroke = Instance.new("UIStroke")
+Stroke.Color = Color3.fromRGB(255, 255, 255)
+Stroke.Thickness = 2
+Stroke.Transparency = 0.5
+Stroke.Parent = Button
 
 -- Actualizar apariencia
 local function updateButton()
