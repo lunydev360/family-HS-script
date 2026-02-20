@@ -163,7 +163,10 @@ end
                             if dist <= closestDist then
                                 closestDist = dist
                                 closest = p
-                                LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame
+                                if Settings.KillAura.TopKill then
+                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                                end
+                                
                             end
                         end
                     end
@@ -642,6 +645,15 @@ do
         Callback = function(state)
             Settings.KillAura.inmune[7593008940] = state
             onder[7593008940] = state
+        end
+    })
+
+    CombatTab:Toggle({
+        Title = "up kill",
+        Desc = "funciona si tienes un objetivo fijo.",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.TopKill = state
         end
     })
 
