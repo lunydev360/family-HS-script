@@ -164,7 +164,7 @@ end
                                 closestDist = dist
                                 closest = p
                                 if Settings.KillAura.TopKill then
-                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 8, 0)
                                 end
                                 
                             end
