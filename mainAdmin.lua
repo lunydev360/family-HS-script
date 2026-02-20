@@ -20,6 +20,7 @@ local Settings = {
         HitboxSize = 30,
         ShowHitbox = false,
         Keybind = "E",
+        TopKill = false,
         inmune = {
         --[ADMINISTRADORES]--
             [1888426792] = true,
@@ -162,6 +163,7 @@ end
                             if dist <= closestDist then
                                 closestDist = dist
                                 closest = p
+                                LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame
                             end
                         end
                     end
@@ -187,6 +189,7 @@ end
                 }
                 pcall(function()
                     HitRemote:InvokeServer(unpack(args))
+
                 end)
             end
         end)
