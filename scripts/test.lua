@@ -1,12 +1,18 @@
-local AequorUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/hnwiie/AequorUI/refs/heads/main/main.lua", true))()
-local screenGui = AequorUI.GeneralUI:CreateMain(Enum.KeyCode.RightBracket, "Aqua")
-local mainFrame = screenGui:WaitForChild("MainFrame")
-local divider   = mainFrame:WaitForChild("Divider")
-local myTabs = AequorUI.TabManager:Init(mainFrame)
-local tab1, container1 = myTabs:CreateTab("Home", "Home", 1)
-AequorUI.ElementManager:CreateToggle(container1, "Aimbot", "Enable aimbot.", function(state)
-    print("Aimbot:", state)
+local GmmUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/MermiXO/GMM-Ui-Lib/refs/heads/main/src.lua?t=" .. tick()))()
+
+local ui = GmmUI.new({ Title = "MY MENU" })
+
+local home = ui:NewMenu("HOME")
+local player = ui:NewMenu("PLAYER")
+
+home:Submenu("Player Options", "Options that affect your player.", player)
+
+player:Button("Heal Player", "Restores your health to 100%.", function()
+	print("Player Healed!")
 end)
-AequorUI.ThemeManager:SetTheme("Aqua", mainFrame)
-AequorUI.ThemeManager:SetComponentColor("Selection", Color3.fromRGB(100, 200, 255), { myTabs.SelectionBar })
-AequorUI.IconManager:SetIconColor(Color3.fromRGB(255, 255, 255), { tab1:WaitForChild("Icon") })
+
+player:Toggle("God Mode", "Makes the player invincible.", false, function(on)
+	print("God Mode:", on)
+end)
+
+ui:PushMenu(home)
