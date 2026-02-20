@@ -1,1 +1,1 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/trantung120213123/Hackroblox/refs/heads/main/chat.lua"))()
+loadstring(game:HttpGet("https://roxerion.com/api/public/hub/v3"))()
