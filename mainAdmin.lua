@@ -1392,9 +1392,7 @@ WindUI:Notify({
 })
 
 
-if RangeRol == "Admin" then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
-elseif RangeRol == "Moder" then
+if RangeRol == "Moder" then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/moder.lua"))()
 else
     oadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/global.lua"))()
