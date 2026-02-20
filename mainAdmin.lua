@@ -1163,6 +1163,18 @@ do
         Color = Color3.fromHex("#585858"),
         Icon = "",
         Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/ModeGame.lua"))()
+        end
+    })
+
+    ScriptsTab:Button({
+        Title = "en proseso",
+        Desc = "",
+        Locked = true,
+        LockedTitle = "proximente",
+        Color = Color3.fromHex("#585858"),
+        Icon = "",
+        Callback = function()
             -- loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/text.lua"))()
         end
     })
