@@ -1,88 +1,75 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
+local DiscordLib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/discord%20lib.txt")()
 
-local gui = Library:create{
-    Theme = Library.Themes.Serika
-}
+local win = DiscordLib:Window("discord library")
 
-local tab = gui:tab{
-    Icon = "rbxassetid://6034996695",
-    Name = "Aimbot"
-}
+local serv = win:Server("Preview", "")
 
-tab:button({
-    Name = "show prompt",
-    Callback = function()
-        tab:prompt{
-            Title = "baby",
-            Text = "shark doo doo doo doo im blank lmao",
-            Buttons = {
-                Ok = function()
-                    tab:prompt{
-                        Followup = true,
-                        Title = "really?",
-                        Text = "you sure?=",
-                        Buttons = {
-                            Yes = function()
-                                tab:prompt{
-                                    Followup = true,
-                                    Title = "xd",
-                                    Text = "sus",
-                                    Buttons = {
-                                        balls = function()
-                                            gui:set_status("github")
-                                        end,
-                                        anal = function()
-                                            gui:set_Status("money")
-                                        end
-                                    }
-                                }
-                            end,
-                        }
-                    }
-                end,
-            }
-        }
-    end,
-})
-tab:keybind({Callback = function()
-    gui:prompt()
-end,})
-tab:dropdown({
-    Name = "Dropdown",
-    Description = "yeeeeeeeeeeeeeeeeeeeboi",
-    StartingText = "Bodypart",
-    Items = {
-        "Head",
-        "Torso",
-        "Random"
-    }
-})
-tab:dropdown({
-    Name = "yes",
-    StartingText = "Number",
-    Items = {
-        {"One", 1},
-        {"Two", 2},
-        {"Three", 3}
-    },
-    Description = "amongu s",
-    Callback = function(v)
-        print(v, "clicked")
-    end,
-})
-local cum = tab:slider({Callback = function(v)
-    gui:set_status(v)
-end})
+local btns = serv:Channel("Buttons")
 
-tab:textbox({Callback = function(v)
-    gui:prompt{Text = v}
-end,})
+btns:Button("Kill all", function()
+DiscordLib:Notification("Notification", "Killed everyone!", "Okay!")
+end)
 
-tab:color_picker({
-    Name = "your mom's color",
-    Style = Library.ColorPickerStyles.Legacy,
-    Description = "Click to adjust color...",
-    Callback = function(color)
-        print(color)
-    end,
-})
+btns:Seperator()
+
+btns:Button("Get max level", function()
+DiscordLib:Notification("Notification", "Max level!", "Okay!")
+end)
+
+local tgls = serv:Channel("Toggles")
+
+tgls:Toggle("Auto-Farm",false, function(bool)
+print(bool)
+end)
+
+local sldrs = serv:Channel("Sliders")
+
+local sldr = sldrs:Slider("Slide me!", 0, 1000, 400, function(t)
+print(t)
+end)
+
+sldrs:Button("Change to 50", function()
+sldr:Change(50)
+end)
+
+local drops = serv:Channel("Dropdowns")
+
+
+local drop = drops:Dropdown("Pick me!",{"Option 1","Option 2","Option 3","Option 4","Option 5"}, function(bool)
+print(bool)
+end)
+
+drops:Button("Clear", function()
+drop:Clear()
+end)
+
+drops:Button("Add option", function()
+drop:Add("Option")
+end)
+
+local clrs = serv:Channel("Colorpickers")
+
+clrs:Colorpicker("ESP Color", Color3.fromRGB(255,1,1), function(t)
+print(t)
+end)
+
+local textbs = serv:Channel("Textboxes")
+
+textbs:Textbox("Gun power", "Type here!", true, function(t)
+print(t)
+end)
+
+local lbls = serv:Channel("Labels")
+
+lbls:Label("This is just a label.")
+
+local bnds = serv:Channel("Binds")
+
+bnds:Bind("Kill bind", Enum.KeyCode.RightShift, function()
+print("Killed everyone!")
+end)
+
+serv:Channel("by dawid#7205")
+
+
+win:Server("Main", "http://www.roblox.com/asset/?id=6031075938")
