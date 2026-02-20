@@ -1,84 +1,94 @@
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+-- SimpleChat (UN SOLO SCRIPT)
+-- Autor: tú 😎
 
--- Attribute en el Player
-if player:GetAttribute("Fighting") == nil then
-	player:SetAttribute("Fighting", false)
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local CHAT_EVENT_NAME = "ChatEvent"
+
+--------------------------------------------------
+-- 🔵 SERVIDOR
+--------------------------------------------------
+if RunService:IsServer() then
+	-- Crear RemoteEvent si no existe
+	local chatEvent = ReplicatedStorage:FindFirstChild(CHAT_EVENT_NAME)
+	if not chatEvent then
+		chatEvent = Instance.new("RemoteEvent")
+		chatEvent.Name = CHAT_EVENT_NAME
+		chatEvent.Parent = ReplicatedStorage
+	end
+
+	-- Recibir mensajes y reenviarlos
+	chatEvent.OnServerEvent:Connect(function(player, message)
+		if typeof(message) ~= "string" or message == "" then return end
+		chatEvent:FireAllClients(player.Name, message)
+	end)
+
+	-- Clonar este MISMO script al cliente
+	Players.PlayerAdded:Connect(function(player)
+		player.CharacterAdded:Wait()
+
+		local clone = script:Clone()
+		clone.Name = "SimpleChatClient"
+		clone.Parent = player:WaitForChild("PlayerGui")
+	end)
+
+	return
 end
+
+--------------------------------------------------
+-- 🟢 CLIENTE
+--------------------------------------------------
+
+-- Esperar RemoteEvent
+local chatEvent = ReplicatedStorage:WaitForChild(CHAT_EVENT_NAME)
+local player = Players.LocalPlayer
 
 -- GUI
 local gui = Instance.new("ScreenGui")
-gui.Name = "FightingToggleGui"
-gui.ResetOnSpawn = false
+gui.Name = "ChatGui"
 gui.Parent = player:WaitForChild("PlayerGui")
 
--- Botón circular (más grande)
-local button = Instance.new("TextButton")
-button.Parent = gui
-button.AnchorPoint = Vector2.new(1, 0)
-button.Position = UDim2.fromScale(0.670, 0.04)
-button.Size = UDim2.fromScale(0.12, 0.12) -- ⬅ MÁS GRANDE
-button.TextScaled = true
-button.Font = Enum.Font.GothamBlack
-button.BorderSizePixel = 0
-button.AutoButtonColor = false
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.fromScale(0.4, 0.35)
+frame.Position = UDim2.fromScale(0.3, 0.6)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 
--- Redondeado total
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 12)
-corner.Parent = button
+local chatLog = Instance.new("TextLabel", frame)
+chatLog.Size = UDim2.fromScale(1, 0.75)
+chatLog.TextWrapped = true
+chatLog.TextYAlignment = Top
+chatLog.TextXAlignment = Left
+chatLog.BackgroundTransparency = 1
+chatLog.TextColor3 = Color3.new(1,1,1)
+chatLog.Text = "🗨 Chat iniciado"
 
--- Borde brillante
-local stroke = Instance.new("UIStroke")
-stroke.Thickness = 4
-stroke.Parent = button
+local box = Instance.new("TextBox", frame)
+box.Size = UDim2.fromScale(0.8, 0.25)
+box.Position = UDim2.fromScale(0, 0.75)
+box.PlaceholderText = "Escribe un mensaje..."
+box.Text = ""
 
--- Sombra circular
-local shadow = Instance.new("Frame")
-shadow.Parent = gui
-shadow.AnchorPoint = Vector2.new(1, 0)
-shadow.Position = UDim2.fromScale(0.965, 0.06)
-shadow.Size = UDim2.fromScale(0.12, 0.12)
-shadow.BackgroundColor3 = Color3.new(0, 0, 0)
-shadow.BackgroundTransparency = 0.7
-shadow.ZIndex = 0
+local send = Instance.new("TextButton", frame)
+send.Size = UDim2.fromScale(0.2, 0.25)
+send.Position = UDim2.fromScale(0.8, 0.75)
+send.Text = "Enviar"
 
-local shadowCorner = Instance.new("UICorner")
-shadowCorner.CornerRadius = UDim.new(1, 0)
-shadowCorner.Parent = shadow
-
-button.ZIndex = 1
-
--- Actualizar apariencia
-local function updateButton()
-	if player:GetAttribute("Fighting") then
-		button.Text = "⚔"
-		button.BackgroundColor3 = Color3.fromRGB(235, 80, 80)
-		stroke.Color = Color3.fromRGB(255, 210, 210)
-	else
-		button.Text = "🛡"
-		button.BackgroundColor3 = Color3.fromRGB(70, 200, 150)
-		stroke.Color = Color3.fromRGB(210, 255, 235)
+-- Enviar mensaje
+local function sendMessage()
+	if box.Text ~= "" then
+		chatEvent:FireServer(box.Text)
+		box.Text = ""
 	end
 end
 
-updateButton()
-
--- Entrada universal
-button.Activated:Connect(function()
-	player:SetAttribute("Fighting", not player:GetAttribute("Fighting"))
-	updateButton()
+send.MouseButton1Click:Connect(sendMessage)
+box.FocusLost:Connect(function(enter)
+	if enter then sendMessage() end
 end)
 
-local player = game.Players.LocalPlayer
-
-local guisAocultar = {
-    "ScreenGui",
-    "GamepassUI"
-}
-
-for _, gui in pairs(player.PlayerGui:GetChildren()) do
-    if gui:IsA("ScreenGui") and table.find(guisAocultar, gui.Name) then
-        gui.Enabled = false
-    end
-end
+-- Recibir mensajes
+chatEvent.OnClientEvent:Connect(function(name, msg)
+	chatLog.Text ..= "\n[" .. name .. "]: " .. msg
+end)
