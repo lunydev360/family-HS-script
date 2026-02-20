@@ -1,73 +1,75 @@
--- SimpleChat (UN SOLO SCRIPT)
--- Autor: tú 😎
+-- UNIVERSAL CHAT - UN SOLO SCRIPT
+-- Funciona en TODOS los juegos
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local CHAT_EVENT_NAME = "ChatEvent"
+local EVENT_NAME = "__UNIVERSAL_CHAT_EVENT__"
 
---------------------------------------------------
+------------------------------------------------
 -- 🔵 SERVIDOR
---------------------------------------------------
+------------------------------------------------
 if RunService:IsServer() then
-	-- Crear RemoteEvent si no existe
-	local chatEvent = ReplicatedStorage:FindFirstChild(CHAT_EVENT_NAME)
-	if not chatEvent then
-		chatEvent = Instance.new("RemoteEvent")
-		chatEvent.Name = CHAT_EVENT_NAME
-		chatEvent.Parent = ReplicatedStorage
+	-- Crear RemoteEvent global
+	local event = ReplicatedStorage:FindFirstChild(EVENT_NAME)
+	if not event then
+		event = Instance.new("RemoteEvent")
+		event.Name = EVENT_NAME
+		event.Parent = ReplicatedStorage
 	end
 
-	-- Recibir mensajes y reenviarlos
-	chatEvent.OnServerEvent:Connect(function(player, message)
-		if typeof(message) ~= "string" or message == "" then return end
-		chatEvent:FireAllClients(player.Name, message)
+	-- Recibir mensajes
+	event.OnServerEvent:Connect(function(player, text)
+		if typeof(text) ~= "string" then return end
+		if text:gsub("%s+", "") == "" then return end
+
+		event:FireAllClients(player.Name, text)
 	end)
 
-	-- Clonar este MISMO script al cliente
+	-- Inyectar el MISMO script al cliente
 	Players.PlayerAdded:Connect(function(player)
-		player.CharacterAdded:Wait()
-
 		local clone = script:Clone()
-		clone.Name = "SimpleChatClient"
+		clone.Name = "UniversalChatClient"
 		clone.Parent = player:WaitForChild("PlayerGui")
 	end)
 
 	return
 end
 
---------------------------------------------------
+------------------------------------------------
 -- 🟢 CLIENTE
---------------------------------------------------
+------------------------------------------------
 
--- Esperar RemoteEvent
-local chatEvent = ReplicatedStorage:WaitForChild(CHAT_EVENT_NAME)
+local event = ReplicatedStorage:WaitForChild(EVENT_NAME)
 local player = Players.LocalPlayer
 
 -- GUI
 local gui = Instance.new("ScreenGui")
-gui.Name = "ChatGui"
+gui.Name = "UniversalChatGui"
+gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.fromScale(0.4, 0.35)
-frame.Position = UDim2.fromScale(0.3, 0.6)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.AnchorPoint = Vector2.new(0.5, 1)
+frame.Position = UDim2.fromScale(0.5, 0.95)
+frame.Size = UDim2.fromScale(0.45, 0.35)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+frame.BorderSizePixel = 0
 
-local chatLog = Instance.new("TextLabel", frame)
-chatLog.Size = UDim2.fromScale(1, 0.75)
-chatLog.TextWrapped = true
-chatLog.TextYAlignment = Top
-chatLog.TextXAlignment = Left
-chatLog.BackgroundTransparency = 1
-chatLog.TextColor3 = Color3.new(1,1,1)
-chatLog.Text = "🗨 Chat iniciado"
+local messages = Instance.new("TextLabel", frame)
+messages.Size = UDim2.fromScale(1, 0.75)
+messages.TextWrapped = true
+messages.TextYAlignment = Top
+messages.TextXAlignment = Left
+messages.TextColor3 = Color3.new(1,1,1)
+messages.BackgroundTransparency = 1
+messages.Text = "💬 Chat universal activo"
 
 local box = Instance.new("TextBox", frame)
 box.Size = UDim2.fromScale(0.8, 0.25)
 box.Position = UDim2.fromScale(0, 0.75)
-box.PlaceholderText = "Escribe un mensaje..."
+box.PlaceholderText = "Escribe aquí..."
 box.Text = ""
 
 local send = Instance.new("TextButton", frame)
@@ -75,20 +77,20 @@ send.Size = UDim2.fromScale(0.2, 0.25)
 send.Position = UDim2.fromScale(0.8, 0.75)
 send.Text = "Enviar"
 
--- Enviar mensaje
-local function sendMessage()
+-- Enviar
+local function sendMsg()
 	if box.Text ~= "" then
-		chatEvent:FireServer(box.Text)
+		event:FireServer(box.Text)
 		box.Text = ""
 	end
 end
 
-send.MouseButton1Click:Connect(sendMessage)
+send.MouseButton1Click:Connect(sendMsg)
 box.FocusLost:Connect(function(enter)
-	if enter then sendMessage() end
+	if enter then sendMsg() end
 end)
 
--- Recibir mensajes
-chatEvent.OnClientEvent:Connect(function(name, msg)
-	chatLog.Text ..= "\n[" .. name .. "]: " .. msg
+-- Recibir
+event.OnClientEvent:Connect(function(name, msg)
+	messages.Text ..= "\n[" .. name .. "]: " .. msg
 end)
