@@ -1,126 +1,140 @@
---[[ 
- GLOBAL CHAT - SINGLE FILE
- Colocar en ServerScriptService
- Compatible con todos los juegos del mismo UniverseId
-]]
+--	// FileName: ChatScript.lua
+--	// Written by: Xsitsu
+--	// Description: Hooks main chat module up to Topbar in corescripts.
 
--- SERVICIOS
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local MessagingService = game:GetService("MessagingService")
-local TextService = game:GetService("TextService")
+local StarterGui = game:GetService("StarterGui")
+local GuiService = game:GetService("GuiService")
+local ChatService = game:GetService("Chat")
 
--- CONFIG
-local CHANNEL = "UNIVERSE_GLOBAL_CHAT"
-local MAX_LEN = 120
-local COOLDOWN = 2
+local MAX_COREGUI_CONNECTION_ATTEMPTS = 10
 
--- REMOTE
-local Remote = Instance.new("RemoteEvent")
-Remote.Name = "GlobalChatRemote"
-Remote.Parent = ReplicatedStorage
+local ClientChatModules = ChatService:WaitForChild("ClientChatModules")
+local ChatSettings = require(ClientChatModules:WaitForChild("ChatSettings"))
 
--- COOLDOWN TABLE
-local lastMessage = {}
+local function DoEverything()
+	local Chat = require(script:WaitForChild("ChatMain"))
 
--- FILTRO
-local function filter(player, text)
-	local ok, res = pcall(function()
-		return TextService
-			:FilterStringAsync(text, player.UserId)
-			:GetNonChatStringForBroadcastAsync()
-	end)
-	return ok and res or "[Mensaje bloqueado]"
-end
+	local containerTable = {}
+	containerTable.ChatWindow = {}
+	containerTable.SetCore = {}
+	containerTable.GetCore = {}
 
--- UI CREATION
-local function createUI(player)
-	local gui = Instance.new("ScreenGui")
-	gui.Name = "GlobalChatUI"
-	gui.ResetOnSpawn = false
-	gui.Parent = player:WaitForChild("PlayerGui")
+	containerTable.ChatWindow.ChatTypes = {}
+	containerTable.ChatWindow.ChatTypes.BubbleChatEnabled = ChatSettings.BubbleChatEnabled
+	containerTable.ChatWindow.ChatTypes.ClassicChatEnabled = ChatSettings.ClassicChatEnabled
 
-	local frame = Instance.new("Frame", gui)
-	frame.Size = UDim2.fromScale(0.35, 0.35)
-	frame.Position = UDim2.fromScale(0.02, 0.6)
-	frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
-	frame.BackgroundTransparency = 0.1
-	frame.BorderSizePixel = 0
+	--// Connection functions
+	local function ConnectEvent(name)
+		local event = Instance.new("BindableEvent")
+		event.Name = name
+		containerTable.ChatWindow[name] = event
 
-	local corner = Instance.new("UICorner", frame)
-	corner.CornerRadius = UDim.new(0,12)
-
-	local list = Instance.new("UIListLayout", frame)
-	list.Padding = UDim.new(0,6)
-
-	local padding = Instance.new("UIPadding", frame)
-	padding.PaddingAll = UDim.new(0,10)
-
-	local input = Instance.new("TextBox", frame)
-	input.Size = UDim2.new(1,0,0,32)
-	input.PlaceholderText = "Mensaje global..."
-	input.Text = ""
-	input.TextColor3 = Color3.new(1,1,1)
-	input.BackgroundColor3 = Color3.fromRGB(30,30,30)
-	input.ClearTextOnFocus = false
-
-	local ic = Instance.new("UICorner", input)
-	ic.CornerRadius = UDim.new(0,8)
-
-	input.FocusLost:Connect(function(enter)
-		if enter and input.Text ~= "" then
-			Remote:FireServer(input.Text)
-			input.Text = ""
-		end
-	end)
-
-	-- CLIENT LISTENER
-	Remote.OnClientEvent:Connect(function(data)
-		local label = Instance.new("TextLabel")
-		label.Size = UDim2.new(1,0,0,22)
-		label.BackgroundTransparency = 1
-		label.TextWrapped = true
-		label.TextXAlignment = Left
-		label.TextYAlignment = Top
-		label.TextColor3 = Color3.new(1,1,1)
-		label.Text = "[" .. data.Name .. "]: " .. data.Message
-		label.Parent = frame
-	end)
-end
-
--- PLAYER JOIN
-Players.PlayerAdded:Connect(createUI)
-
--- SERVER RECEIVE
-Remote.OnServerEvent:Connect(function(player, text)
-	if typeof(text) ~= "string" then return end
-	if #text > MAX_LEN then return end
-
-	local t = os.clock()
-	if lastMessage[player] and t - lastMessage[player] < COOLDOWN then
-		return
+		event.Event:connect(function(...) Chat[name](Chat, ...) end)
 	end
-	lastMessage[player] = t
 
-	local msg = filter(player, text)
+	local function ConnectFunction(name)
+		local func = Instance.new("BindableFunction")
+		func.Name = name
+		containerTable.ChatWindow[name] = func
 
-	local data = {
-		Name = player.Name,
-		Message = msg
-	}
+		func.OnInvoke = function(...) return Chat[name](Chat, ...) end
+	end
 
-	pcall(function()
-		MessagingService:PublishAsync(CHANNEL, data)
-	end)
-end)
+	local function ReverseConnectEvent(name)
+		local event = Instance.new("BindableEvent")
+		event.Name = name
+		containerTable.ChatWindow[name] = event
 
--- GLOBAL RECEIVE
-pcall(function()
-	MessagingService:SubscribeAsync(CHANNEL, function(packet)
-		for _, plr in ipairs(Players:GetPlayers()) do
-			Remote:FireClient(plr, packet.Data)
+		Chat[name]:connect(function(...) event:Fire(...) end)
+	end
+
+	local function ConnectSignal(name)
+		local event = Instance.new("BindableEvent")
+		event.Name = name
+		containerTable.ChatWindow[name] = event
+
+		event.Event:connect(function(...) Chat[name]:fire(...) end)
+	end
+
+	local function ConnectSetCore(name)
+		local event = Instance.new("BindableEvent")
+		event.Name = name
+		containerTable.SetCore[name] = event
+
+		event.Event:connect(function(...) Chat[name.."Event"]:fire(...) end)
+	end
+
+	local function ConnectGetCore(name)
+		local func = Instance.new("BindableFunction")
+		func.Name = name
+		containerTable.GetCore[name] = func
+
+		func.OnInvoke = function(...) return Chat["f"..name](...) end
+	end
+
+	--// Do connections
+	ConnectEvent("ToggleVisibility")
+	ConnectEvent("SetVisible")
+	ConnectEvent("FocusChatBar")
+	ConnectFunction("GetVisibility")
+	ConnectFunction("GetMessageCount")
+	ConnectEvent("TopbarEnabledChanged")
+	ConnectFunction("IsFocused")
+
+	ReverseConnectEvent("ChatBarFocusChanged")
+	ReverseConnectEvent("VisibilityStateChanged")
+	ReverseConnectEvent("MessagesChanged")
+	ReverseConnectEvent("MessagePosted")
+
+	ConnectSignal("CoreGuiEnabled")
+
+	ConnectSetCore("ChatMakeSystemMessage")
+	ConnectSetCore("ChatWindowPosition")
+	ConnectSetCore("ChatWindowSize")
+	ConnectGetCore("ChatWindowPosition")
+	ConnectGetCore("ChatWindowSize")
+	ConnectSetCore("ChatBarDisabled")
+	ConnectGetCore("ChatBarDisabled")
+
+	ConnectEvent("SpecialKeyPressed")
+
+	SetCoreGuiChatConnections(containerTable)
+end
+
+function SetCoreGuiChatConnections(containerTable)
+	local tries = 0
+	while tries < MAX_COREGUI_CONNECTION_ATTEMPTS do
+		tries = tries + 1
+		local success, ret = pcall(function() StarterGui:SetCore("CoreGuiChatConnections", containerTable) end)
+		if success then
+			break
 		end
-	end)
-end)
+		if not success and tries == MAX_COREGUI_CONNECTION_ATTEMPTS then
+			error("Error calling SetCore CoreGuiChatConnections: " .. ret)
+		end
+		wait()
+	end
+end
 
-print("🌍 Global Chat cargado")
+function checkBothChatTypesDisabled()
+	if ChatSettings.BubbleChatEnabled ~= nil then
+		if ChatSettings.ClassicChatEnabled ~= nil then
+			return not (ChatSettings.BubbleChatEnabled or ChatSettings.ClassicChatEnabled)
+		end
+	end
+	return false
+end
+
+if (not GuiService:IsTenFootInterface()) and (not game:GetService('UserInputService').VREnabled) then
+	if not checkBothChatTypesDisabled() then
+		DoEverything()
+	else
+		local containerTable = {}
+		containerTable.ChatWindow = {}
+
+		containerTable.ChatWindow.ChatTypes = {}
+		containerTable.ChatWindow.ChatTypes.BubbleChatEnabled = false
+		containerTable.ChatWindow.ChatTypes.ClassicChatEnabled = false
+		SetCoreGuiChatConnections(containerTable)
+	end
+end
