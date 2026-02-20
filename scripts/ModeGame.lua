@@ -30,9 +30,22 @@ corner.Parent = button
 
 -- Borde brillante
 local stroke = Instance.new("UIStroke")
-stroke.Thickness = 2
-Stroke.Transparency = 0.5
+stroke.Thickness = 4
 stroke.Parent = button
+
+-- Sombra circular
+local shadow = Instance.new("Frame")
+shadow.Parent = gui
+shadow.AnchorPoint = Vector2.new(1, 0)
+shadow.Position = UDim2.fromScale(0.965, 0.06)
+shadow.Size = UDim2.fromScale(0.12, 0.12)
+shadow.BackgroundColor3 = Color3.new(0, 0, 0)
+shadow.BackgroundTransparency = 0.7
+shadow.ZIndex = 0
+
+local shadowCorner = Instance.new("UICorner")
+shadowCorner.CornerRadius = UDim.new(1, 0)
+shadowCorner.Parent = shadow
 
 button.ZIndex = 1
 
