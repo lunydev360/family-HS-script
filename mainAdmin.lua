@@ -1156,8 +1156,8 @@ do
     })
 
     ScriptsTab:Button({
-        Title = "en proseso",
-        Desc = "",
+        Title = "cabiar modo de juego",
+        Desc = "solo para moviles",
         Color = ColorYami,
         Icon = "",
         Callback = function()
