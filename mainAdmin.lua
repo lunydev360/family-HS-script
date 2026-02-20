@@ -1166,16 +1166,6 @@ do
     })
 
     ScriptsTab:Button({
-        Title = "chat clan",
-        Desc = "test",
-        Color = Color3.fromHex("#585858"),
-        Icon = "",
-        Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/chat.lua"))()
-        end
-    })
-
-    ScriptsTab:Button({
         Title = "en proseso",
         Desc = "",
         Locked = true,
