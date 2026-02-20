@@ -1112,8 +1112,9 @@ do
         FontWeight = Enum.FontWeight.Medium,
     })
 
+    AcercaScriptSection:Space()
     ScriptsTab:Space()
-    
+
     ScriptsTab:Button({
         Title = "7yd7-Emote-Animation-Script",
         Desc = "Un script de emotes para todos los juegos compatibles con r15",
