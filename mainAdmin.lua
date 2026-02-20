@@ -1166,10 +1166,8 @@ do
     })
 
     ScriptsTab:Button({
-        Title = "en proseso",
-        Desc = "",
-        Locked = true,
-        LockedTitle = "proximente",
+        Title = "chat clan",
+        Desc = "test",
         Color = Color3.fromHex("#585858"),
         Icon = "",
         Callback = function()
