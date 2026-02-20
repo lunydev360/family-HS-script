@@ -59,4 +59,4 @@ wait(5)
 print("Toggle is currently:", Library.flags["toggle"])
 print("Second toggle is currently:", Library.flags["toggle1"])
 --Flags can be useful for a lot of stuff, get creative with them :)
---You can also get the value/state/key from each option if they're defined
+--You can also get the value/state/key from each
