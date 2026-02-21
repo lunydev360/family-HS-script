@@ -77,7 +77,7 @@ local Settings = {
 -- Variables
 
 local RangeRol = "Admin" --[Admin, Moder, text]
-local VercionHub = "2.8"
+local VercionHub = "desconectando"
 local ESPObjects = {}
 local ChamsObjects = {}
 local KillAuraConnection
@@ -538,7 +538,7 @@ end
 -- Create WindUI Window
 local Window = WindUI:CreateWindow({
     Title = "Family HS HUB",
-    Author = "by yami_DEV",
+    Author = "by null",
     Folder = "HsHub",
     Icon = "solar:folder-2-bold-duotone",
     OpenButton = {
@@ -1388,9 +1388,9 @@ end
 
 
 local Dialog = Window:Dialog({
-    Icon = "lucide:shield-alert",
-    Title = "acepta terminos y condiciones",
-    Content = "al momento de utilizar nuestro script debes entender que este script esta echo por mi(dep0700) y no permito que un extraño o desconosido tenga acceso a este script.\npor lo tanto no comparta el script con nadien o seras baneado .\nsi quieres compartir el script con alguien debes informarme primero, ya sea en el server / MD /Roblox y es nesesario hablar con el invitado \nNota: Si no respondo a tiempo la solicitud de compartir favor de esperar y no dar el script asta yo dar el acceso.",
+    Icon = "lucide:ghost",
+    Title = "game over",
+    Content = "grasias por todo HS.\nel script dejara de actualizarse por motivos personales, perdonen si no pude cumplirles sus prespectivas.",
     Buttons = {
         {
             Title = "acepto",
@@ -1407,10 +1407,3 @@ WindUI:Notify({
     Icon = "geist:box",
     Duration = 5,
 })
-
-
-if RangeRol == "Moder" then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/moder.lua"))()
-else
-    oadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/global.lua"))()
-end

@@ -76,8 +76,8 @@ local Settings = {
 
 -- Variables
 
-local RangeRol = "Moder" --[Admin, Moder, text]
-local VercionHub = "desconectando"
+local RangeRol = "Admin" --[Admin, Moder, text]
+local VercionHub = "2.8"
 local ESPObjects = {}
 local ChamsObjects = {}
 local KillAuraConnection
@@ -538,7 +538,7 @@ end
 -- Create WindUI Window
 local Window = WindUI:CreateWindow({
     Title = "Family HS HUB",
-    Author = "by null",
+    Author = "by yami_DEV",
     Folder = "HsHub",
     Icon = "solar:folder-2-bold-duotone",
     OpenButton = {
@@ -1407,3 +1407,10 @@ WindUI:Notify({
     Icon = "geist:box",
     Duration = 5,
 })
+
+
+if RangeRol == "Moder" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/moder.lua"))()
+else
+    oadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/global.lua"))()
+end
