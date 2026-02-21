@@ -20,6 +20,7 @@ local Settings = {
         HitboxSize = 30,
         ShowHitbox = false,
         Keybind = "E",
+        TopKill = false,
         inmune = {
         --[ADMINISTRADORES]--
             [1888426792] = true,
@@ -75,8 +76,8 @@ local Settings = {
 
 -- Variables
 
-local RangeRol = "Silantros xd" --[Admin, Moder, text]
-local VercionHub = "2.8"
+local RangeRol = "admin_abuse" --[Admin, Moder, text]
+local VercionHub = "2.9"
 local ESPObjects = {}
 local ChamsObjects = {}
 local KillAuraConnection
@@ -162,6 +163,10 @@ end
                             if dist <= closestDist then
                                 closestDist = dist
                                 closest = p
+                                if Settings.KillAura.TopKill then
+                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 8, 0)
+                                end
+                                
                             end
                         end
                     end
@@ -187,6 +192,7 @@ end
                 }
                 pcall(function()
                     HitRemote:InvokeServer(unpack(args))
+
                 end)
             end
         end)
@@ -639,6 +645,15 @@ do
         Callback = function(state)
             Settings.KillAura.inmune[7593008940] = state
             onder[7593008940] = state
+        end
+    })
+
+    CombatTab:Toggle({
+        Title = "up kill",
+        Desc = "funciona si tienes un objetivo fijo.",
+        Value = false,
+        Callback = function(state)
+            Settings.KillAura.TopKill = state
         end
     })
 
@@ -1156,6 +1171,16 @@ do
     })
 
     ScriptsTab:Button({
+        Title = "cabiar modo de juego",
+        Desc = "solo para moviles",
+        Color = ColorYami,
+        Icon = "",
+        Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/scripts/ModeGame.lua"))()
+        end
+    })
+
+    ScriptsTab:Button({
         Title = "en proseso",
         Desc = "",
         Locked = true,
@@ -1382,9 +1407,7 @@ WindUI:Notify({
 })
 
 
-if RangeRol == "Admin" then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/admin.lua"))()
-elseif RangeRol == "Moder" then
+if RangeRol == "Moder" then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/moder.lua"))()
 else
     oadstring(game:HttpGet("https://raw.githubusercontent.com/lunydev360/family-HS-script/refs/heads/main/verification/global.lua"))()
