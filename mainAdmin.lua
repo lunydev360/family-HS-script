@@ -164,7 +164,8 @@ end
                                 closestDist = dist
                                 closest = p
                                 if Settings.KillAura.TopKill then
-                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 8, 0)
+                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0)
+                                    StartFly()
                                 end
                                 
                             end
@@ -217,6 +218,7 @@ end
             end
         end
         hitboxVisuals = {}
+        StopFly()
     end
 
     local function UpdateHitboxVisuals()
