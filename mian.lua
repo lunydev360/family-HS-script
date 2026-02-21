@@ -76,8 +76,8 @@ local Settings = {
 
 -- Variables
 
-local RangeRol = "admin_abuse" --[Admin, Moder, text]
-local VercionHub = "2.9"
+local RangeRol = "Sukito Mienbro" --[Admin, Moder, text]
+local VercionHub = "2.8"
 local ESPObjects = {}
 local ChamsObjects = {}
 local KillAuraConnection
@@ -164,7 +164,8 @@ end
                                 closestDist = dist
                                 closest = p
                                 if Settings.KillAura.TopKill then
-                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 8, 0)
+                                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0)
+                                    StartFly()
                                 end
                                 
                             end
@@ -217,6 +218,7 @@ end
             end
         end
         hitboxVisuals = {}
+        StopFly()
     end
 
     local function UpdateHitboxVisuals()
